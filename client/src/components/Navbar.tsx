@@ -127,18 +127,20 @@ export default function Navbar() {
               <div key={item.href} className="relative group" ref={el => { dropdownRefs.current[item.dropdownId || ''] = el }}>
                 {item.hasDropdown ? (
                   <button 
-                    className={`flex items-center text-sm font-medium space-x-1 py-2 ${scrolled ? 'text-gray-800 hover:text-primary' : 'text-white hover:text-primary-100'} transition-colors`}
+                    className={`flex items-center text-sm font-medium space-x-1 py-2 relative ${scrolled ? 'text-gray-800 hover:text-primary' : 'text-white hover:text-primary-100'} transition-all duration-300 ease-out group`}
                     onClick={() => toggleDropdown(item.dropdownId || '')}
                   >
-                    <span>{item.label}</span>
-                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === item.dropdownId ? 'rotate-180' : ''}`} />
+                    <span className="group-hover:translate-y-[-1px] transition-transform duration-300">{item.label}</span>
+                    <ChevronDown className={`w-4 h-4 transition-all duration-300 ${activeDropdown === item.dropdownId ? 'rotate-180' : 'group-hover:translate-y-[1px]'}`} />
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                   </button>
                 ) : (
                   <a 
                     href={item.href}
-                    className={`text-sm font-medium py-2 ${scrolled ? 'text-gray-800 hover:text-primary' : 'text-white hover:text-primary-100'} transition-colors`}
+                    className={`text-sm font-medium py-2 relative inline-block ${scrolled ? 'text-gray-800 hover:text-primary' : 'text-white hover:text-primary-100'} transition-all duration-300 group`}
                   >
-                    {item.label}
+                    <span className="group-hover:translate-y-[-1px] transition-transform duration-300 inline-block">{item.label}</span>
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                   </a>
                 )}
 
@@ -147,12 +149,12 @@ export default function Navbar() {
                   <div className="absolute top-full left-0 z-50 w-[600px] bg-white rounded-lg shadow-xl border border-gray-200 p-6 mt-2 grid grid-cols-3 gap-4">
                     {solutionsItems.map((solution, index) => (
                       <div key={index} className="group">
-                        <a href="#solutions" className="block group-hover:bg-gray-50 p-3 rounded-lg transition-colors">
+                        <a href="#solutions" className="block p-3 rounded-lg transition-all duration-300 hover:shadow-md group-hover:bg-gray-50 transform group-hover:translate-y-[-2px]">
                           <div className="flex items-start">
-                            <div className="flex-shrink-0">{solution.icon}</div>
+                            <div className="flex-shrink-0 text-primary opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300">{solution.icon}</div>
                             <div className="ml-3">
-                              <p className="text-sm font-medium text-gray-900">{solution.title}</p>
-                              <p className="mt-1 text-xs text-gray-500">{solution.description}</p>
+                              <p className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors duration-300">{solution.title}</p>
+                              <p className="mt-1 text-xs text-gray-500 group-hover:text-gray-700 transition-colors duration-300">{solution.description}</p>
                             </div>
                           </div>
                         </a>

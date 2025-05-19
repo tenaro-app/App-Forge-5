@@ -98,8 +98,8 @@ export default function SolutionsSection() {
   ];
 
   return (
-    <section id="solutions" className="py-24 bg-white relative">
-      <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-light-500 to-white"></div>
+    <section id="solutions" className="py-24 bg-gradient-to-b from-gray-50 to-white relative">
+      <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
       
       <motion.div 
         className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
@@ -112,11 +112,15 @@ export default function SolutionsSection() {
           className="text-center max-w-3xl mx-auto mb-20"
           variants={fadeIn("up", "tween", 0.1, 1)}
         >
-          <span className="text-sm font-semibold text-primary uppercase tracking-widest font-heading">Redefining Possibilities</span>
+          <div className="inline-flex items-center justify-center mb-3">
+            <div className="h-1 w-8 bg-primary mr-3"></div>
+            <span className="text-sm font-bold text-primary uppercase tracking-widest">Redefining Possibilities</span>
+            <div className="h-1 w-8 bg-primary ml-3"></div>
+          </div>
           <h2 className="mt-4 text-4xl md:text-5xl font-heading font-extrabold text-secondary">
-            Revolutionary Digital <span className="text-primary">Solutions</span> for Your Business
+            Revolutionary Digital <span className="text-primary">Solutions</span>
           </h2>
-          <p className="mt-6 text-xl text-gray-600">
+          <p className="mt-6 text-xl text-gray-600 max-w-2xl mx-auto">
             Our custom applications eliminate repetitive tasks and streamline complex processes, 
             giving your team more time to focus on what truly matters.
           </p>
@@ -126,33 +130,53 @@ export default function SolutionsSection() {
           {solutionsData.map((solution, index) => (
             <motion.div 
               key={index}
-              className="bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all p-8 border border-gray-100 group hover:-translate-y-2 duration-300"
+              className="bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all p-8 border border-gray-100 group hover:-translate-y-2 duration-300 h-full flex flex-col"
               variants={fadeIn("up", "spring", index * 0.1 + 0.2, 0.75)}
             >
-              <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-                <IconRenderer icon={solution.icon} className="h-8 w-8 text-primary group-hover:text-white transition-colors" />
+              <div className="w-16 h-16 bg-gradient-to-br from-primary/90 to-primary/70 rounded-xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300">
+                <IconRenderer icon={solution.icon} className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold font-heading mb-4 group-hover:text-primary transition-colors whitespace-nowrap overflow-hidden text-ellipsis">{solution.title}</h3>
+              
+              <h3 className="text-2xl font-bold font-heading mb-3 text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis">{solution.title}</h3>
+              <div className="w-12 h-1 bg-primary/30 mb-4"></div>
               <p className="text-gray-600 mb-6 text-lg h-[4.5rem] line-clamp-3">{solution.description}</p>
-              <ul className="space-y-3 mb-8">
+              
+              <ul className="space-y-3 mb-8 flex-grow">
                 {solution.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start">
-                    <div className="bg-primary/10 rounded-full p-1 mr-3 flex-shrink-0 mt-0.5 group-hover:bg-primary/20 transition-colors">
+                    <div className="bg-primary/10 rounded-full p-1 mr-3 flex-shrink-0 mt-0.5">
                       <Check className="h-4 w-4 text-primary" />
                     </div>
                     <span className="text-gray-700">{feature}</span>
                   </li>
                 ))}
               </ul>
-              <a href="#contact" className="text-primary font-semibold flex items-center text-lg group-hover:font-bold transition-all">
-                Explore Solution <ArrowRight className="h-5 w-5 ml-2 group-hover:ml-3 transition-all" />
+              
+              <a href="#contact" className="text-primary font-semibold flex items-center text-lg transition-all mt-auto">
+                Explore Solution 
+                <svg className="w-5 h-5 ml-2 group-hover:ml-3 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
               </a>
             </motion.div>
           ))}
         </div>
+        
+        <motion.div 
+          className="mt-16 text-center"
+          variants={fadeIn("up", "tween", 0.5, 1)}
+        >
+          <a 
+            href="#contact" 
+            className="inline-flex items-center px-8 py-4 bg-primary text-white rounded-lg font-bold text-lg hover:bg-primary/90 transition-colors shadow-lg"
+          >
+            <span>Find Your Perfect Solution</span>
+            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </motion.div>
       </motion.div>
-      
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-light-500 to-white"></div>
     </section>
   );
 }
