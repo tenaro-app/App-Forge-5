@@ -132,8 +132,8 @@ export default function SolutionsSection() {
               <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
                 <IconRenderer icon={solution.icon} className="h-8 w-8 text-primary group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-2xl font-bold font-heading mb-4 group-hover:text-primary transition-colors">{solution.title}</h3>
-              <p className="text-gray-600 mb-6 text-lg">{solution.description}</p>
+              <h3 className="text-2xl font-bold font-heading mb-4 group-hover:text-primary transition-colors whitespace-nowrap overflow-hidden text-ellipsis">{solution.title}</h3>
+              <p className="text-gray-600 mb-6 text-lg h-[4.5rem] line-clamp-3">{solution.description}</p>
               <ul className="space-y-3 mb-8">
                 {solution.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start">

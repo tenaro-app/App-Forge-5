@@ -37,8 +37,8 @@ export default function IndustriesSection() {
                 <IconRenderer icon={industry.icon} className="h-8 w-8 text-primary" />
               </div>
               <div className="pt-12 text-center">
-                <h3 className="text-xl font-semibold font-heading mb-2">{industry.name}</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-xl font-semibold font-heading mb-2 whitespace-nowrap overflow-hidden text-ellipsis">{industry.name}</h3>
+                <p className="text-gray-600 mb-4 h-[3.2rem] line-clamp-2">
                   {industry.description}
                 </p>
                 <div className="flex flex-wrap justify-center gap-2">
