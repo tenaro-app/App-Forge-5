@@ -374,12 +374,12 @@ export default function Navbar() {
                 {activeDropdown === 'user' && (
                   <div className="absolute top-full right-0 z-50 w-48 bg-white rounded-lg shadow-xl border border-gray-200 p-2 mt-2">
                     <Link href="/dashboard">
-                      <a onClick={() => setActiveDropdown(null)} className="block w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors">
+                      <a onClick={() => setActiveDropdown(null)} className="block w-full text-left px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
                         Dashboard
                       </a>
                     </Link>
                     <Link href="/chat">
-                      <a onClick={() => setActiveDropdown(null)} className="block w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors">
+                      <a onClick={() => setActiveDropdown(null)} className="block w-full text-left px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
                         Support Chat
                       </a>
                     </Link>
