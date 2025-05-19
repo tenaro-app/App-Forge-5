@@ -116,12 +116,18 @@ export default function Navbar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
-            <Link href="/" onClick={closeSideMenu} className="flex items-center space-x-2 z-10">
+            <div 
+              onClick={() => { 
+                window.location.href = '/'; 
+                closeSideMenu(); 
+              }} 
+              className="flex items-center space-x-2 z-10 cursor-pointer"
+            >
               <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
                 <span className="text-white font-bold text-xl">AF</span>
               </div>
               <span className={`text-2xl font-heading font-bold ${scrolled ? 'text-dark-600' : 'text-white'}`}>AppForge</span>
-            </Link>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
