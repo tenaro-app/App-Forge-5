@@ -167,17 +167,17 @@ export default function PricingSection() {
               <div className="p-8">
                 <ul className="space-y-4 mb-8">
                   {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className={`flex items-center ${feature.included ? '' : 'text-gray-400'}`}>
+                    <li key={featureIndex} className={`flex items-center ${feature.included ? '' : 'text-gray-400'} transition-transform duration-300 hover:translate-x-1 cursor-pointer`}>
                       {feature.included ? (
-                        <div className="bg-primary/10 rounded-full p-1 mr-3 flex-shrink-0">
-                          <Check className="h-4 w-4 text-primary" />
+                        <div className="bg-primary/10 rounded-full p-1 mr-3 flex-shrink-0 transition-all duration-300 hover:scale-110 hover:bg-primary/20 group-hover:bg-primary/15">
+                          <Check className="h-4 w-4 text-primary transition-transform duration-300 hover:scale-110" />
                         </div>
                       ) : (
-                        <div className="bg-gray-100 rounded-full p-1 mr-3 flex-shrink-0">
-                          <X className="h-4 w-4 text-gray-400" />
+                        <div className="bg-gray-100 rounded-full p-1 mr-3 flex-shrink-0 transition-all duration-300 hover:scale-110 hover:bg-gray-200">
+                          <X className="h-4 w-4 text-gray-400 transition-transform duration-300" />
                         </div>
                       )}
-                      <span className={`text-sm ${feature.included ? 'text-gray-800 font-medium' : 'text-gray-400'}`}>{feature.text}</span>
+                      <span className={`text-sm ${feature.included ? 'text-gray-800 font-medium hover:text-primary transition-colors duration-300' : 'text-gray-400'}`}>{feature.text}</span>
                     </li>
                   ))}
                 </ul>
@@ -186,13 +186,25 @@ export default function PricingSection() {
                   href="#contact" 
                   className={`block w-full py-4 rounded-xl ${
                     plan.highlighted 
-                      ? 'bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/30 hover:shadow-primary/40' 
+                      ? 'bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40' 
                       : plan.custom 
-                        ? 'bg-gray-900 text-white hover:bg-gray-800 shadow-lg shadow-gray-900/20'
+                        ? 'bg-gray-900 text-white hover:bg-gray-800 shadow-lg shadow-gray-900/20 hover:shadow-xl hover:shadow-gray-900/30'
                         : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'
-                  } font-bold text-center transition-all transform hover:scale-105`}
+                  } font-bold text-center transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 relative overflow-hidden group/btn`}
                 >
-                  {plan.custom ? "Get Enterprise Quote" : "Start Your Project"}
+                  <span className="relative z-10 flex items-center justify-center">
+                    {plan.custom ? "Get Enterprise Quote" : "Start Your Project"}
+                    <svg className="w-0 h-5 ml-0 opacity-0 group-hover/btn:opacity-100 group-hover/btn:w-5 group-hover/btn:ml-2 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                  </span>
+                  <span className={`absolute inset-0 ${
+                    plan.highlighted 
+                      ? 'bg-gradient-to-r from-primary to-primary/80' 
+                      : plan.custom 
+                        ? 'bg-gradient-to-r from-gray-900 to-gray-800'
+                        : 'bg-gradient-to-r from-white to-white'
+                  } group-hover/btn:scale-110 transition-transform duration-500 ease-out`}></span>
                 </a>
               </div>
             </motion.div>
