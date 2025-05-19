@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,38 +6,38 @@
 
 :root {
   --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
+  --foreground: 0 0% 0%;
   --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
+  --card-foreground: 0 0% 0%;
   --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
-  --primary: 207 90% 54%;
-  --primary-foreground: 211 100% 99%;
-  --primary-50: 210 100% 97%;
-  --primary-100: 210 100% 92%;
-  --primary-300: 211 96% 78%;
-  --primary-400: 213 94% 68%;
-  --secondary: 60 4.8% 95.9%;
-  --secondary-foreground: 24 9.8% 10%;
-  --secondary-500: 142 72% 29%;
-  --secondary-600: 142 76% 36%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
-  --accent: 60 4.8% 95.9%;
-  --accent-foreground: 24 9.8% 10%;
-  --accent-500: 25 95% 53%;
-  --accent-600: 15 92% 45%;
+  --popover-foreground: 0 0% 0%;
+  --primary: 358 85% 52%;
+  --primary-foreground: 0 0% 100%;
+  --primary-50: 358 85% 97%;
+  --primary-100: 358 85% 92%;
+  --primary-300: 358 85% 78%;
+  --primary-400: 358 85% 68%;
+  --secondary: 0 0% 0%;
+  --secondary-foreground: 0 0% 100%;
+  --secondary-500: 0 0% 20%;
+  --secondary-600: 0 0% 30%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 358 85% 52%;
+  --accent-foreground: 0 0% 100%;
+  --accent-500: 358 85% 62%;
+  --accent-600: 358 85% 72%;
   --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 60 9.1% 97.8%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
-  --ring: 207 90% 54%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 358 85% 52%;
   --radius: 0.5rem;
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-heading: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
-  --dark-500: 218 33% 17%;
-  --dark-600: 222 47% 11%;
-  --light-500: 210 40% 98%;
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --dark-500: 0 0% 15%;
+  --dark-600: 0 0% 5%;
+  --light-500: 0 0% 98%;
 }
 
 .dark {
