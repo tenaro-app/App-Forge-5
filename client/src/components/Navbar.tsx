@@ -194,13 +194,13 @@ export default function Navbar() {
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Small Retail</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Point of sale and inventory solutions</div>
                       </a>
-                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
-                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Food Service</div>
-                        <div className="text-xs text-gray-500 mt-1">Order management and scheduling</div>
+                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Food Service</div>
+                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Order management and scheduling</div>
                       </a>
-                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
-                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Home Services</div>
-                        <div className="text-xs text-gray-500 mt-1">Job scheduling and client management</div>
+                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Home Services</div>
+                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Job scheduling and client management</div>
                       </a>
                     </div>
                   </div>
@@ -273,15 +273,22 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center space-x-4">
             <a 
               href="#contact" 
-              className="px-5 py-2.5 rounded-lg text-primary font-medium text-sm border-2 border-primary hover:bg-primary/10 transition-colors shadow-sm hover:shadow"
+              className="px-5 py-2.5 rounded-lg text-primary font-medium text-sm border-2 border-primary hover:bg-primary/10 transition-all duration-300 shadow-sm hover:shadow group relative overflow-hidden"
             >
-              Contact Us
+              <span className="relative z-10 group-hover:translate-y-[-1px] transition-transform duration-300">Contact Us</span>
+              <span className="absolute bottom-0 left-0 w-full h-0 bg-primary/5 transition-all duration-300 group-hover:h-full"></span>
             </a>
             <a 
               href="#login" 
-              className="px-5 py-2.5 rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg transform hover:translate-y-[-2px]"
+              className="px-5 py-2.5 rounded-lg bg-primary text-white font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 group relative overflow-hidden"
             >
-              Client Login
+              <span className="relative z-10 flex items-center justify-center">
+                <span className="group-hover:translate-x-[-1px] transition-transform duration-300">Client Login</span>
+                <svg className="w-0 h-4 ml-0 group-hover:w-4 group-hover:ml-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </span>
+              <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 group-hover:scale-110 transition-transform duration-500 ease-out"></span>
             </a>
           </div>
 
@@ -289,11 +296,12 @@ export default function Navbar() {
           <div className="lg:hidden">
             <button 
               id="toggle-menu"
-              className={`${scrolled ? 'text-gray-800' : 'text-white'} focus:outline-none`}
+              className={`${scrolled ? 'text-gray-800' : 'text-white'} focus:outline-none group relative p-2 -m-2 transition-all duration-300`}
               onClick={toggleSideMenu}
               aria-label={sideMenuOpen ? "Close menu" : "Open menu"}
             >
-              <Menu className="w-7 h-7" />
+              <Menu className="w-7 h-7 transition-all duration-300 transform group-hover:scale-110" />
+              <span className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 rounded-full transform scale-0 group-hover:scale-100 transition-all duration-300"></span>
             </button>
           </div>
         </div>
