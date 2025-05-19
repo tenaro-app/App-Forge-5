@@ -20,12 +20,12 @@ export default function AdminContacts() {
 
   // Fetch contacts from API
   const { 
-    data: contacts, 
+    data: contacts = [], 
     isLoading: isContactsLoading,
     isError,
     error,
     refetch
-  } = useQuery({
+  } = useQuery<any[]>({
     queryKey: ["/api/admin/contacts"],
     enabled: isAuthenticated && isAdmin,
   });

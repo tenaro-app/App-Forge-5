@@ -22,6 +22,7 @@ import DashboardSettings from "@/pages/dashboard/settings";
 import AdminDashboard from "@/pages/admin";
 import AdminClients from "@/pages/admin/clients";
 import AdminNewClient from "@/pages/admin/clients/new";
+import AdminContacts from "@/pages/admin/contacts";
 
 function Router() {
   return (
@@ -50,6 +51,7 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/clients" component={AdminClients} />
       <Route path="/admin/clients/new" component={AdminNewClient} />
+      <Route path="/admin/contacts" component={AdminContacts} />
       
       {/* Fallback to 404 */}
       <Route component={NotFound} />

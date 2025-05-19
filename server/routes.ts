@@ -24,9 +24,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = contactSchema.parse(req.body);
       
-      // Store the contact request (in a real app, this would also 
-      // send an email, create a CRM entry, etc.)
+      // Store the contact request in the database
       const contact = await storage.createContact(validatedData);
+      
+      console.log(`New contact form submission from ${validatedData.firstName} ${validatedData.lastName} <${validatedData.email}>`);
       
       res.status(201).json({
         message: "Contact request received successfully",
@@ -38,6 +39,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Invalid form data", 
         error: error instanceof Error ? error.message : "Unknown error" 
       });
+    }
+  });
+
+  // Admin route to view contact form submissions
+  app.get("/api/admin/contacts", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const contacts = await storage.getContacts();
+      res.json(contacts);
+    } catch (error) {
+      console.error("Error getting contact submissions:", error);
+      res.status(500).json({ message: "Failed to get contact submissions" });
     }
   });
 
