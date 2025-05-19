@@ -493,13 +493,45 @@ export default function Navbar() {
             >
               Contact Us
             </a>
-            <a 
-              href="#login" 
-              className="block w-full px-4 py-2 text-center rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors"
-              onClick={closeSideMenu}
-            >
-              Client Login
-            </a>
+            
+            {isLoading ? (
+              <div className="w-full h-10 rounded-lg bg-gray-200 animate-pulse"></div>
+            ) : isAuthenticated ? (
+              <div className="space-y-2">
+                <Link href="/dashboard">
+                  <a 
+                    className="flex items-center justify-center space-x-2 w-full px-4 py-2 text-center rounded-lg border-2 border-primary text-primary font-medium text-sm hover:bg-primary/10 transition-colors"
+                    onClick={closeSideMenu}
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Dashboard</span>
+                  </a>
+                </Link>
+                <Link href="/chat">
+                  <a 
+                    className="flex items-center justify-center space-x-2 w-full px-4 py-2 text-center rounded-lg border-2 border-gray-300 text-gray-700 font-medium text-sm hover:bg-gray-100 transition-colors"
+                    onClick={closeSideMenu}
+                  >
+                    <span>Support Chat</span>
+                  </a>
+                </Link>
+                <a 
+                  href="/api/logout" 
+                  className="block w-full px-4 py-2 text-center rounded-lg bg-red-50 text-red-600 font-medium text-sm hover:bg-red-100 transition-colors"
+                  onClick={closeSideMenu}
+                >
+                  Logout
+                </a>
+              </div>
+            ) : (
+              <a 
+                href="/api/login" 
+                className="block w-full px-4 py-2 text-center rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors"
+                onClick={closeSideMenu}
+              >
+                Client Login
+              </a>
+            )}
           </div>
         </div>
       </motion.div>
