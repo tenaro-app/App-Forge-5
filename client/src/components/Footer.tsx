@@ -135,9 +135,9 @@ export default function Footer() {
             <ul className="space-y-3">
               {solutionsData.slice(0, 6).map((solution, index) => (
                 <li key={index}>
-                  <a href="#solutions" className="flex items-center text-gray-300 hover:text-primary transition-colors">
-                    <ChevronRight className="h-4 w-4 mr-1 text-primary" />
-                    <span>{solution.title}</span>
+                  <a href="#solutions" className="flex items-center text-gray-300 hover:text-primary transition-all duration-300 group hover:translate-x-1 transform">
+                    <ChevronRight className="h-4 w-4 mr-1 text-primary transition-transform duration-300 group-hover:scale-125" />
+                    <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">{solution.title}</span>
                   </a>
                 </li>
               ))}
@@ -150,9 +150,9 @@ export default function Footer() {
             <ul className="space-y-3">
               {industriesData.slice(0, 6).map((industry, index) => (
                 <li key={index}>
-                  <a href="#industries" className="flex items-center text-gray-300 hover:text-primary transition-colors">
-                    <ChevronRight className="h-4 w-4 mr-1 text-primary" />
-                    <span>{industry.name}</span>
+                  <a href="#industries" className="flex items-center text-gray-300 hover:text-primary transition-all duration-300 group hover:translate-x-1 transform">
+                    <ChevronRight className="h-4 w-4 mr-1 text-primary transition-transform duration-300 group-hover:scale-125" />
+                    <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">{industry.name}</span>
                   </a>
                 </li>
               ))}
@@ -162,11 +162,11 @@ export default function Footer() {
         
         {/* Copyright */}
         <div className="border-t border-gray-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-300">© {currentYear} <span className="text-primary font-bold">AppForge</span>. All rights reserved.</p>
+          <p className="text-gray-300">© {currentYear} <span className="text-primary font-bold transition-all duration-300 hover:text-primary/80 cursor-pointer">AppForge</span>. All rights reserved.</p>
           <div className="mt-6 md:mt-0 space-x-6">
-            <a href="#" className="text-gray-300 hover:text-primary transition-colors">Privacy Policy</a>
-            <a href="#" className="text-gray-300 hover:text-primary transition-colors">Terms of Service</a>
-            <a href="#" className="text-gray-300 hover:text-primary transition-colors">Cookie Policy</a>
+            <a href="#" className="text-gray-300 hover:text-primary transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">Privacy Policy</a>
+            <a href="#" className="text-gray-300 hover:text-primary transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">Terms of Service</a>
+            <a href="#" className="text-gray-300 hover:text-primary transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">Cookie Policy</a>
           </div>
         </div>
       </div>
