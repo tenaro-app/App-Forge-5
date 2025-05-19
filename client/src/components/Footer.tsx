@@ -28,23 +28,23 @@ export default function Footer() {
             </div>
           </div>
           
-          <div className="flex items-start">
-            <div className="bg-primary/20 p-3 rounded-xl mr-4">
-              <Mail className="h-6 w-6 text-primary" />
+          <div className="flex items-start group cursor-pointer">
+            <div className="bg-primary/20 p-3 rounded-xl mr-4 transition-all duration-300 group-hover:bg-primary/30 group-hover:scale-110 group-hover:rotate-3 transform-gpu">
+              <Mail className="h-6 w-6 text-primary transition-all duration-300 group-hover:scale-110" />
             </div>
             <div>
-              <h3 className="text-white font-bold mb-2">Email Us</h3>
-              <p className="text-gray-400">hello@appforge.dev<br />support@appforge.dev</p>
+              <h3 className="text-white font-bold mb-2 transition-colors duration-300 group-hover:text-primary">Email Us</h3>
+              <p className="text-gray-400 transition-colors duration-300 group-hover:text-gray-300">hello@appforge.dev<br />support@appforge.dev</p>
             </div>
           </div>
           
-          <div className="flex items-start">
-            <div className="bg-primary/20 p-3 rounded-xl mr-4">
-              <Phone className="h-6 w-6 text-primary" />
+          <div className="flex items-start group cursor-pointer">
+            <div className="bg-primary/20 p-3 rounded-xl mr-4 transition-all duration-300 group-hover:bg-primary/30 group-hover:scale-110 group-hover:rotate-3 transform-gpu">
+              <Phone className="h-6 w-6 text-primary transition-all duration-300 group-hover:scale-110" />
             </div>
             <div>
-              <h3 className="text-white font-bold mb-2">Call Us</h3>
-              <p className="text-gray-400">(555) 123-4567<br />Mon-Fri, 9am-6pm PST</p>
+              <h3 className="text-white font-bold mb-2 transition-colors duration-300 group-hover:text-primary">Call Us</h3>
+              <p className="text-gray-400 transition-colors duration-300 group-hover:text-gray-300">(555) 123-4567<br />Mon-Fri, 9am-6pm PST</p>
             </div>
           </div>
         </div>
@@ -53,11 +53,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12">
           {/* Company Info */}
           <div className="md:col-span-4">
-            <Link href="/" className="flex items-center space-x-2 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-2xl">A</span>
+            <Link href="/" className="flex items-center space-x-2 mb-6 group">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:shadow-xl group-hover:shadow-primary/30 group-hover:scale-110">
+                <span className="text-white font-bold text-2xl transition-transform duration-300 group-hover:scale-110">A</span>
               </div>
-              <span className="text-2xl font-heading font-bold text-white">AppForge</span>
+              <span className="text-2xl font-heading font-bold text-white transition-colors duration-300 group-hover:text-primary">AppForge</span>
             </Link>
             <p className="mb-8 text-gray-300 text-lg">
               We build custom business automation solutions that eliminate repetitive tasks, reduce operating costs, and drive unprecedented growth.
@@ -76,15 +76,18 @@ export default function Footer() {
                 <Instagram className="h-5 w-5" />
               </a>
             </div>
-            <div className="bg-gradient-to-r from-primary/20 to-primary/5 p-6 rounded-xl">
-              <h4 className="text-white font-bold mb-2">Ready to get started?</h4>
-              <p className="text-gray-300 mb-4">Book your free consultation now!</p>
+            <div className="bg-gradient-to-r from-primary/20 to-primary/5 p-6 rounded-xl group hover:from-primary/30 hover:to-primary/10 transition-all duration-500 cursor-pointer">
+              <h4 className="text-white font-bold mb-2 group-hover:text-primary transition-colors duration-300">Ready to get started?</h4>
+              <p className="text-gray-300 mb-4 group-hover:text-gray-200 transition-colors duration-300">Book your free consultation now!</p>
               <a 
                 href="#contact"
-                className="flex items-center justify-between font-medium text-white bg-primary px-5 py-3 rounded-lg hover:bg-white hover:text-primary transition-all duration-300"
+                className="flex items-center justify-between font-medium text-white bg-primary px-5 py-3 rounded-lg hover:bg-white hover:text-primary transition-all duration-300 relative overflow-hidden group/btn"
               >
-                <span>Contact Us</span>
-                <ArrowRight className="h-4 w-4" />
+                <span className="relative z-10 flex items-center justify-between w-full">
+                  <span className="group-hover/btn:translate-x-[-2px] transition-transform duration-300">Contact Us</span>
+                  <ArrowRight className="h-4 w-4 group-hover/btn:scale-110 group-hover/btn:translate-x-1 transition-all duration-300" />
+                </span>
+                <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 group-hover/btn:bg-white transition-all duration-300"></span>
               </a>
             </div>
           </div>
@@ -94,33 +97,33 @@ export default function Footer() {
             <h3 className="text-white font-bold text-xl mb-6 pb-2 border-b border-primary/30">Company</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#about" className="flex items-center text-gray-300 hover:text-primary transition-colors">
-                  <ChevronRight className="h-4 w-4 mr-1 text-primary" />
-                  <span>About Us</span>
+                <a href="#about" className="flex items-center text-gray-300 hover:text-primary transition-all duration-300 group hover:translate-x-1 transform">
+                  <ChevronRight className="h-4 w-4 mr-1 text-primary transition-transform duration-300 group-hover:scale-125" />
+                  <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">About Us</span>
                 </a>
               </li>
               <li>
-                <a href="#team" className="flex items-center text-gray-300 hover:text-primary transition-colors">
-                  <ChevronRight className="h-4 w-4 mr-1 text-primary" />
-                  <span>Our Team</span>
+                <a href="#team" className="flex items-center text-gray-300 hover:text-primary transition-all duration-300 group hover:translate-x-1 transform">
+                  <ChevronRight className="h-4 w-4 mr-1 text-primary transition-transform duration-300 group-hover:scale-125" />
+                  <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">Our Team</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="flex items-center text-gray-300 hover:text-primary transition-colors">
-                  <ChevronRight className="h-4 w-4 mr-1 text-primary" />
-                  <span>Careers</span>
+                <a href="#" className="flex items-center text-gray-300 hover:text-primary transition-all duration-300 group hover:translate-x-1 transform">
+                  <ChevronRight className="h-4 w-4 mr-1 text-primary transition-transform duration-300 group-hover:scale-125" />
+                  <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">Careers</span>
                 </a>
               </li>
               <li>
-                <a href="#testimonials" className="flex items-center text-gray-300 hover:text-primary transition-colors">
-                  <ChevronRight className="h-4 w-4 mr-1 text-primary" />
-                  <span>Testimonials</span>
+                <a href="#testimonials" className="flex items-center text-gray-300 hover:text-primary transition-all duration-300 group hover:translate-x-1 transform">
+                  <ChevronRight className="h-4 w-4 mr-1 text-primary transition-transform duration-300 group-hover:scale-125" />
+                  <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">Testimonials</span>
                 </a>
               </li>
               <li>
-                <a href="#faq" className="flex items-center text-gray-300 hover:text-primary transition-colors">
-                  <ChevronRight className="h-4 w-4 mr-1 text-primary" />
-                  <span>FAQ</span>
+                <a href="#faq" className="flex items-center text-gray-300 hover:text-primary transition-all duration-300 group hover:translate-x-1 transform">
+                  <ChevronRight className="h-4 w-4 mr-1 text-primary transition-transform duration-300 group-hover:scale-125" />
+                  <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">FAQ</span>
                 </a>
               </li>
             </ul>
