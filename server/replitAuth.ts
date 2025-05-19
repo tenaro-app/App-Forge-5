@@ -111,7 +111,8 @@ export async function setupAuth(app: Express) {
       // Override branding to match AppForge
       authorizationParams: {
         company_name: "AppForge",
-        logo_url: `${req.protocol}://${req.hostname}/custom-logo.png`, // We'll create this logo
+        // Inline SVG as a data URL to avoid file serving issues
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIHJ4PSIyNCIgZmlsbD0iI0RDMjYyNiIvPjxwYXRoIGQ9Ik00OCA2MEg4MFY3Nkg2MFY5Mkg3NlYxMDhINjBWMTQwSDQ4VjYwWiIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNODggNjBIMTUyVjc2SDEwMFY5MkgxNDBWMTA4SDEwMFYxMjRIMTUyVjE0MEg4OFY2MFoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTYwIDE3MEwxNDAgMTcwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==",
         primary_color: "#dc2626", // Our primary red color
         company_tagline: "Your digital automation partner"
       }
