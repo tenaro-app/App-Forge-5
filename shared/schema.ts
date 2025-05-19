@@ -141,6 +141,7 @@ export const contacts = pgTable("contacts", {
   email: text("email").notNull(),
   company: text("company"),
   projectType: text("project_type"),
+  staffMember: text("staff_member"),
   message: text("message").notNull(),
   status: text("status").default("new").notNull(), // new, in_progress, completed
   assignedTo: varchar("assigned_to").references(() => users.id),
@@ -154,6 +155,7 @@ export const contactSchema = createInsertSchema(contacts).pick({
   email: true,
   company: true,
   projectType: true,
+  staffMember: true,
   message: true,
 }).extend({
   privacy: z.boolean().refine(val => val === true, {
