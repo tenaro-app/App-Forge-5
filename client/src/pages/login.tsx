@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
+import { useAuth } from "@/hooks/useAuth";
 import { motion } from 'framer-motion';
 
 export default function Login() {
   const [location, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLocation('/dashboard');
+    }
+  }, [isAuthenticated, setLocation]);
 
   const handleLogin = () => {
     setIsLoading(true);

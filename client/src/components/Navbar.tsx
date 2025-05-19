@@ -328,8 +328,8 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <a 
-                href="/api/login" 
+              <button 
+                onClick={() => setLocation("/login")}
                 className="px-5 py-2.5 rounded-lg bg-primary text-white font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 group relative overflow-hidden"
               >
                 <span className="relative z-10 flex items-center justify-center">
@@ -339,7 +339,7 @@ export default function Navbar() {
                   </svg>
                 </span>
                 <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 group-hover:scale-110 transition-transform duration-500 ease-out"></span>
-              </a>
+              </button>
             )}
           </div>
 
@@ -524,13 +524,15 @@ export default function Navbar() {
                 </a>
               </div>
             ) : (
-              <a 
-                href="/api/login" 
+              <button 
+                onClick={() => {
+                  closeSideMenu();
+                  setLocation("/login");
+                }}
                 className="block w-full px-4 py-2 text-center rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors"
-                onClick={closeSideMenu}
               >
                 Client Login
-              </a>
+              </button>
             )}
           </div>
         </div>
