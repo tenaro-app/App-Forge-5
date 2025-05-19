@@ -968,7 +968,7 @@ export default function ClientOnboarding() {
                               value={newTeamMember.role}
                               onChange={(e) => setNewTeamMember({
                                 ...newTeamMember, 
-                                role: e.target.value as "admin" | "editor" | "viewer"
+                                role: e.target.value as "viewer"
                               })}
                             >
                               <option value="viewer">Viewer</option>
