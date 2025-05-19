@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { staggerContainer, fadeIn } from "@/lib/animations";
 import { industriesData } from "@/lib/data";
+import IconRenderer from "./IconRenderer";
 
 export default function IndustriesSection() {
   return (
@@ -33,7 +34,7 @@ export default function IndustriesSection() {
               variants={fadeIn("up", "spring", index * 0.1 + 0.2, 0.75)}
             >
               <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center border-4 border-white shadow-sm">
-                {industry.icon}
+                <IconRenderer icon={industry.icon} className="h-8 w-8 text-primary" />
               </div>
               <div className="pt-12 text-center">
                 <h3 className="text-xl font-semibold font-heading mb-2">{industry.name}</h3>

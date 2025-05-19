@@ -2,6 +2,7 @@ import { Check, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { staggerContainer, fadeIn } from "@/lib/animations";
 import { solutionsData } from "@/lib/data";
+import IconRenderer from "./IconRenderer";
 
 export default function SolutionsSection() {
   return (
@@ -35,7 +36,7 @@ export default function SolutionsSection() {
               variants={fadeIn("up", "spring", index * 0.1 + 0.2, 0.75)}
             >
               <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-6">
-                {solution.icon}
+                <IconRenderer icon={solution.icon} className="h-6 w-6 text-primary" />
               </div>
               <h3 className="text-xl font-semibold font-heading mb-3">{solution.title}</h3>
               <p className="text-gray-600 mb-4">{solution.description}</p>

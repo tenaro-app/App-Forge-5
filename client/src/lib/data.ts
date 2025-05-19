@@ -162,7 +162,13 @@ export const caseStudiesData: CaseStudyType[] = [
   }
 ];
 
-export const processStepsData = [
+type ProcessStepType = {
+  title: string;
+  description: string;
+  features: string[];
+};
+
+export const processStepsData: ProcessStepType[] = [
   {
     title: "Discovery & Requirements",
     description: "We work closely with you to understand your business processes, pain points, and objectives to define clear requirements.",
@@ -201,7 +207,23 @@ export const processStepsData = [
   }
 ];
 
-export const pricingPlansData = [
+type PlanFeature = {
+  text: string;
+  included: boolean;
+};
+
+type PricingPlanType = {
+  name: string;
+  description: string;
+  price?: string;
+  annualPrice?: string;
+  tag?: string;
+  highlighted: boolean;
+  custom: boolean;
+  features: PlanFeature[];
+};
+
+export const pricingPlansData: PricingPlanType[] = [
   {
     name: "Standard Plan",
     description: "Perfect for small businesses with straightforward automation needs.",
@@ -242,6 +264,7 @@ export const pricingPlansData = [
     name: "Enterprise",
     description: "Custom solutions for larger organizations with complex automation needs.",
     custom: true,
+    highlighted: false,
     features: [
       { text: "Multiple custom applications", included: true },
       { text: "Unlimited automation workflows", included: true },
@@ -254,7 +277,15 @@ export const pricingPlansData = [
   }
 ];
 
-export const testimonialsData = [
+type TestimonialType = {
+  quote: string;
+  name: string;
+  title: string;
+  company: string;
+  initials: string;
+};
+
+export const testimonialsData: TestimonialType[] = [
   {
     quote: "The custom CRM AppForge built for us has completely transformed how we manage client relationships. We're saving at least 20 hours per week on administrative tasks.",
     name: "Jennifer Smith",
