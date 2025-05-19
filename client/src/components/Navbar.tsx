@@ -276,10 +276,10 @@ export default function Navbar() {
               Contact Us
             </a>
             <a 
-              href="#demo" 
+              href="#login" 
               className="px-5 py-2.5 rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg transform hover:translate-y-[-2px]"
             >
-              Request Demo
+              Client Login
             </a>
           </div>
 
