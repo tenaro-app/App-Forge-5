@@ -373,6 +373,9 @@ export default function Navbar() {
                         <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Real Estate</a>
                         <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Education</a>
                         <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Manufacturing</a>
+                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Small Retail</a>
+                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Food Service</a>
+                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Home Services</a>
                       </div>
                     )}
                     
@@ -430,11 +433,11 @@ export default function Navbar() {
               Contact Us
             </a>
             <a 
-              href="#demo" 
+              href="#login" 
               className="block w-full px-4 py-2 text-center rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors"
               onClick={closeSideMenu}
             >
-              Request Demo
+              Client Login
             </a>
           </div>
         </div>
