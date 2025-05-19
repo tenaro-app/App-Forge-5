@@ -279,24 +279,27 @@ export default function Dashboard() {
             <div className="px-4 py-4 border-b border-gray-200">
               <h2 className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Account</h2>
               <div className="mt-2 space-y-1">
-                <Link href="/dashboard/team">
-                  <a className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                    <Users className="w-4 h-4 mr-3" />
-                    Team Members
-                  </a>
-                </Link>
-                <Link href="/dashboard/billing">
-                  <a className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                    <CreditCard className="w-4 h-4 mr-3" />
-                    Billing & Invoices
-                  </a>
-                </Link>
-                <Link href="/dashboard/settings">
-                  <a className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                    <Settings className="w-4 h-4 mr-3" />
-                    Settings
-                  </a>
-                </Link>
+                <div 
+                  onClick={() => setLocation("/dashboard/team")}
+                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  <Users className="w-4 h-4 mr-3" />
+                  Team Members
+                </div>
+                <div 
+                  onClick={() => setLocation("/dashboard/billing")}
+                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  <CreditCard className="w-4 h-4 mr-3" />
+                  Billing & Invoices
+                </div>
+                <div 
+                  onClick={() => setLocation("/dashboard/settings")}
+                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  <Settings className="w-4 h-4 mr-3" />
+                  Settings
+                </div>
               </div>
             </div>
           </nav>
