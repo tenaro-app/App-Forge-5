@@ -191,106 +191,106 @@ export default function AdminContacts() {
           </button>
         </div>
 
-      {isContactsLoading ? (
-        <div className="bg-white rounded-lg shadow-md p-6 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-gray-500">Loading contact submissions...</p>
-        </div>
-      ) : isError ? (
-        <div className="bg-white rounded-lg shadow-md p-6 text-center">
-          <X className="h-12 w-12 text-red-500 mx-auto" />
-          <p className="mt-4 text-gray-500">Error loading contact submissions</p>
-          <p className="text-sm text-red-500">{error instanceof Error ? error.message : "Unknown error"}</p>
-        </div>
-      ) : contacts.length > 0 ? (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contact
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Details
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Message
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {contacts.map((contact: any) => (
-                  <tr key={contact.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <User className="h-5 w-5 text-primary" />
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {contact.firstName} {contact.lastName}
-                          </div>
-                          <div className="flex items-center text-sm text-gray-500">
-                            <Mail className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
-                            {contact.email}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      {contact.company && (
-                        <div className="text-sm text-gray-900 flex items-center">
-                          <Building className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
-                          {contact.company}
-                        </div>
-                      )}
-                      {contact.projectType && (
-                        <div className="text-sm text-gray-500 mt-1">
-                          <span className="font-medium">Project:</span> {contact.projectType.replace(/-/g, ' ')}
-                        </div>
-                      )}
-                      {contact.staffMember && (
-                        <div className="text-sm text-gray-500 mt-1">
-                          <span className="font-medium">Requested:</span> {contact.staffMember.replace(/-/g, ' ')}
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 max-w-xs truncate" title={contact.message}>
-                        {contact.message}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{formatTimeAgo(contact.createdAt)}</div>
-                      <div className="text-xs text-gray-500">{format(new Date(contact.createdAt), 'MMM d, h:mm a')}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(contact.status)}
-                    </td>
+        {isContactsLoading ? (
+          <div className="bg-white rounded-lg shadow-md p-6 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-gray-500">Loading contact submissions...</p>
+          </div>
+        ) : isError ? (
+          <div className="bg-white rounded-lg shadow-md p-6 text-center">
+            <X className="h-12 w-12 text-red-500 mx-auto" />
+            <p className="mt-4 text-gray-500">Error loading contact submissions</p>
+            <p className="text-sm text-red-500">{error instanceof Error ? error.message : "Unknown error"}</p>
+          </div>
+        ) : contacts.length > 0 ? (
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Contact
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Details
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Message
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {contacts.map((contact: any) => (
+                    <tr key={contact.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <User className="h-5 w-5 text-primary" />
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {contact.firstName} {contact.lastName}
+                            </div>
+                            <div className="flex items-center text-sm text-gray-500">
+                              <Mail className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
+                              {contact.email}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {contact.company && (
+                          <div className="text-sm text-gray-900 flex items-center">
+                            <Building className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
+                            {contact.company}
+                          </div>
+                        )}
+                        {contact.projectType && (
+                          <div className="text-sm text-gray-500 mt-1">
+                            <span className="font-medium">Project:</span> {contact.projectType.replace(/-/g, ' ')}
+                          </div>
+                        )}
+                        {contact.staffMember && (
+                          <div className="text-sm text-gray-500 mt-1">
+                            <span className="font-medium">Requested:</span> {contact.staffMember.replace(/-/g, ' ')}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900 max-w-xs truncate" title={contact.message}>
+                          {contact.message}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{formatTimeAgo(contact.createdAt)}</div>
+                        <div className="text-xs text-gray-500">{format(new Date(contact.createdAt), 'MMM d, h:mm a')}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {getStatusBadge(contact.status)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-            <FileText className="h-8 w-8 text-gray-400" />
+        ) : (
+          <div className="bg-white rounded-lg shadow-md p-8 text-center">
+            <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <FileText className="h-8 w-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900">No contact submissions yet</h3>
+            <p className="mt-2 text-gray-500">
+              When users submit the contact form, their requests will appear here.
+            </p>
           </div>
-          <h3 className="text-lg font-medium text-gray-900">No contact submissions yet</h3>
-          <p className="mt-2 text-gray-500">
-            When users submit the contact form, their requests will appear here.
-          </p>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );
