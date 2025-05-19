@@ -333,11 +333,12 @@ export default function Dashboard() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900">Project Analytics</h2>
-              <Link href="/dashboard/analytics">
-                <a className="text-sm font-medium text-primary hover:underline">
-                  View Detailed Analytics
-                </a>
-              </Link>
+              <button 
+                onClick={() => setLocation("/dashboard/analytics")}
+                className="text-sm font-medium text-primary hover:underline"
+              >
+                View Detailed Analytics
+              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -409,12 +410,13 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <div className="mt-4 md:mt-0 flex space-x-3">
-                        <Link href={`/dashboard/projects/${project.id}`}>
-                          <a className="inline-flex items-center px-4 py-2 text-sm font-medium text-primary border border-primary rounded-md bg-white hover:bg-primary/5 transition-colors">
-                            <BarChart className="w-4 h-4 mr-1" />
-                            View Details
-                          </a>
-                        </Link>
+                        <button 
+                          onClick={() => setLocation(`/dashboard/projects/${project.id}`)}
+                          className="inline-flex items-center px-4 py-2 text-sm font-medium text-primary border border-primary rounded-md bg-white hover:bg-primary/5 transition-colors"
+                        >
+                          <BarChart className="w-4 h-4 mr-1" />
+                          View Details
+                        </button>
                         {project.replitUrl && (
                           <a 
                             href={project.replitUrl} 
@@ -437,12 +439,13 @@ export default function Dashboard() {
                   Your projects will appear here once they're created by our team.
                 </p>
                 <div className="mt-6">
-                  <Link href="/dashboard/chat">
-                    <a className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md shadow-sm hover:bg-primary/90 transition-colors">
-                      <MessageSquare className="w-4 h-4 mr-2" />
-                      Contact Support
-                    </a>
-                  </Link>
+                  <button
+                    onClick={() => setLocation("/dashboard/chat")}
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md shadow-sm hover:bg-primary/90 transition-colors"
+                  >
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Contact Support
+                  </button>
                 </div>
               </div>
             )}

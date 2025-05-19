@@ -11,6 +11,13 @@ import DashboardChat from "@/pages/dashboard/chat";
 import { Suspense } from "react";
 import ProjectDetail from "@/pages/dashboard/projects/id";
 
+// Import additional dashboard pages
+import DashboardAnalytics from "@/pages/dashboard/analytics";
+import DashboardDocuments from "@/pages/dashboard/documents";
+import DashboardTeam from "@/pages/dashboard/team";
+import DashboardBilling from "@/pages/dashboard/billing";
+import DashboardSettings from "@/pages/dashboard/settings";
+
 function Router() {
   return (
     <Switch>
@@ -18,6 +25,11 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/dashboard/chat" component={DashboardChat} />
+      <Route path="/dashboard/analytics" component={DashboardAnalytics} />
+      <Route path="/dashboard/documents" component={DashboardDocuments} />
+      <Route path="/dashboard/team" component={DashboardTeam} />
+      <Route path="/dashboard/billing" component={DashboardBilling} />
+      <Route path="/dashboard/settings" component={DashboardSettings} />
       <Route path="/dashboard/projects/:id">
         {(params) => (
           <Suspense fallback={<div className="p-8 text-center">Loading project details...</div>}>
