@@ -173,10 +173,10 @@ export default function ProjectDetail({ id }: ProjectDetailProps) {
                   <Calendar className="w-4 h-4 mr-1" />
                   <span>Started: {format(new Date(project.startDate), 'MMM d, yyyy')}</span>
                 </div>
-                {project.endDate && (
+                {project.dueDate && (
                   <div className="flex items-center text-sm text-gray-500">
                     <Clock className="w-4 h-4 mr-1" />
-                    <span>Due: {format(new Date(project.endDate), 'MMM d, yyyy')}</span>
+                    <span>Due: {format(new Date(project.dueDate), 'MMM d, yyyy')}</span>
                   </div>
                 )}
                 <div className="flex items-center text-sm text-gray-500">
@@ -278,7 +278,7 @@ export default function ProjectDetail({ id }: ProjectDetailProps) {
                     <div key={milestone.id} className="p-6">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <h4 className="text-lg font-medium text-gray-900">{milestone.name}</h4>
+                          <h4 className="text-lg font-medium text-gray-900">{milestone.title}</h4>
                           <p className="mt-1 text-gray-600">{milestone.description}</p>
                           <div className="mt-2 flex items-center text-sm text-gray-500">
                             <Calendar className="w-4 h-4 mr-1" />
