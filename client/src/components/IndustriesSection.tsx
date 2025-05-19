@@ -49,14 +49,19 @@ export default function IndustriesSection() {
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 mb-4">
                   {industry.tags.map((tag, tagIndex) => (
-                    <span key={tagIndex} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                    <span 
+                      key={tagIndex} 
+                      className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium cursor-pointer transition-all duration-300 hover:bg-primary/20 hover:scale-105 hover:shadow-sm"
+                    >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <a href="#contact" className="inline-flex items-center text-primary font-medium text-sm hover:underline mt-3">
-                  Learn More
-                  <svg className="w-4 h-4 ml-1 group-hover:ml-2 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <a href="#contact" className="inline-flex items-center text-primary font-medium text-sm mt-3 group/link relative overflow-hidden">
+                  <span className="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300 group-hover/link:after:w-full">
+                    Learn More
+                  </span>
+                  <svg className="w-4 h-4 ml-1 group-hover:ml-2 group-hover:scale-110 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                   </svg>
                 </a>
