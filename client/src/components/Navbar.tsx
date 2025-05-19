@@ -166,33 +166,33 @@ export default function Navbar() {
                 {item.hasDropdown && item.dropdownId === "industries" && activeDropdown === "industries" && (
                   <div className="absolute top-full left-0 z-50 w-[650px] bg-white rounded-lg shadow-xl border border-gray-200 p-4 mt-2">
                     <div className="grid grid-cols-3 gap-3">
-                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
-                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">E-commerce & Retail</div>
-                        <div className="text-xs text-gray-500 mt-1">Inventory and order management</div>
+                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">E-commerce & Retail</div>
+                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Inventory and order management</div>
                       </a>
-                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
-                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Healthcare</div>
-                        <div className="text-xs text-gray-500 mt-1">Patient management systems</div>
+                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Healthcare</div>
+                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Patient management systems</div>
                       </a>
-                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
-                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Professional Services</div>
-                        <div className="text-xs text-gray-500 mt-1">Client and project tracking</div>
+                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Professional Services</div>
+                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Client and project tracking</div>
                       </a>
-                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
-                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Real Estate</div>
-                        <div className="text-xs text-gray-500 mt-1">Property and tenant management</div>
+                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Real Estate</div>
+                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Property and tenant management</div>
                       </a>
-                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
-                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Education</div>
-                        <div className="text-xs text-gray-500 mt-1">Student information systems</div>
+                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Education</div>
+                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Student information systems</div>
                       </a>
-                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
-                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Manufacturing</div>
-                        <div className="text-xs text-gray-500 mt-1">Inventory and production tracking</div>
+                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Manufacturing</div>
+                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Inventory and production tracking</div>
                       </a>
-                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
-                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Small Retail</div>
-                        <div className="text-xs text-gray-500 mt-1">Point of sale and inventory solutions</div>
+                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Small Retail</div>
+                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Point of sale and inventory solutions</div>
                       </a>
                       <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Food Service</div>
