@@ -11,6 +11,7 @@ import TeamSection from "@/components/TeamSection";
 import FAQSection from "@/components/FAQSection";
 import CTASection from "@/components/CTASection";
 import ContactSection from "@/components/ContactSection";
+import TechnologiesSection from "@/components/TechnologiesSection";
 import Footer from "@/components/Footer";
 import { useEffect } from "react";
 
@@ -44,6 +45,7 @@ export default function Home() {
       <IndustriesSection />
       <CaseStudiesSection />
       <ProcessSection />
+      <TechnologiesSection />
       <PricingSection />
       <TestimonialsSection />
       <TeamSection />

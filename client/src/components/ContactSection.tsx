@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MapPin, Mail, Phone, Linkedin, Twitter, Facebook, Instagram } from "lucide-react";
+import { MapPin, Mail, Phone, MessageCircle, Building, User, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { staggerContainer, fadeIn } from "@/lib/animations";
 import { apiRequest } from "@/lib/queryClient";
@@ -13,6 +13,7 @@ export default function ContactSection() {
     email: "",
     company: "",
     projectType: "",
+    staffMember: "",
     message: "",
     privacy: false
   });
@@ -69,6 +70,7 @@ export default function ContactSection() {
         email: "",
         company: "",
         projectType: "",
+        staffMember: "",
         message: "",
         privacy: false
       });
@@ -84,7 +86,9 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-20 bg-white">
+    <section id="contact" className="py-24 bg-white relative">
+      <div className="absolute left-0 right-0 h-32 bg-light-500" style={{ top: -32, zIndex: -1 }}></div>
+      
       <motion.div 
         className="container mx-auto px-4 sm:px-6 lg:px-8"
         variants={staggerContainer}
@@ -96,16 +100,22 @@ export default function ContactSection() {
           className="text-center max-w-3xl mx-auto mb-16"
           variants={fadeIn("up", "tween", 0.1, 1)}
         >
-          <span className="text-sm font-semibold text-primary uppercase tracking-wider">Contact Us</span>
-          <h2 className="mt-2 text-3xl md:text-4xl font-heading font-bold text-dark-600">Get in Touch</h2>
-          <p className="mt-4 text-lg text-gray-600">
-            Have questions or ready to discuss your project? Reach out to our team today.
+          <div className="inline-flex items-center justify-center mb-4">
+            <div className="h-1 w-10 bg-primary mr-3"></div>
+            <span className="text-sm font-bold text-primary uppercase tracking-widest font-heading">Contact Us</span>
+            <div className="h-1 w-10 bg-primary ml-3"></div>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-heading font-extrabold text-secondary">
+            Ready to <span className="text-primary">Transform</span> Your Business?
+          </h2>
+          <p className="mt-6 text-xl text-gray-600">
+            Let's discuss how our custom automation solutions can eliminate repetitive tasks and save you thousands of hours annually.
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <motion.div 
-            className="lg:col-span-2 bg-light-500 rounded-xl p-8"
+            className="lg:col-span-2 bg-white rounded-xl p-10 shadow-xl border-2 border-gray-100"
             variants={fadeIn("right", "tween", 0.2, 1)}
           >
             <form id="contact-form" className="space-y-6" onSubmit={handleSubmit}>
@@ -160,24 +170,47 @@ export default function ContactSection() {
                 />
               </div>
               
-              <div>
-                <label htmlFor="projectType" className="block text-sm font-medium text-gray-700 mb-1">What type of application are you interested in?</label>
-                <select 
-                  id="projectType" 
-                  name="projectType" 
-                  value={formData.projectType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                >
-                  <option value="" disabled>Please select</option>
-                  <option value="process-automation">Process Automation</option>
-                  <option value="data-management">Data Management</option>
-                  <option value="customer-management">Customer Management</option>
-                  <option value="inventory-management">Inventory Management</option>
-                  <option value="scheduling">Scheduling & Booking</option>
-                  <option value="document-management">Document Management</option>
-                  <option value="other">Other</option>
-                </select>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="projectType" className="block text-sm font-medium text-gray-700 mb-1">Solution type you're interested in?</label>
+                  <select 
+                    id="projectType" 
+                    name="projectType" 
+                    value={formData.projectType}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  >
+                    <option value="" disabled>Please select</option>
+                    <option value="process-automation">Process Automation</option>
+                    <option value="data-management">Data Management</option>
+                    <option value="customer-management">Customer Management</option>
+                    <option value="inventory-management">Inventory Management</option>
+                    <option value="scheduling">Scheduling & Booking</option>
+                    <option value="document-management">Document Management</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label htmlFor="staffMember" className="block text-sm font-medium text-gray-700 mb-1">Preferred team member to work with</label>
+                  <select 
+                    id="staffMember" 
+                    name="staffMember" 
+                    value={formData.staffMember}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  >
+                    <option value="">No preference</option>
+                    <option value="alex-morgan">Alex Morgan - Lead Developer</option>
+                    <option value="jamie-chen">Jamie Chen - Frontend Engineer</option>
+                    <option value="morgan-taylor">Morgan Taylor - Database Specialist</option>
+                    <option value="riley-johnson">Riley Johnson - UX/UI Designer</option>
+                    <option value="jordan-smith">Jordan Smith - Business Analyst</option>
+                    <option value="casey-wilson">Casey Wilson - DevOps Engineer</option>
+                    <option value="taylor-rivera">Taylor Rivera - AI Integration Specialist</option>
+                    <option value="sam-patel">Sam Patel - Project Manager</option>
+                  </select>
+                </div>
               </div>
               
               <div>
@@ -211,63 +244,68 @@ export default function ContactSection() {
               <div>
                 <button 
                   type="submit" 
-                  className="w-full px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full px-6 py-4 bg-primary text-white font-bold text-lg rounded-xl hover:bg-primary/90 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-primary/30 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isSubmitting ? "Sending..." : "Start Your Transformation"}
                 </button>
               </div>
             </form>
           </motion.div>
           
           <motion.div variants={fadeIn("left", "tween", 0.3, 1)}>
-            <div className="bg-white rounded-xl p-8 border border-gray-100 shadow-sm mb-8">
+            <div className="bg-gradient-to-br from-secondary to-secondary-500 rounded-xl p-8 shadow-xl mb-8 text-white">
+              <h3 className="text-xl font-bold mb-6 border-b border-white/20 pb-3">Connect With Us</h3>
+              
               <div className="flex items-start mb-6">
-                <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <MapPin className="h-5 w-5 text-primary" />
+                <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
+                  <MapPin className="h-6 w-6 text-primary-300" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-semibold font-heading mb-1">Our Office</h3>
-                  <p className="text-gray-600">123 Innovation Way<br/>Tech District, CA 94103</p>
+                  <h4 className="text-lg font-bold mb-1">Our Office</h4>
+                  <p className="text-white/80">123 Innovation Way<br/>Tech District, CA 94103</p>
                 </div>
               </div>
               
               <div className="flex items-start mb-6">
-                <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Mail className="h-5 w-5 text-primary" />
+                <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
+                  <Mail className="h-6 w-6 text-primary-300" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-semibold font-heading mb-1">Email Us</h3>
-                  <p className="text-gray-600">info@appforge.io<br/>support@appforge.io</p>
+                  <h4 className="text-lg font-bold mb-1">Email Us</h4>
+                  <p className="text-white/80">info@appforge.io<br/>support@appforge.io</p>
                 </div>
               </div>
               
               <div className="flex items-start">
-                <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Phone className="h-5 w-5 text-primary" />
+                <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
+                  <Phone className="h-6 w-6 text-primary-300" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-semibold font-heading mb-1">Call Us</h3>
-                  <p className="text-gray-600">(555) 123-4567<br/>Mon-Fri, 9am-5pm PST</p>
+                  <h4 className="text-lg font-bold mb-1">Call Us</h4>
+                  <p className="text-white/80">(555) 123-4567<br/>Mon-Fri, 9am-5pm PST</p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white rounded-xl p-8 border border-gray-100 shadow-sm">
-              <h3 className="text-lg font-semibold font-heading mb-4">Connect With Us</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-primary-100 hover:text-primary transition-colors">
-                  <Linkedin className="h-5 w-5" />
-                </a>
-                <a href="#" className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-primary-100 hover:text-primary transition-colors">
-                  <Twitter className="h-5 w-5" />
-                </a>
-                <a href="#" className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-primary-100 hover:text-primary transition-colors">
-                  <Facebook className="h-5 w-5" />
-                </a>
-                <a href="#" className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-primary-100 hover:text-primary transition-colors">
-                  <Instagram className="h-5 w-5" />
-                </a>
+            <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-8 border border-gray-200 shadow-lg">
+              <h3 className="text-xl font-bold font-heading mb-4 text-secondary">Business Hours</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="font-medium">Monday - Friday:</span>
+                  <span>9:00 AM - 6:00 PM</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="font-medium">Saturday:</span>
+                  <span>10:00 AM - 2:00 PM</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="font-medium">Sunday:</span>
+                  <span>Closed</span>
+                </div>
+                <div className="pt-3 mt-3 border-t border-gray-200">
+                  <p className="text-sm text-gray-600">We typically respond to inquiries within 1 business day.</p>
+                </div>
               </div>
             </div>
           </motion.div>
