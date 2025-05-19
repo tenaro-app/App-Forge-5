@@ -18,11 +18,19 @@ import DashboardTeam from "@/pages/dashboard/team";
 import DashboardBilling from "@/pages/dashboard/billing";
 import DashboardSettings from "@/pages/dashboard/settings";
 
+// Import admin dashboard pages
+import AdminDashboard from "@/pages/admin";
+import AdminClients from "@/pages/admin/clients";
+import AdminNewClient from "@/pages/admin/clients/new";
+
 function Router() {
   return (
     <Switch>
+      {/* Main app routes */}
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
+      
+      {/* Client dashboard routes */}
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/dashboard/chat" component={DashboardChat} />
       <Route path="/dashboard/analytics" component={DashboardAnalytics} />
@@ -37,6 +45,12 @@ function Router() {
           </Suspense>
         )}
       </Route>
+      
+      {/* Admin dashboard routes */}
+      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/clients" component={AdminClients} />
+      <Route path="/admin/clients/new" component={AdminNewClient} />
+      
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
