@@ -128,6 +128,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // Client project request endpoint
+  app.post("/api/projects/request", isAuthenticated, async (req: any, res: Response) => {
+    try {
+      // Ensure the client ID matches the authenticated user
+      if (req.body.clientId !== req.user.claims.sub) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Prepare project data
+      const projectData = {
+        name: req.body.name,
+        description: req.body.description,
+        clientId: req.body.clientId,
+        status: "requested", // Always start as requested
+        budget: req.body.budget,
+        timeline: req.body.timeline,
+        type: req.body.type,
+        requirements: req.body.requirements
+      };
+      
+      const validatedData = projectSchema.parse(projectData);
+      const project = await storage.createProject(validatedData);
+      
+      res.status(201).json(project);
+    } catch (error: any) {
+      console.error("Error creating project request:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
 
   // Update project (admin only)
   app.put("/api/projects/:id", isAdmin, async (req: Request, res: Response) => {
