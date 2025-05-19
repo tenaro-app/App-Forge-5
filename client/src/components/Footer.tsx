@@ -18,13 +18,13 @@ export default function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Contact Bar */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 pb-16 border-b border-gray-800">
-          <div className="flex items-start">
-            <div className="bg-primary/20 p-3 rounded-xl mr-4">
-              <MapPin className="h-6 w-6 text-primary" />
+          <div className="flex items-start group cursor-pointer">
+            <div className="bg-primary/20 p-3 rounded-xl mr-4 transition-all duration-300 group-hover:bg-primary/30 group-hover:scale-110 group-hover:rotate-3 transform-gpu">
+              <MapPin className="h-6 w-6 text-primary transition-all duration-300 group-hover:scale-110" />
             </div>
             <div>
-              <h3 className="text-white font-bold mb-2">Our Location</h3>
-              <p className="text-gray-400">123 Innovation Drive<br />Tech Valley, CA 94103</p>
+              <h3 className="text-white font-bold mb-2 transition-colors duration-300 group-hover:text-primary">Our Location</h3>
+              <p className="text-gray-400 transition-colors duration-300 group-hover:text-gray-300">123 Innovation Drive<br />Tech Valley, CA 94103</p>
             </div>
           </div>
           
