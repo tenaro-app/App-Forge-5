@@ -104,10 +104,20 @@ export async function setupAuth(app: Express) {
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
   app.get("/api/login", (req, res, next) => {
-    passport.authenticate(`replitauth:${req.hostname}`, {
+    // Custom branding for the login page
+    const customBranding = {
       prompt: "login consent",
       scope: ["openid", "email", "profile", "offline_access"],
-    })(req, res, next);
+      // Override branding to match AppForge
+      authorizationParams: {
+        company_name: "AppForge",
+        logo_url: `${req.protocol}://${req.hostname}/custom-logo.png`, // We'll create this logo
+        primary_color: "#dc2626", // Our primary red color
+        company_tagline: "Your digital automation partner"
+      }
+    };
+    
+    passport.authenticate(`replitauth:${req.hostname}`, customBranding)(req, res, next);
   });
 
   app.get("/api/callback", (req, res, next) => {
