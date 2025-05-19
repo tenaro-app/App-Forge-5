@@ -19,7 +19,8 @@ import {
   Package,
   CreditCard,
   MessageSquare,
-  BarChart4
+  BarChart4,
+  Trash2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";

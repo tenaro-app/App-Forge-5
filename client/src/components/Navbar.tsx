@@ -152,7 +152,13 @@ export default function Navbar() {
                   <div className="absolute top-full left-0 z-50 w-[600px] bg-white rounded-lg shadow-xl border border-gray-200 p-6 mt-2 grid grid-cols-3 gap-4">
                     {solutionsItems.map((solution, index) => (
                       <div key={index} className="group">
-                        <a href="#solutions" className="block p-3 rounded-lg transition-all duration-300 hover:shadow-md group-hover:bg-gray-50 transform group-hover:translate-y-[-2px]">
+                        <div 
+                          onClick={() => {
+                            window.location.href = "#solutions";
+                            toggleDropdown("solutions");
+                          }} 
+                          className="block p-3 rounded-lg transition-all duration-300 hover:shadow-md group-hover:bg-gray-50 transform group-hover:translate-y-[-2px] cursor-pointer"
+                        >
                           <div className="flex items-start">
                             <div className="flex-shrink-0 text-primary opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300">{solution.icon}</div>
                             <div className="ml-3">
@@ -160,7 +166,7 @@ export default function Navbar() {
                               <p className="mt-1 text-xs text-gray-500 group-hover:text-gray-700 transition-colors duration-300">{solution.description}</p>
                             </div>
                           </div>
-                        </a>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -169,14 +175,26 @@ export default function Navbar() {
                 {item.hasDropdown && item.dropdownId === "industries" && activeDropdown === "industries" && (
                   <div className="absolute top-full left-0 z-50 w-[650px] bg-white rounded-lg shadow-xl border border-gray-200 p-4 mt-2">
                     <div className="grid grid-cols-3 gap-3">
-                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                      <div 
+                        onClick={() => {
+                          window.location.href = "#industries";
+                          toggleDropdown("industries");
+                        }}
+                        className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">E-commerce & Retail</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Inventory and order management</div>
-                      </a>
-                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                      </div>
+                      <div 
+                        onClick={() => {
+                          window.location.href = "#industries";
+                          toggleDropdown("industries");
+                        }}
+                        className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Healthcare</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Patient management systems</div>
-                      </a>
+                      </div>
                       <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Professional Services</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Client and project tracking</div>

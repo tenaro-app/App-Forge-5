@@ -20,7 +20,8 @@ import {
   BarChart,
   PieChart,
   LineChart,
-  User
+  User,
+  CheckCircle
 } from "lucide-react";
 import { format } from "date-fns";
 import { 

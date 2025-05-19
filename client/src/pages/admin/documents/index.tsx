@@ -28,9 +28,9 @@ import {
   Loader2,
   FileImage,
   FileCode,
-  FilePdf,
-  FileArchive,
-  FileSpreadsheet
+  FileType as FilePdf,
+  Archive as FileArchive,
+  Table as FileSpreadsheet
 } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
