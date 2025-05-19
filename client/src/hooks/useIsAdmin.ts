@@ -1,0 +1,20 @@
+import { useAuth } from "./useAuth";
+
+/**
+ * Hook to determine if the current user has admin privileges
+ * This is a simple way to handle role-based access control
+ * 
+ * @returns boolean indicating if the current user is an admin
+ */
+export function useIsAdmin(): boolean {
+  const { user } = useAuth();
+  
+  // Check if user exists and has admin role
+  // In a real app, this would likely be based on a role field
+  // For demo purposes, we'll consider users with specific emails as admins
+  if (!user) return false;
+  
+  // For demonstration, we're using a simple check for admin emails
+  // In a real app, this would check for admin role in the user object
+  return user.isAdmin === true;
+}
