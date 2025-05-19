@@ -488,15 +488,15 @@ export default function Navbar() {
                     
                     {item.dropdownId === "industries" && activeDropdown === "industries" && (
                       <div className="pl-4 space-y-2 mt-2">
-                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>E-commerce & Retail</a>
-                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Healthcare</a>
-                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Professional Services</a>
-                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Real Estate</a>
-                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Education</a>
-                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Manufacturing</a>
-                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Small Retail</a>
-                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Food Service</a>
-                        <a href="#industries" className="block py-2 text-sm hover:text-primary transition-colors" onClick={closeSideMenu}>Home Services</a>
+                        <div className="block py-2 text-sm hover:text-primary transition-colors cursor-pointer" onClick={() => { window.location.href = "#industries"; closeSideMenu(); }}>E-commerce & Retail</div>
+                        <div className="block py-2 text-sm hover:text-primary transition-colors cursor-pointer" onClick={() => { window.location.href = "#industries"; closeSideMenu(); }}>Healthcare</div>
+                        <div className="block py-2 text-sm hover:text-primary transition-colors cursor-pointer" onClick={() => { window.location.href = "#industries"; closeSideMenu(); }}>Professional Services</div>
+                        <div className="block py-2 text-sm hover:text-primary transition-colors cursor-pointer" onClick={() => { window.location.href = "#industries"; closeSideMenu(); }}>Real Estate</div>
+                        <div className="block py-2 text-sm hover:text-primary transition-colors cursor-pointer" onClick={() => { window.location.href = "#industries"; closeSideMenu(); }}>Education</div>
+                        <div className="block py-2 text-sm hover:text-primary transition-colors cursor-pointer" onClick={() => { window.location.href = "#industries"; closeSideMenu(); }}>Manufacturing</div>
+                        <div className="block py-2 text-sm hover:text-primary transition-colors cursor-pointer" onClick={() => { window.location.href = "#industries"; closeSideMenu(); }}>Small Retail</div>
+                        <div className="block py-2 text-sm hover:text-primary transition-colors cursor-pointer" onClick={() => { window.location.href = "#industries"; closeSideMenu(); }}>Food Service</div>
+                        <div className="block py-2 text-sm hover:text-primary transition-colors cursor-pointer" onClick={() => { window.location.href = "#industries"; closeSideMenu(); }}>Home Services</div>
                       </div>
                     )}
                     
