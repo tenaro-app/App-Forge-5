@@ -162,8 +162,8 @@ export default function Navbar() {
                 )}
 
                 {item.hasDropdown && item.dropdownId === "industries" && activeDropdown === "industries" && (
-                  <div className="absolute top-full left-0 z-50 w-[400px] bg-white rounded-lg shadow-xl border border-gray-200 p-4 mt-2">
-                    <div className="grid grid-cols-2 gap-3">
+                  <div className="absolute top-full left-0 z-50 w-[650px] bg-white rounded-lg shadow-xl border border-gray-200 p-4 mt-2">
+                    <div className="grid grid-cols-3 gap-3">
                       <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary">E-commerce & Retail</div>
                         <div className="text-xs text-gray-500 mt-1">Inventory and order management</div>
@@ -187,6 +187,18 @@ export default function Navbar() {
                       <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Manufacturing</div>
                         <div className="text-xs text-gray-500 mt-1">Inventory and production tracking</div>
+                      </a>
+                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Small Retail</div>
+                        <div className="text-xs text-gray-500 mt-1">Point of sale and inventory solutions</div>
+                      </a>
+                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Food Service</div>
+                        <div className="text-xs text-gray-500 mt-1">Order management and scheduling</div>
+                      </a>
+                      <a href="#industries" className="p-3 hover:bg-gray-50 rounded-lg group transition-colors">
+                        <div className="font-medium text-sm text-gray-900 group-hover:text-primary">Home Services</div>
+                        <div className="text-xs text-gray-500 mt-1">Job scheduling and client management</div>
                       </a>
                     </div>
                   </div>
