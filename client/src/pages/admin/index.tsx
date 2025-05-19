@@ -4,28 +4,135 @@ import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useQuery } from "@tanstack/react-query";
 import { 
-  Users, 
-  Package, 
-  Settings, 
+  Users,
+  Package,
   MessageSquare,
-  FileText,
-  Home,
-  Plus,
-  UserPlus,
-  ClipboardList,
-  BarChart,
-  CheckCircle,
   Clock,
-  ChevronDown,
+  Calendar,
+  CheckCircle,
+  AlertCircle,
+  BarChart4,
+  PieChart,
+  UserCog,
+  Briefcase,
+  Bell,
   Search
 } from "lucide-react";
 import { format } from "date-fns";
 
-// Admin Dashboard Component
+// Dummy data (will be replaced with API data in production)
+const dummyOverviewData = {
+  activeClients: 12,
+  totalProjects: 27,
+  activeProjects: 18,
+  supportTickets: 5,
+  teamMembers: 15,
+  recentActivities: [
+    {
+      id: 1,
+      type: "project_milestone",
+      content: "E-commerce Dashboard - Completed milestone: 'User Authentication Module'",
+      timestamp: new Date(2023, 5, 15, 10, 30), // June 15, 2023, 10:30 AM
+      projectId: 1,
+      projectName: "E-commerce Dashboard",
+      userId: "1",
+      userName: "Sarah Johnson"
+    },
+    {
+      id: 2,
+      type: "new_project",
+      content: "New project created: 'CRM Integration' for Beta Industries",
+      timestamp: new Date(2023, 5, 14, 14, 15), // June 14, 2023, 2:15 PM
+      projectId: 2,
+      projectName: "CRM Integration",
+      userId: "6",
+      userName: "Alex Smith"
+    },
+    {
+      id: 3,
+      type: "support_message",
+      content: "New support message from Gamma Solutions regarding Inventory System",
+      timestamp: new Date(2023, 5, 14, 9, 45), // June 14, 2023, 9:45 AM
+      projectId: 3,
+      projectName: "Inventory System",
+      userId: "3",
+      userName: "Robert Johnson"
+    },
+    {
+      id: 4,
+      type: "team_assignment",
+      content: "Michael Lee assigned to 'HR Portal' project",
+      timestamp: new Date(2023, 5, 13, 16, 20), // June 13, 2023, 4:20 PM
+      projectId: 4,
+      projectName: "HR Portal",
+      userId: "2",
+      userName: "Michael Lee"
+    },
+    {
+      id: 5,
+      type: "project_status",
+      content: "'Content Management System' project status updated to On Hold",
+      timestamp: new Date(2023, 5, 13, 11, 10), // June 13, 2023, 11:10 AM
+      projectId: 5,
+      projectName: "Content Management System",
+      userId: "6",
+      userName: "Alex Smith"
+    }
+  ],
+  projectsByStatus: [
+    { status: "planning", count: 4 },
+    { status: "in-progress", count: 12 },
+    { status: "on-hold", count: 2 },
+    { status: "completed", count: 8 },
+    { status: "cancelled", count: 1 }
+  ],
+  projectsByMonth: [
+    { month: "Jan", count: 2 },
+    { month: "Feb", count: 3 },
+    { month: "Mar", count: 1 },
+    { month: "Apr", count: 5 },
+    { month: "May", count: 3 },
+    { month: "Jun", count: 4 },
+    { month: "Jul", count: 0 },
+    { month: "Aug", count: 0 },
+    { month: "Sep", count: 0 },
+    { month: "Oct", count: 0 },
+    { month: "Nov", count: 0 },
+    { month: "Dec", count: 0 }
+  ],
+  upcomingDeadlines: [
+    {
+      id: 1,
+      projectName: "CRM Integration",
+      milestoneName: "API Integration Module",
+      dueDate: new Date(2023, 5, 20), // June 20, 2023
+      clientName: "Beta Industries",
+      progress: 65
+    },
+    {
+      id: 2,
+      projectName: "E-commerce Dashboard",
+      milestoneName: "Payment Processing Feature",
+      dueDate: new Date(2023, 5, 25), // June 25, 2023
+      clientName: "Acme Corp",
+      progress: 40
+    },
+    {
+      id: 3,
+      projectName: "Content Management System",
+      milestoneName: "Content Editor Interface",
+      dueDate: new Date(2023, 6, 5), // July 5, 2023
+      clientName: "Beta Industries",
+      progress: 25
+    }
+  ]
+};
+
 export default function AdminDashboard() {
   const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();
   const isAdmin = useIsAdmin();
   const [location, setLocation] = useLocation();
+  const currentDate = new Date();
   
   // Redirect to login if not authenticated or not admin
   useEffect(() => {
@@ -38,32 +145,59 @@ export default function AdminDashboard() {
     }
   }, [isAuthLoading, isAuthenticated, isAdmin, setLocation]);
   
-  // Fetch all clients
+  // Fetch overview data
   const { 
-    data: clients, 
-    isLoading: isClientsLoading 
+    data: overviewData, 
+    isLoading: isOverviewDataLoading 
   } = useQuery({
-    queryKey: ["/api/admin/clients"],
+    queryKey: ["/api/admin/overview"],
     enabled: isAuthenticated && isAdmin,
+    // For development we're using dummy data
+    initialData: dummyOverviewData
   });
   
-  // Fetch all projects
-  const { 
-    data: projects, 
-    isLoading: isProjectsLoading 
-  } = useQuery({
-    queryKey: ["/api/admin/projects"],
-    enabled: isAuthenticated && isAdmin,
-  });
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case "project_milestone":
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
+      case "new_project":
+        return <Package className="h-5 w-5 text-blue-500" />;
+      case "support_message":
+        return <MessageSquare className="h-5 w-5 text-purple-500" />;
+      case "team_assignment":
+        return <UserCog className="h-5 w-5 text-orange-500" />;
+      case "project_status":
+        return <AlertCircle className="h-5 w-5 text-yellow-500" />;
+      default:
+        return <Bell className="h-5 w-5 text-gray-500" />;
+    }
+  };
   
-  // Fetch active support sessions
-  const { 
-    data: supportSessions, 
-    isLoading: isSupportSessionsLoading 
-  } = useQuery({
-    queryKey: ["/api/admin/support/sessions"],
-    enabled: isAuthenticated && isAdmin,
-  });
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000);
+    
+    if (diffInSeconds < 60) {
+      return `${diffInSeconds} sec ago`;
+    }
+    
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} min ago`;
+    }
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) {
+      return `${diffInHours} hr ago`;
+    }
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) {
+      return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+    }
+    
+    return format(new Date(date), 'MMM d, yyyy');
+  };
   
   if (isAuthLoading) {
     return <div className="p-8 text-center">Loading...</div>;
@@ -132,9 +266,8 @@ export default function AdminDashboard() {
             <div className="flex items-center">
               <button 
                 onClick={() => setLocation("/dashboard")}
-                className="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white flex items-center"
+                className="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
               >
-                <Home className="w-4 h-4 mr-2" />
                 Client View
               </button>
               <div className="ml-4 relative flex-shrink-0">
@@ -153,366 +286,387 @@ export default function AdminDashboard() {
       </header>
       
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Admin Dashboard Overview */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="mt-1 text-gray-600">
-            Manage clients, projects, and system settings.
-          </p>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+              <p className="mt-1 text-gray-600">
+                Overview of all system activities and key metrics
+              </p>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <div className="relative max-w-xs">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="mt-2">
+            <p className="text-sm text-gray-500">
+              Today is {format(currentDate, 'EEEE, MMMM d, yyyy')}
+            </p>
+          </div>
         </div>
         
-        {/* Quick Stats Cards */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-          {/* Clients Card */}
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0 bg-indigo-100 rounded-md p-3">
-                  <Users className="h-6 w-6 text-indigo-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Clients</dt>
-                    <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
-                        {isClientsLoading ? "..." : clients?.length || 0}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
+            <div className="p-5 flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 font-medium text-sm">Active Clients</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {isOverviewDataLoading ? "..." : overviewData?.activeClients}
+                </p>
+              </div>
+              <div className="rounded-full bg-blue-100 p-3">
+                <Users className="h-6 w-6 text-blue-600" />
               </div>
             </div>
-            <div className="bg-gray-50 px-5 py-3 border-t border-gray-200">
-              <div className="text-sm">
-                <button 
-                  onClick={() => setLocation("/admin/clients")}
-                  className="font-medium text-primary hover:text-primary/80"
-                >
-                  View all clients
-                </button>
-              </div>
+            <div className="bg-blue-50 px-5 py-2">
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); setLocation("/admin/clients"); }}
+                className="text-sm font-medium text-blue-600 hover:text-blue-800"
+              >
+                View all clients →
+              </a>
             </div>
           </div>
           
-          {/* Projects Card */}
           <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0 bg-purple-100 rounded-md p-3">
-                  <Package className="h-6 w-6 text-purple-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Active Projects</dt>
-                    <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
-                        {isProjectsLoading ? "..." : projects?.length || 0}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
+            <div className="p-5 flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 font-medium text-sm">Active Projects</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {isOverviewDataLoading ? "..." : overviewData?.activeProjects}
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  of {isOverviewDataLoading ? "..." : overviewData?.totalProjects} total
+                </p>
+              </div>
+              <div className="rounded-full bg-primary/10 p-3">
+                <Package className="h-6 w-6 text-primary" />
               </div>
             </div>
-            <div className="bg-gray-50 px-5 py-3 border-t border-gray-200">
-              <div className="text-sm">
-                <button 
-                  onClick={() => setLocation("/admin/projects")}
-                  className="font-medium text-primary hover:text-primary/80"
-                >
-                  View all projects
-                </button>
-              </div>
+            <div className="bg-primary/5 px-5 py-2">
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); setLocation("/admin/projects"); }}
+                className="text-sm font-medium text-primary hover:text-primary/80"
+              >
+                Manage projects →
+              </a>
             </div>
           </div>
           
-          {/* Support Sessions Card */}
           <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0 bg-green-100 rounded-md p-3">
-                  <MessageSquare className="h-6 w-6 text-green-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Active Support Sessions</dt>
-                    <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
-                        {isSupportSessionsLoading ? "..." : supportSessions?.length || 0}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
+            <div className="p-5 flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 font-medium text-sm">Support Tickets</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {isOverviewDataLoading ? "..." : overviewData?.supportTickets}
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  requiring attention
+                </p>
+              </div>
+              <div className="rounded-full bg-purple-100 p-3">
+                <MessageSquare className="h-6 w-6 text-purple-600" />
               </div>
             </div>
-            <div className="bg-gray-50 px-5 py-3 border-t border-gray-200">
-              <div className="text-sm">
-                <button 
-                  onClick={() => setLocation("/admin/support")}
-                  className="font-medium text-primary hover:text-primary/80"
-                >
-                  View all support sessions
-                </button>
-              </div>
+            <div className="bg-purple-50 px-5 py-2">
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); setLocation("/admin/support"); }}
+                className="text-sm font-medium text-purple-600 hover:text-purple-800"
+              >
+                View support tickets →
+              </a>
             </div>
           </div>
           
-          {/* Actions Card */}
           <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0 bg-blue-100 rounded-md p-3">
-                  <Settings className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Quick Actions</dt>
-                    <dd className="mt-2 space-y-2">
-                      <button 
-                        onClick={() => setLocation("/admin/clients/new")}
-                        className="text-sm text-primary hover:text-primary/80 flex items-center"
-                      >
-                        <UserPlus className="w-4 h-4 mr-1" />
-                        Add New Client
-                      </button>
-                      <button 
-                        onClick={() => setLocation("/admin/projects/new")}
-                        className="text-sm text-primary hover:text-primary/80 flex items-center"
-                      >
-                        <Plus className="w-4 h-4 mr-1" />
-                        Create New Project
-                      </button>
-                    </dd>
-                  </dl>
-                </div>
+            <div className="p-5 flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 font-medium text-sm">Team Members</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {isOverviewDataLoading ? "..." : overviewData?.teamMembers}
+                </p>
               </div>
+              <div className="rounded-full bg-green-100 p-3">
+                <UserCog className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+            <div className="bg-green-50 px-5 py-2">
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); setLocation("/admin/team"); }}
+                className="text-sm font-medium text-green-600 hover:text-green-800"
+              >
+                Manage team →
+              </a>
             </div>
           </div>
         </div>
         
-        {/* Recent Activity & Actions */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {/* Recent Client Activity */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-900">Recent Client Activity</h3>
-              <button 
-                onClick={() => setLocation("/admin/activity")}
-                className="text-sm font-medium text-primary hover:text-primary/80"
-              >
-                View All
-              </button>
-            </div>
-            <div className="p-6">
-              <ul className="divide-y divide-gray-200">
-                {/* Activity Item 1 */}
-                <li className="py-4">
-                  <div className="flex space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                        <span className="text-purple-600 font-semibold">JD</span>
+        {/* Dashboard Content */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* Recent Activity */}
+          <div className="lg:col-span-2">
+            <div className="bg-white shadow rounded-lg overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">Recent Activity</h3>
+              </div>
+              
+              {isOverviewDataLoading ? (
+                <div className="p-6">
+                  <div className="animate-pulse space-y-4">
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <div key={i} className="h-14 bg-gray-200 rounded"></div>
+                    ))}
+                  </div>
+                </div>
+              ) : overviewData?.recentActivities && overviewData.recentActivities.length > 0 ? (
+                <div className="divide-y divide-gray-200">
+                  {overviewData.recentActivities.map((activity) => (
+                    <div key={activity.id} className="px-6 py-4 flex items-start">
+                      <div className="flex-shrink-0 mr-4">
+                        {getActivityIcon(activity.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-gray-900">
+                          {activity.content}
+                        </p>
+                        <div className="mt-1 flex items-center text-xs text-gray-500">
+                          <span className="truncate">
+                            by {activity.userName}
+                          </span>
+                          <span className="mx-1">•</span>
+                          <Clock className="flex-shrink-0 mr-1 h-3 w-3" />
+                          <span>{formatTimeAgo(new Date(activity.timestamp))}</span>
+                        </div>
+                      </div>
+                      <div className="ml-4 flex-shrink-0">
+                        <button
+                          onClick={() => setLocation(`/admin/projects/${activity.projectId}`)}
+                          className="bg-white rounded-md font-medium text-primary hover:text-primary/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary text-xs"
+                        >
+                          View
+                        </button>
                       </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">
-                        Jane Doe submitted a new project request: "E-commerce Integration"
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        2 hours ago
-                      </p>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <button className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20">
-                        Review
-                      </button>
-                    </div>
-                  </div>
-                </li>
-                
-                {/* Activity Item 2 */}
-                <li className="py-4">
-                  <div className="flex space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                        <span className="text-blue-600 font-semibold">JS</span>
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">
-                        John Smith opened a new support ticket: "API Integration Issue"
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Yesterday at 4:30 PM
-                      </p>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <button className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20">
-                        Respond
-                      </button>
-                    </div>
-                  </div>
-                </li>
-                
-                {/* Activity Item 3 */}
-                <li className="py-4">
-                  <div className="flex space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                        <span className="text-green-600 font-semibold">AB</span>
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">
-                        Alice Brown uploaded a new document to "CRM Project"
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        2 days ago
-                      </p>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <button className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20">
-                        View
-                      </button>
-                    </div>
-                  </div>
-                </li>
-              </ul>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-6 text-center">
+                  <Bell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">No recent activity</h3>
+                  <p className="text-gray-500">
+                    Activity from projects and team members will appear here.
+                  </p>
+                </div>
+              )}
+              
+              <div className="bg-gray-50 px-6 py-3 flex justify-center">
+                <button className="text-sm font-medium text-gray-700 hover:text-gray-900">
+                  View all activity
+                </button>
+              </div>
             </div>
           </div>
           
-          {/* Project Status Overview */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-900">Project Status Overview</h3>
-              <button 
-                onClick={() => setLocation("/admin/projects")}
-                className="text-sm font-medium text-primary hover:text-primary/80"
-              >
-                View All
-              </button>
+          {/* Project Status */}
+          <div>
+            <div className="bg-white shadow rounded-lg overflow-hidden mb-6">
+              <div className="px-6 py-5 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">Projects by Status</h3>
+              </div>
+              <div className="p-6">
+                {isOverviewDataLoading ? (
+                  <div className="animate-pulse space-y-4">
+                    <div className="h-40 bg-gray-200 rounded"></div>
+                  </div>
+                ) : overviewData?.projectsByStatus ? (
+                  <div className="space-y-4">
+                    {overviewData.projectsByStatus.map((item) => (
+                      <div key={item.status} className="flex items-center">
+                        <div className="w-32 text-sm font-medium text-gray-900 capitalize">
+                          {item.status.replace('-', ' ')}
+                        </div>
+                        <div className="flex-1">
+                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div 
+                              className={`h-2.5 rounded-full ${
+                                item.status === 'planning' ? 'bg-blue-500' :
+                                item.status === 'in-progress' ? 'bg-primary' :
+                                item.status === 'on-hold' ? 'bg-yellow-500' :
+                                item.status === 'completed' ? 'bg-green-500' :
+                                'bg-red-500'
+                              }`} 
+                              style={{ 
+                                width: `${Math.round((item.count / overviewData.totalProjects) * 100)}%` 
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="w-12 text-right text-sm font-medium text-gray-900">
+                          {item.count}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <PieChart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">No project data available</p>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="p-6">
-              <ul className="divide-y divide-gray-200">
-                {/* Project Status Item 1 */}
-                <li className="py-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center min-w-0">
-                      <div className="flex-shrink-0">
-                        <div className="h-10 w-10 rounded-md bg-indigo-100 flex items-center justify-center">
-                          <Package className="h-5 w-5 text-indigo-600" />
+            
+            {/* Monthly Projects */}
+            <div className="bg-white shadow rounded-lg overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">New Projects by Month</h3>
+              </div>
+              <div className="p-6">
+                {isOverviewDataLoading ? (
+                  <div className="animate-pulse space-y-4">
+                    <div className="h-40 bg-gray-200 rounded"></div>
+                  </div>
+                ) : overviewData?.projectsByMonth ? (
+                  <div className="flex h-40 items-end space-x-2">
+                    {overviewData.projectsByMonth.map((item) => {
+                      const maxCount = Math.max(...overviewData.projectsByMonth.map(i => i.count));
+                      const height = maxCount === 0 ? 0 : Math.max(10, Math.round((item.count / maxCount) * 100));
+                      
+                      return (
+                        <div 
+                          key={item.month} 
+                          className="flex-1 flex flex-col items-center"
+                        >
+                          <div 
+                            className={`w-full bg-primary/80 rounded-t ${height === 0 ? 'h-1' : ''}`}
+                            style={{ height: `${height}%` }}
+                          ></div>
+                          <div className="text-xs font-medium text-gray-500 mt-2">
+                            {item.month}
+                          </div>
+                          <div className="text-xs font-medium text-gray-900">
+                            {item.count}
+                          </div>
                         </div>
-                      </div>
-                      <div className="ml-4 flex-1">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          E-commerce Dashboard
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Client: Acme Corp
-                        </p>
-                      </div>
-                    </div>
-                    <div className="ml-4 flex-shrink-0">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        On Track
-                      </span>
-                    </div>
+                      );
+                    })}
                   </div>
-                  <div className="mt-2">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-500">Progress</span>
-                      <span className="text-gray-900 font-medium">68%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-primary h-1.5 rounded-full" style={{ width: '68%' }}></div>
-                    </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <BarChart4 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">No monthly data available</p>
                   </div>
-                  <div className="mt-3 flex justify-between text-xs text-gray-500">
-                    <span>Start: May 15, 2023</span>
-                    <span>Due: Jul 20, 2023</span>
-                  </div>
-                </li>
-                
-                {/* Project Status Item 2 */}
-                <li className="py-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center min-w-0">
-                      <div className="flex-shrink-0">
-                        <div className="h-10 w-10 rounded-md bg-blue-100 flex items-center justify-center">
-                          <Package className="h-5 w-5 text-blue-600" />
-                        </div>
-                      </div>
-                      <div className="ml-4 flex-1">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          CRM Integration
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Client: Beta Industries
-                        </p>
-                      </div>
-                    </div>
-                    <div className="ml-4 flex-shrink-0">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                        <Clock className="w-3 h-3 mr-1" />
-                        Needs Attention
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mt-2">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-500">Progress</span>
-                      <span className="text-gray-900 font-medium">32%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-yellow-500 h-1.5 rounded-full" style={{ width: '32%' }}></div>
-                    </div>
-                  </div>
-                  <div className="mt-3 flex justify-between text-xs text-gray-500">
-                    <span>Start: Apr 10, 2023</span>
-                    <span>Due: Jun 15, 2023</span>
-                  </div>
-                </li>
-                
-                {/* Project Status Item 3 */}
-                <li className="py-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center min-w-0">
-                      <div className="flex-shrink-0">
-                        <div className="h-10 w-10 rounded-md bg-purple-100 flex items-center justify-center">
-                          <Package className="h-5 w-5 text-purple-600" />
-                        </div>
-                      </div>
-                      <div className="ml-4 flex-1">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          Inventory System
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Client: Gamma Solutions
-                        </p>
-                      </div>
-                    </div>
-                    <div className="ml-4 flex-shrink-0">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        <Clock className="w-3 h-3 mr-1" />
-                        Planning
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mt-2">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-500">Progress</span>
-                      <span className="text-gray-900 font-medium">10%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: '10%' }}></div>
-                    </div>
-                  </div>
-                  <div className="mt-3 flex justify-between text-xs text-gray-500">
-                    <span>Start: May 20, 2023</span>
-                    <span>Due: Aug 30, 2023</span>
-                  </div>
-                </li>
-              </ul>
+                )}
+              </div>
             </div>
+          </div>
+        </div>
+        
+        {/* Upcoming Deadlines */}
+        <div className="mt-8">
+          <div className="bg-white shadow rounded-lg overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">Upcoming Deadlines</h3>
+            </div>
+            
+            {isOverviewDataLoading ? (
+              <div className="p-6">
+                <div className="animate-pulse space-y-4">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            ) : overviewData?.upcomingDeadlines && overviewData.upcomingDeadlines.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Project
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Client
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Milestone
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Due Date
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Progress
+                      </th>
+                      <th scope="col" className="relative px-6 py-3">
+                        <span className="sr-only">Actions</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {overviewData.upcomingDeadlines.map((deadline) => (
+                      <tr key={deadline.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {deadline.projectName}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {deadline.clientName}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {deadline.milestoneName}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <div className="flex items-center">
+                            <Calendar className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
+                            <span>{format(new Date(deadline.dueDate), 'MMM d, yyyy')}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="w-full bg-gray-200 rounded-full h-1.5 mb-1">
+                            <div 
+                              className="h-1.5 rounded-full bg-primary" 
+                              style={{ width: `${deadline.progress}%` }}
+                            ></div>
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {deadline.progress}% complete
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button
+                            onClick={() => setLocation(`/admin/projects/${deadline.id}`)}
+                            className="text-primary hover:text-primary/80"
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="p-6 text-center">
+                <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-1">No upcoming deadlines</h3>
+                <p className="text-gray-500">
+                  There are no project milestones due soon.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </main>

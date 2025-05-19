@@ -4,24 +4,28 @@ import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
-  Users, 
-  Search, 
-  Plus,
-  MoreHorizontal,
+  Users,
+  Search,
   UserPlus,
+  Building,
+  Mail,
+  Phone,
+  Calendar,
+  FileText,
+  Package,
+  MoreHorizontal,
   Edit,
   Trash2,
-  Mail,
-  ChevronDown,
-  UserCheck,
-  Pencil
+  ArrowUpDown,
+  Filter,
+  Eye
 } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
-// Filter options for clients list
-const filterOptions = [
+// Filter options
+const statusFilterOptions = [
   { label: "All Clients", value: "all" },
   { label: "Active", value: "active" },
   { label: "Inactive", value: "inactive" }
@@ -33,41 +37,76 @@ const dummyClients = [
     id: "1",
     firstName: "Jane",
     lastName: "Doe",
-    email: "jane.doe@example.com",
+    email: "jane.doe@acmecorp.com",
+    phone: "+1 (555) 123-4567",
     company: "Acme Corp",
+    position: "CTO",
     status: "active",
-    createdAt: new Date(2023, 1, 15),
-    projectCount: 3
+    joinDate: new Date(2023, 0, 15), // January 15, 2023
+    projectsCount: 3,
+    lastActivity: new Date(2023, 5, 10), // June 10, 2023
+    billingType: "monthly",
+    notes: "Enterprise client with multiple automation projects"
   },
   {
     id: "2",
     firstName: "John",
     lastName: "Smith",
-    email: "john.smith@example.com",
+    email: "john.smith@betaindustries.com",
+    phone: "+1 (555) 234-5678",
     company: "Beta Industries",
+    position: "COO",
     status: "active",
-    createdAt: new Date(2023, 2, 10),
-    projectCount: 2
+    joinDate: new Date(2023, 1, 20), // February 20, 2023
+    projectsCount: 2,
+    lastActivity: new Date(2023, 5, 12), // June 12, 2023
+    billingType: "project",
+    notes: "Mid-sized manufacturing company focusing on inventory automation"
   },
   {
     id: "3",
     firstName: "Alice",
     lastName: "Brown",
-    email: "alice.brown@example.com",
+    email: "alice.brown@gammasolutions.com",
+    phone: "+1 (555) 345-6789",
     company: "Gamma Solutions",
-    status: "inactive",
-    createdAt: new Date(2023, 3, 5),
-    projectCount: 1
+    position: "CEO",
+    status: "active",
+    joinDate: new Date(2023, 2, 5), // March 5, 2023
+    projectsCount: 1,
+    lastActivity: new Date(2023, 5, 8), // June 8, 2023
+    billingType: "annual",
+    notes: "Small business with growth potential, interested in CRM solutions"
   },
   {
     id: "4",
     firstName: "Robert",
     lastName: "Johnson",
-    email: "robert.johnson@example.com",
+    email: "robert.johnson@deltatech.com",
+    phone: "+1 (555) 456-7890",
     company: "Delta Tech",
+    position: "CIO",
+    status: "inactive",
+    joinDate: new Date(2022, 10, 10), // November 10, 2022
+    projectsCount: 1,
+    lastActivity: new Date(2023, 3, 15), // April 15, 2023
+    billingType: "project",
+    notes: "On hold due to internal restructuring, expecting to resume in Q3"
+  },
+  {
+    id: "5",
+    firstName: "Emily",
+    lastName: "Taylor",
+    email: "emily.taylor@epsilonsystems.com",
+    phone: "+1 (555) 567-8901",
+    company: "Epsilon Systems",
+    position: "Director of Operations",
     status: "active",
-    createdAt: new Date(2023, 4, 20),
-    projectCount: 0
+    joinDate: new Date(2023, 4, 1), // May 1, 2023
+    projectsCount: 1,
+    lastActivity: new Date(2023, 5, 14), // June 14, 2023
+    billingType: "monthly",
+    notes: "Healthcare industry client, focused on patient management workflows"
   }
 ];
 
@@ -77,6 +116,8 @@ export default function AdminClients() {
   const [location, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [sortField, setSortField] = useState("company");
+  const [sortDirection, setSortDirection] = useState("asc");
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
@@ -115,32 +156,46 @@ export default function AdminClients() {
     return matchesSearch && matchesStatus;
   });
   
-  // Client activation/deactivation mutation
-  const toggleClientStatusMutation = useMutation({
-    mutationFn: async ({ clientId, status }: { clientId: string, status: string }) => {
-      const response = await apiRequest("PUT", `/api/admin/clients/${clientId}/status`, { status });
-      if (!response.ok) {
-        throw new Error(`Failed to update client status: ${response.statusText}`);
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/clients"] });
-      toast({
-        title: "Client status updated",
-        description: "The client's status has been successfully updated.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to update client status",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
+  // Sort clients based on selected field and direction
+  const sortedClients = filteredClients?.sort((a, b) => {
+    let compareA, compareB;
+    
+    // Determine which field to sort by
+    switch (sortField) {
+      case "name":
+        compareA = a.firstName + a.lastName;
+        compareB = b.firstName + b.lastName;
+        break;
+      case "company":
+        compareA = a.company;
+        compareB = b.company;
+        break;
+      case "joinDate":
+        compareA = new Date(a.joinDate).getTime();
+        compareB = new Date(b.joinDate).getTime();
+        break;
+      case "lastActivity":
+        compareA = new Date(a.lastActivity).getTime();
+        compareB = new Date(b.lastActivity).getTime();
+        break;
+      case "projectsCount":
+        compareA = a.projectsCount;
+        compareB = b.projectsCount;
+        break;
+      default:
+        compareA = a.company;
+        compareB = b.company;
+    }
+    
+    // Determine sort direction
+    if (sortDirection === "asc") {
+      return compareA > compareB ? 1 : -1;
+    } else {
+      return compareA < compareB ? 1 : -1;
+    }
   });
   
-  // Client deletion mutation
+  // Delete client mutation
   const deleteClientMutation = useMutation({
     mutationFn: async (clientId: string) => {
       const response = await apiRequest("DELETE", `/api/admin/clients/${clientId}`);
@@ -165,15 +220,51 @@ export default function AdminClients() {
     },
   });
   
-  const handleToggleStatus = (clientId: string, currentStatus: string) => {
-    const newStatus = currentStatus === "active" ? "inactive" : "active";
-    toggleClientStatusMutation.mutate({ clientId, status: newStatus });
+  // Toggle client status mutation
+  const toggleClientStatusMutation = useMutation({
+    mutationFn: async ({ clientId, status }: { clientId: string, status: string }) => {
+      const newStatus = status === "active" ? "inactive" : "active";
+      const response = await apiRequest("PUT", `/api/admin/clients/${clientId}/status`, { status: newStatus });
+      if (!response.ok) {
+        throw new Error(`Failed to update client status: ${response.statusText}`);
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/clients"] });
+      toast({
+        title: "Client status updated",
+        description: "The client's status has been successfully updated.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to update client status",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  const handleSortChange = (field: string) => {
+    if (sortField === field) {
+      // If already sorting by this field, toggle direction
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      // Otherwise, sort by this field in ascending order
+      setSortField(field);
+      setSortDirection("asc");
+    }
   };
   
   const handleDeleteClient = (clientId: string) => {
     if (window.confirm("Are you sure you want to delete this client? This action cannot be undone.")) {
       deleteClientMutation.mutate(clientId);
     }
+  };
+  
+  const handleToggleClientStatus = (clientId: string, currentStatus: string) => {
+    toggleClientStatusMutation.mutate({ clientId, status: currentStatus });
   };
   
   if (isAuthLoading) {
@@ -267,7 +358,7 @@ export default function AdminClients() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Client Management</h1>
             <p className="mt-1 text-gray-600">
-              Manage client accounts and their associated projects
+              Manage client accounts and their projects
             </p>
           </div>
           <div className="mt-4 md:mt-0">
@@ -302,18 +393,21 @@ export default function AdminClients() {
                 <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700 mb-1 sm:hidden">
                   Filter by Status
                 </label>
-                <select
-                  id="status-filter"
-                  className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md"
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                >
-                  {filterOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center">
+                  <Filter className="mr-2 h-5 w-5 text-gray-400" />
+                  <select
+                    id="status-filter"
+                    className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
+                    {statusFilterOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -323,7 +417,7 @@ export default function AdminClients() {
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-200">
             <h3 className="text-lg font-medium text-gray-900">
-              Clients ({filteredClients?.length || 0})
+              Clients ({sortedClients?.length || 0})
             </h3>
           </div>
           
@@ -335,25 +429,56 @@ export default function AdminClients() {
                 ))}
               </div>
             </div>
-          ) : filteredClients && filteredClients.length > 0 ? (
+          ) : sortedClients && sortedClients.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Client
+                    <th 
+                      scope="col" 
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => handleSortChange("name")}
+                    >
+                      <div className="flex items-center">
+                        Client Name
+                        <ArrowUpDown className="w-4 h-4 ml-1" />
+                      </div>
+                    </th>
+                    <th 
+                      scope="col" 
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => handleSortChange("company")}
+                    >
+                      <div className="flex items-center">
+                        Company
+                        <ArrowUpDown className="w-4 h-4 ml-1" />
+                      </div>
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Company
+                      Contact Info
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Projects
+                    <th 
+                      scope="col" 
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => handleSortChange("joinDate")}
+                    >
+                      <div className="flex items-center">
+                        Joined
+                        <ArrowUpDown className="w-4 h-4 ml-1" />
+                      </div>
+                    </th>
+                    <th 
+                      scope="col" 
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => handleSortChange("projectsCount")}
+                    >
+                      <div className="flex items-center">
+                        Projects
+                        <ArrowUpDown className="w-4 h-4 ml-1" />
+                      </div>
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Joined
                     </th>
                     <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
@@ -361,12 +486,12 @@ export default function AdminClients() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredClients.map((client) => (
+                  {sortedClients.map((client) => (
                     <tr key={client.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="text-primary font-semibold">
+                            <span className="font-medium text-primary">
                               {client.firstName.charAt(0) + client.lastName.charAt(0)}
                             </span>
                           </div>
@@ -374,18 +499,42 @@ export default function AdminClients() {
                             <div className="text-sm font-medium text-gray-900">
                               {client.firstName} {client.lastName}
                             </div>
-                            <div className="text-sm text-gray-500 flex items-center">
-                              <Mail className="w-3 h-3 mr-1" />
-                              {client.email}
+                            <div className="text-xs text-gray-500">
+                              {client.position}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{client.company}</div>
+                        <div className="flex items-center">
+                          <Building className="h-4 w-4 text-gray-500 mr-2" />
+                          <span className="text-sm text-gray-900">{client.company}</span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{client.projectCount}</div>
+                        <div className="text-sm text-gray-900 flex items-center">
+                          <Mail className="h-4 w-4 text-gray-500 mr-2" />
+                          {client.email}
+                        </div>
+                        <div className="text-sm text-gray-500 flex items-center mt-1">
+                          <Phone className="h-4 w-4 text-gray-500 mr-2" />
+                          {client.phone}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 text-gray-500 mr-2" />
+                          {format(new Date(client.joinDate), 'MMM d, yyyy')}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <Package className="h-4 w-4 text-gray-500 mr-2" />
+                          <span className="text-sm text-gray-900">{client.projectsCount}</span>
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Last active: {format(new Date(client.lastActivity), 'MMM d, yyyy')}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -393,34 +542,36 @@ export default function AdminClients() {
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-gray-100 text-gray-800'
                         }`}>
-                          {client.status === 'active' ? 'Active' : 'Inactive'}
+                          {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {format(new Date(client.createdAt), 'MMM d, yyyy')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
                           <button 
                             onClick={() => setLocation(`/admin/clients/${client.id}`)}
-                            className="text-primary hover:text-primary/80"
+                            className="text-gray-500 hover:text-primary"
                             title="View Details"
                           >
-                            <Pencil className="w-4 h-4" />
+                            <Eye className="w-4 h-4" />
                           </button>
                           <button 
-                            onClick={() => handleToggleStatus(client.id, client.status)}
-                            className={`${
-                              client.status === 'active' ? 'text-gray-500 hover:text-red-500' : 'text-gray-500 hover:text-green-500'
-                            }`}
-                            title={client.status === 'active' ? 'Deactivate' : 'Activate'}
+                            onClick={() => setLocation(`/admin/clients/${client.id}/edit`)}
+                            className="text-gray-500 hover:text-primary"
+                            title="Edit Client"
                           >
-                            <UserCheck className="w-4 h-4" />
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={() => handleToggleClientStatus(client.id, client.status)}
+                            className="text-gray-500 hover:text-primary"
+                            title={client.status === 'active' ? 'Deactivate Client' : 'Activate Client'}
+                          >
+                            <FileText className="w-4 h-4" />
                           </button>
                           <button 
                             onClick={() => handleDeleteClient(client.id)}
                             className="text-gray-500 hover:text-red-500"
-                            title="Delete"
+                            title="Delete Client"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

@@ -5,14 +5,13 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
   ArrowLeft,
-  UserPlus,
   Building,
   Mail,
   Phone,
   User,
   Briefcase,
   Save,
-  Loader2
+  Loader2,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,16 +20,21 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 // Form validation schema
 const clientSchema = z.object({
-  firstName: z.string().min(1, { message: "First name is required" }),
-  lastName: z.string().min(1, { message: "Last name is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
-  company: z.string().min(1, { message: "Company name is required" }),
-  phone: z.string().optional(),
-  position: z.string().optional(),
-  address: z.string().optional(),
+  firstName: z.string().min(2, { message: "First name must be at least 2 characters" }),
+  lastName: z.string().min(2, { message: "Last name must be at least 2 characters" }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  phone: z.string().min(10, { message: "Phone number is required" }),
+  company: z.string().min(2, { message: "Company name is required" }),
+  position: z.string().min(2, { message: "Position is required" }),
+  billingType: z.enum(["monthly", "annual", "project"], { 
+    required_error: "Billing type is required" 
+  }),
   notes: z.string().optional(),
 });
 
@@ -62,10 +66,10 @@ export default function NewClient() {
       firstName: "",
       lastName: "",
       email: "",
-      company: "",
       phone: "",
+      company: "",
       position: "",
-      address: "",
+      billingType: "monthly",
       notes: "",
     },
   });
@@ -84,7 +88,7 @@ export default function NewClient() {
       setSubmitted(true);
       toast({
         title: "Client created",
-        description: "The client has been successfully created.",
+        description: "The client has been successfully added.",
       });
     },
     onError: (error) => {
@@ -129,11 +133,11 @@ export default function NewClient() {
         <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <UserPlus className="h-8 w-8 text-green-600" />
+              <User className="h-8 w-8 text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Client Created Successfully</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Client Added Successfully</h2>
             <p className="text-gray-600 mb-6">
-              The new client account has been created and is now ready to use.
+              The new client has been created and is now available in your client list.
             </p>
             <div className="flex justify-center space-x-4">
               <button
@@ -234,194 +238,234 @@ export default function NewClient() {
             <div className="px-6 py-5 border-b border-gray-200">
               <h3 className="text-lg font-medium text-gray-900">Client Information</h3>
               <p className="mt-1 text-sm text-gray-500">
-                Create a new client account with the information below.
+                Add a new client to the system. All fields marked with * are required.
               </p>
             </div>
             <div className="p-6">
               <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  {/* First Name */}
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                      First Name *
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <User className="h-5 w-5 text-gray-400" />
+                <div className="space-y-6">
+                  {/* Personal Information */}
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h4 className="text-md font-medium text-gray-900 mb-4">Personal Information</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* First Name */}
+                      <div>
+                        <Label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                          First Name *
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <User className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="firstName"
+                            {...form.register("firstName")}
+                            className={`pl-10 ${form.formState.errors.firstName ? 'border-red-500' : ''}`}
+                            placeholder="Enter first name"
+                          />
+                        </div>
+                        {form.formState.errors.firstName && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.firstName.message}</p>
+                        )}
                       </div>
-                      <input
-                        type="text"
-                        id="firstName"
-                        {...form.register("firstName")}
-                        className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm ${
-                          form.formState.errors.firstName ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      />
+                      
+                      {/* Last Name */}
+                      <div>
+                        <Label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                          Last Name *
+                        </Label>
+                        <Input
+                          id="lastName"
+                          {...form.register("lastName")}
+                          className={`${form.formState.errors.lastName ? 'border-red-500' : ''}`}
+                          placeholder="Enter last name"
+                        />
+                        {form.formState.errors.lastName && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.lastName.message}</p>
+                        )}
+                      </div>
+                      
+                      {/* Email */}
+                      <div>
+                        <Label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                          Email Address *
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Mail className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="email"
+                            type="email"
+                            {...form.register("email")}
+                            className={`pl-10 ${form.formState.errors.email ? 'border-red-500' : ''}`}
+                            placeholder="client@example.com"
+                          />
+                        </div>
+                        {form.formState.errors.email && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.email.message}</p>
+                        )}
+                      </div>
+                      
+                      {/* Phone */}
+                      <div>
+                        <Label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                          Phone Number *
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Phone className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="phone"
+                            {...form.register("phone")}
+                            className={`pl-10 ${form.formState.errors.phone ? 'border-red-500' : ''}`}
+                            placeholder="+1 (555) 123-4567"
+                          />
+                        </div>
+                        {form.formState.errors.phone && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.phone.message}</p>
+                        )}
+                      </div>
                     </div>
-                    {form.formState.errors.firstName && (
-                      <p className="mt-1 text-sm text-red-600">{form.formState.errors.firstName.message}</p>
-                    )}
                   </div>
                   
-                  {/* Last Name */}
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                      Last Name *
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <User className="h-5 w-5 text-gray-400" />
+                  {/* Company Information */}
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h4 className="text-md font-medium text-gray-900 mb-4">Company Information</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Company Name */}
+                      <div>
+                        <Label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
+                          Company Name *
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Building className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="company"
+                            {...form.register("company")}
+                            className={`pl-10 ${form.formState.errors.company ? 'border-red-500' : ''}`}
+                            placeholder="Enter company name"
+                          />
+                        </div>
+                        {form.formState.errors.company && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.company.message}</p>
+                        )}
                       </div>
-                      <input
-                        type="text"
-                        id="lastName"
-                        {...form.register("lastName")}
-                        className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm ${
-                          form.formState.errors.lastName ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      />
-                    </div>
-                    {form.formState.errors.lastName && (
-                      <p className="mt-1 text-sm text-red-600">{form.formState.errors.lastName.message}</p>
-                    )}
-                  </div>
-                  
-                  {/* Email */}
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address *
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Mail className="h-5 w-5 text-gray-400" />
+                      
+                      {/* Position */}
+                      <div>
+                        <Label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
+                          Position *
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Briefcase className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="position"
+                            {...form.register("position")}
+                            className={`pl-10 ${form.formState.errors.position ? 'border-red-500' : ''}`}
+                            placeholder="e.g. CEO, CTO, Director"
+                          />
+                        </div>
+                        {form.formState.errors.position && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.position.message}</p>
+                        )}
                       </div>
-                      <input
-                        type="email"
-                        id="email"
-                        {...form.register("email")}
-                        className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm ${
-                          form.formState.errors.email ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      />
-                    </div>
-                    {form.formState.errors.email && (
-                      <p className="mt-1 text-sm text-red-600">{form.formState.errors.email.message}</p>
-                    )}
-                  </div>
-                  
-                  {/* Phone */}
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Phone className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <input
-                        type="tel"
-                        id="phone"
-                        {...form.register("phone")}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
-                      />
                     </div>
                   </div>
                   
-                  {/* Company */}
-                  <div>
-                    <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
-                      Company Name *
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Building className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <input
-                        type="text"
-                        id="company"
-                        {...form.register("company")}
-                        className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm ${
-                          form.formState.errors.company ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      />
+                  {/* Billing Type */}
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h4 className="text-md font-medium text-gray-900 mb-4">Billing Preferences</h4>
+                    
+                    <div className="space-y-4">
+                      <Label className="block text-sm font-medium text-gray-700">
+                        Billing Type *
+                      </Label>
+                      
+                      <RadioGroup 
+                        defaultValue={form.getValues("billingType")}
+                        onValueChange={(value) => form.setValue("billingType", value as "monthly" | "annual" | "project")}
+                      >
+                        <div className="flex items-start space-x-2">
+                          <RadioGroupItem value="monthly" id="monthly" />
+                          <Label htmlFor="monthly" className="font-normal">
+                            <span className="font-medium">Monthly</span>
+                            <p className="text-sm text-gray-500">
+                              Client will be billed on a monthly basis.
+                            </p>
+                          </Label>
+                        </div>
+                        <div className="flex items-start space-x-2">
+                          <RadioGroupItem value="annual" id="annual" />
+                          <Label htmlFor="annual" className="font-normal">
+                            <span className="font-medium">Annual</span>
+                            <p className="text-sm text-gray-500">
+                              Client will be billed annually (10% discount applied).
+                            </p>
+                          </Label>
+                        </div>
+                        <div className="flex items-start space-x-2">
+                          <RadioGroupItem value="project" id="project" />
+                          <Label htmlFor="project" className="font-normal">
+                            <span className="font-medium">Per Project</span>
+                            <p className="text-sm text-gray-500">
+                              Client will be billed on a per-project basis.
+                            </p>
+                          </Label>
+                        </div>
+                      </RadioGroup>
+                      
+                      {form.formState.errors.billingType && (
+                        <p className="mt-1 text-sm text-red-600">{form.formState.errors.billingType.message}</p>
+                      )}
                     </div>
-                    {form.formState.errors.company && (
-                      <p className="mt-1 text-sm text-red-600">{form.formState.errors.company.message}</p>
-                    )}
                   </div>
                   
-                  {/* Position */}
+                  {/* Additional Notes */}
                   <div>
-                    <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
-                      Job Title
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Briefcase className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <input
-                        type="text"
-                        id="position"
-                        {...form.register("position")}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
-                      />
-                    </div>
+                    <Label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+                      Additional Notes
+                    </Label>
+                    <Textarea
+                      id="notes"
+                      {...form.register("notes")}
+                      className="min-h-[100px]"
+                      placeholder="Enter any additional information about this client..."
+                    />
                   </div>
-                </div>
-                
-                {/* Address */}
-                <div className="mt-6">
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                    Business Address
-                  </label>
-                  <textarea
-                    id="address"
-                    rows={3}
-                    {...form.register("address")}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
-                  />
-                </div>
-                
-                {/* Notes */}
-                <div className="mt-6">
-                  <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-                    Additional Notes
-                  </label>
-                  <textarea
-                    id="notes"
-                    rows={4}
-                    {...form.register("notes")}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
-                    placeholder="Any additional information about this client"
-                  />
-                </div>
-                
-                {/* Form Actions */}
-                <div className="mt-8 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => setLocation("/admin/clients")}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md mr-4 hover:bg-gray-50"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={createClientMutation.isPending}
-                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                  >
-                    {createClientMutation.isPending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Creating...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4 mr-2" />
-                        Create Client
-                      </>
-                    )}
-                  </button>
+                  
+                  {/* Form Actions */}
+                  <div className="flex justify-end pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setLocation("/admin/clients")}
+                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md mr-4 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={createClientMutation.isPending}
+                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                    >
+                      {createClientMutation.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Creating...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4 mr-2" />
+                          Add Client
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
