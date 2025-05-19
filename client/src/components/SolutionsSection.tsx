@@ -8,7 +8,7 @@ export default function SolutionsSection() {
     {
       icon: Code,
       title: "Custom Web Applications",
-      description: "Bespoke web solutions engineered to solve your specific business challenges and eliminate repetitive tasks.",
+      description: "Bespoke web solutions engineered to solve your specific business challenges. Eliminates repetitive tasks and streamlines operations for maximum efficiency.",
       features: [
         "Fully custom UI/UX design",
         "Responsive across all devices",
@@ -18,7 +18,7 @@ export default function SolutionsSection() {
     {
       icon: Database,
       title: "Data Management Systems",
-      description: "Powerful database solutions that organize, store, and analyze your critical business information.",
+      description: "Powerful database solutions that organize, store, and analyze your critical business information. Turns raw data into actionable insights for better decision making.",
       features: [
         "Advanced search capabilities",
         "Real-time data synchronization",
@@ -28,7 +28,7 @@ export default function SolutionsSection() {
     {
       icon: Workflow,
       title: "Workflow Automation",
-      description: "End-to-end automation of your most complex business processes, eliminating manual intervention.",
+      description: "End-to-end automation of your most complex business processes. Eliminates manual intervention, reduces errors, and increases your team's productivity by up to 40%.",
       features: [
         "Custom approval workflows",
         "Automated notifications",
@@ -38,7 +38,7 @@ export default function SolutionsSection() {
     {
       icon: LineChart,
       title: "Business Intelligence Dashboards",
-      description: "Visual data analysis tools that transform your raw data into actionable business insights.",
+      description: "Visual data analysis tools that transform your raw data into actionable business insights. Helps identify trends, opportunities, and potential issues before they impact growth.",
       features: [
         "Interactive data visualization",
         "Custom reporting tools",
@@ -48,7 +48,7 @@ export default function SolutionsSection() {
     {
       icon: Layers,
       title: "API Development & Integration",
-      description: "Seamless connections between your systems and third-party services for unified operations.",
+      description: "Seamless connections between your systems and third-party services for unified operations. Eliminates data silos and creates a cohesive technology ecosystem for your business.",
       features: [
         "RESTful & GraphQL APIs",
         "Third-party API integration",
@@ -58,7 +58,7 @@ export default function SolutionsSection() {
     {
       icon: Clock,
       title: "Scheduling & Resource Management",
-      description: "Smart systems that optimize time, resources, and scheduling for maximum efficiency.",
+      description: "Smart systems that optimize time, resources, and scheduling for maximum efficiency. Reduces downtime, prevents double-booking, and ensures optimal resource allocation.",
       features: [
         "Drag-and-drop scheduling",
         "Resource conflict detection",
@@ -68,7 +68,7 @@ export default function SolutionsSection() {
     {
       icon: Zap,
       title: "E-commerce Solutions",
-      description: "Full-featured online stores and marketplaces built for conversions and customer satisfaction.",
+      description: "Full-featured online stores and marketplaces built for conversions and customer satisfaction. Includes inventory management, secure payments, and automated order fulfillment.",
       features: [
         "Inventory management",
         "Secure payment processing",
@@ -78,7 +78,7 @@ export default function SolutionsSection() {
     {
       icon: Lock,
       title: "User Authentication Systems",
-      description: "Enterprise-grade security solutions for managing user access and protecting sensitive data.",
+      description: "Enterprise-grade security solutions for managing user access and protecting sensitive data. Implements multi-factor authentication, role-based access, and single sign-on capabilities.",
       features: [
         "Multi-factor authentication",
         "Role-based access control",
@@ -88,7 +88,7 @@ export default function SolutionsSection() {
     {
       icon: Globe,
       title: "Content Management Systems",
-      description: "Custom CMS solutions that make content creation, management, and publishing effortless.",
+      description: "Custom CMS solutions that make content creation, management, and publishing effortless. Includes intuitive editors, media libraries, and scheduled publishing functionality.",
       features: [
         "Intuitive content editor",
         "Digital asset management",

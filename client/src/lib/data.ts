@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import { 
   Repeat, Database, Users, Clipboard, Calendar, FileText,
   Briefcase, ShoppingBag, Home, Activity, Truck, BookOpen,
-  Check, ArrowRight 
+  Check, ArrowRight, ShoppingCart, Utensils, Wrench 
 } from "lucide-react";
 
 export const statsData = [
@@ -92,39 +92,57 @@ type IndustryType = {
 export const industriesData: IndustryType[] = [
   {
     name: "Professional Services",
-    description: "Client management, billing automation, and project tracking for law firms, accounting practices, and consultancies.",
+    description: "Client management, billing automation, and project tracking for law firms, accounting practices, and consultancies. Streamline operations and increase billable hours.",
     icon: Briefcase,
     tags: ["Time Tracking", "Billing", "Document Management"]
   },
   {
     name: "Retail & E-commerce",
-    description: "Inventory management, order processing, and customer loyalty programs for retail businesses of all sizes.",
+    description: "Inventory management, order processing, and customer loyalty programs for retail businesses of all sizes. Boost sales and enhance customer satisfaction while reducing costs.",
     icon: ShoppingBag,
     tags: ["Inventory", "Order Processing", "Customer Management"]
   },
   {
     name: "Real Estate",
-    description: "Property management, tenant applications, lease tracking, and maintenance request systems.",
+    description: "Property management, tenant applications, lease tracking, and maintenance request systems. Simplify complex property operations and improve tenant communication.",
     icon: Home,
     tags: ["Property Management", "Tenant Portals", "Maintenance Requests"]
   },
   {
     name: "Healthcare",
-    description: "Patient scheduling, medical records management, and billing systems for clinics and healthcare providers.",
+    description: "Patient scheduling, medical records management, and billing systems for clinics and healthcare providers. HIPAA-compliant solutions that enhance patient care and efficiency.",
     icon: Activity,
     tags: ["Appointment Scheduling", "Patient Records", "HIPAA Compliant"]
   },
   {
     name: "Manufacturing & Logistics",
-    description: "Supply chain management, production scheduling, quality control, and distribution tracking.",
+    description: "Supply chain management, production scheduling, quality control, and distribution tracking. Optimize your entire production pipeline from raw materials to customer delivery.",
     icon: Truck,
     tags: ["Inventory Control", "Order Fulfillment", "Quality Assurance"]
   },
   {
     name: "Education",
-    description: "Student information systems, course management, assignment tracking, and learning platforms.",
+    description: "Student information systems, course management, assignment tracking, and learning platforms. Enhance education delivery and simplify administrative processes.",
     icon: BookOpen,
     tags: ["Student Management", "Course Scheduling", "Assessment Tools"]
+  },
+  {
+    name: "Small Retail",
+    description: "Affordable point-of-sale, inventory tracking, and customer management for small retail stores. Scale your business without scaling your overhead costs.",
+    icon: ShoppingCart,
+    tags: ["Point of Sale", "Inventory", "Customer Loyalty"]
+  },
+  {
+    name: "Food Service",
+    description: "Order management, kitchen routing, delivery tracking, and inventory systems for restaurants and food businesses. Serve more customers with fewer staff resources.",
+    icon: Utensils,
+    tags: ["Order Management", "Delivery Tracking", "Inventory"]
+  },
+  {
+    name: "Home Services",
+    description: "Scheduling, customer management, and mobile workforce tools for cleaning, repair, and maintenance businesses. Eliminate paperwork and optimize service routes.",
+    icon: Wrench,
+    tags: ["Scheduling", "Mobile Apps", "Customer Management"]
   }
 ];
 
