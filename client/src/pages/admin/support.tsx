@@ -223,9 +223,9 @@ export default function AdminSupport() {
         break;
       case "priority":
         // Sort by priority level (high > medium > low)
-        const priorityLevel = { high: 3, medium: 2, low: 1 };
-        compareA = priorityLevel[a.priority] || 0;
-        compareB = priorityLevel[b.priority] || 0;
+        const priorityLevel: Record<string, number> = { high: 3, medium: 2, low: 1 };
+        compareA = priorityLevel[a.priority as string] || 0;
+        compareB = priorityLevel[b.priority as string] || 0;
         break;
       case "status":
         compareA = a.status;

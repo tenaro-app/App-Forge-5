@@ -470,18 +470,20 @@ export default function Navbar() {
                     {item.dropdownId === "solutions" && activeDropdown === "solutions" && (
                       <div className="pl-4 space-y-2 mt-2">
                         {solutionsItems.map((solution, index) => (
-                          <a 
+                          <div 
                             key={index} 
-                            href="#solutions" 
-                            className="flex items-start py-2 hover:text-primary transition-colors"
-                            onClick={closeSideMenu}
+                            onClick={() => {
+                              window.location.href = "#solutions";
+                              closeSideMenu();
+                            }}
+                            className="flex items-start py-2 hover:text-primary transition-colors cursor-pointer"
                           >
                             <div className="flex-shrink-0 mr-2">{solution.icon}</div>
                             <div>
                               <p className="text-sm font-medium text-gray-900">{solution.title}</p>
                               <p className="text-xs text-gray-500">{solution.description}</p>
                             </div>
-                          </a>
+                          </div>
                         ))}
                       </div>
                     )}

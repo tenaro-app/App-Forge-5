@@ -19,7 +19,8 @@ import {
   CreditCard,
   Rocket,
   Briefcase,
-  Lock
+  Lock,
+  X
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -774,7 +775,7 @@ export default function ClientOnboarding() {
                               >
                                 <Calendar className="mr-2 h-4 w-4 text-gray-400" />
                                 {projectForm.getValues("estimatedDueDate") ? (
-                                  format(new Date(projectForm.getValues("estimatedDueDate")), "PPP")
+                                  format(new Date(projectForm.getValues("estimatedDueDate") as Date), "PPP")
                                 ) : (
                                   <span className="text-gray-400">Select a date</span>
                                 )}
@@ -783,9 +784,11 @@ export default function ClientOnboarding() {
                             <PopoverContent className="w-auto p-0">
                               <CalendarComponent
                                 mode="single"
-                                selected={projectForm.getValues("estimatedDueDate") as Date}
+                                selected={projectForm.getValues("estimatedDueDate") ? new Date(projectForm.getValues("estimatedDueDate") as Date) : undefined}
                                 onSelect={(date) => {
-                                  projectForm.setValue("estimatedDueDate", date as Date);
+                                  if (date) {
+                                    projectForm.setValue("estimatedDueDate", date);
+                                  }
                                 }}
                                 initialFocus
                               />
