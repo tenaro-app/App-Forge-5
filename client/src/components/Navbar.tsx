@@ -1,14 +1,17 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, Code, Zap, Package, BarChart, Database, Upload, Lock, Users, FileCheck, Layers } from "lucide-react";
-import { Link } from "wouter";
+import { Menu, X, ChevronDown, Code, Zap, Package, BarChart, Database, Upload, Lock, Users, FileCheck, Layers, User } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navbar() {
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const [location, setLocation] = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -278,18 +281,66 @@ export default function Navbar() {
               <span className="relative z-10 group-hover:translate-y-[-1px] transition-transform duration-300">Contact Us</span>
               <span className="absolute bottom-0 left-0 w-full h-0 bg-primary/5 transition-all duration-300 group-hover:h-full"></span>
             </a>
-            <a 
-              href="#login" 
-              className="px-5 py-2.5 rounded-lg bg-primary text-white font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 group relative overflow-hidden"
-            >
-              <span className="relative z-10 flex items-center justify-center">
-                <span className="group-hover:translate-x-[-1px] transition-transform duration-300">Client Login</span>
-                <svg className="w-0 h-4 ml-0 group-hover:w-4 group-hover:ml-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-              </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 group-hover:scale-110 transition-transform duration-500 ease-out"></span>
-            </a>
+            {isLoading ? (
+              <div className="w-28 h-10 rounded-lg bg-gray-200 animate-pulse"></div>
+            ) : isAuthenticated ? (
+              <div className="relative group">
+                <button 
+                  onClick={() => toggleDropdown('user')}
+                  className="px-5 py-2.5 rounded-lg border-2 border-primary text-primary font-medium text-sm transition-all duration-300 shadow hover:bg-primary/10 transform hover:-translate-y-1 group relative overflow-hidden flex items-center space-x-2"
+                >
+                  {user?.profileImageUrl ? (
+                    <img 
+                      src={user.profileImageUrl} 
+                      alt={user.firstName || 'User'} 
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                      <User className="w-3 h-3 text-primary" />
+                    </div>
+                  )}
+                  <span className="relative z-10">
+                    {user?.firstName || 'Dashboard'}
+                  </span>
+                </button>
+                
+                {activeDropdown === 'user' && (
+                  <div className="absolute top-full right-0 z-50 w-48 bg-white rounded-lg shadow-xl border border-gray-200 p-2 mt-2">
+                    <Link href="/dashboard">
+                      <a onClick={() => setActiveDropdown(null)} className="block w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors">
+                        Dashboard
+                      </a>
+                    </Link>
+                    <Link href="/chat">
+                      <a onClick={() => setActiveDropdown(null)} className="block w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors">
+                        Support Chat
+                      </a>
+                    </Link>
+                    <div className="my-1 border-t border-gray-200"></div>
+                    <a 
+                      href="/api/logout"
+                      className="block w-full text-left px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 transition-colors"
+                    >
+                      Logout
+                    </a>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <a 
+                href="/api/login" 
+                className="px-5 py-2.5 rounded-lg bg-primary text-white font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 group relative overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center justify-center">
+                  <span className="group-hover:translate-x-[-1px] transition-transform duration-300">Client Login</span>
+                  <svg className="w-0 h-4 ml-0 group-hover:w-4 group-hover:ml-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </span>
+                <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 group-hover:scale-110 transition-transform duration-500 ease-out"></span>
+              </a>
+            )}
           </div>
 
           {/* Hamburger Menu Button */}
