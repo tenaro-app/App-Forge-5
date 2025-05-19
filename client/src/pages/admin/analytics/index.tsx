@@ -613,7 +613,7 @@ export default function AdminAnalytics() {
                 </div>
                 <div style={{ width: '100%', height: 300 }}>
                   <ResponsiveContainer>
-                    <BarChart
+                    <RechartsBarChart
                       data={analyticsData.clientAcquisition}
                       margin={{
                         top: 20,
@@ -630,7 +630,7 @@ export default function AdminAnalytics() {
                       <Bar dataKey="organic" name="Organic" fill="#ff0033" />
                       <Bar dataKey="referral" name="Referral" fill="#1a1a1a" />
                       <Bar dataKey="outbound" name="Outbound" fill="#4da3a3" />
-                    </BarChart>
+                    </RechartsBarChart>
                   </ResponsiveContainer>
                 </div>
               </div>

@@ -195,34 +195,76 @@ export default function Navbar() {
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Healthcare</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Patient management systems</div>
                       </div>
-                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                      <div 
+                        onClick={() => {
+                          window.location.href = "#industries";
+                          toggleDropdown("industries");
+                        }}
+                        className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Professional Services</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Client and project tracking</div>
-                      </a>
-                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                      </div>
+                      <div 
+                        onClick={() => {
+                          window.location.href = "#industries";
+                          toggleDropdown("industries");
+                        }}
+                        className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Real Estate</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Property and tenant management</div>
-                      </a>
-                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                      </div>
+                      <div 
+                        onClick={() => {
+                          window.location.href = "#industries";
+                          toggleDropdown("industries");
+                        }}
+                        className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Education</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Student information systems</div>
-                      </a>
-                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                      </div>
+                      <div 
+                        onClick={() => {
+                          window.location.href = "#industries";
+                          toggleDropdown("industries");
+                        }}
+                        className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Manufacturing</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Inventory and production tracking</div>
-                      </a>
-                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                      </div>
+                      <div 
+                        onClick={() => {
+                          window.location.href = "#industries";
+                          toggleDropdown("industries");
+                        }}
+                        className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Small Retail</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Point of sale and inventory solutions</div>
-                      </a>
-                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                      </div>
+                      <div 
+                        onClick={() => {
+                          window.location.href = "#industries";
+                          toggleDropdown("industries");
+                        }}
+                        className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Food Service</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Order management and scheduling</div>
-                      </a>
-                      <a href="#industries" className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1">
+                      </div>
+                      <div 
+                        onClick={() => {
+                          window.location.href = "#industries";
+                          toggleDropdown("industries");
+                        }}
+                        className="p-3 rounded-lg group transition-all duration-300 hover:bg-gray-50 hover:shadow-md transform hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="font-medium text-sm text-gray-900 group-hover:text-primary transition-colors duration-300">Home Services</div>
                         <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700 transition-colors duration-300">Job scheduling and client management</div>
-                      </a>
+                      </div>
                     </div>
                   </div>
                 )}
