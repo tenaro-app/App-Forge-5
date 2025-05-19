@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useQuery } from "@tanstack/react-query";
-import { Mail, Phone, Building, User, FileText, Check, X, Clock } from "lucide-react";
+import { Mail, Phone, Building, User, FileText, Check, X, Clock, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
 
 export default function AdminContacts() {
@@ -88,18 +88,108 @@ export default function AdminContacts() {
       </div>
     );
   }
+  
+  if (!isAuthenticated || !isAdmin) {
+    return null; // Will redirect in useEffect
+  }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Contact Form Submissions</h1>
-        <button
-          onClick={() => refetch()}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-        >
-          Refresh
-        </button>
-      </div>
+    <div className="bg-gray-50 min-h-screen">
+      {/* Admin Header */}
+      <header className="bg-gray-900 text-white shadow-md">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center shadow-sm">
+                    <span className="text-white font-bold text-lg">AF</span>
+                  </div>
+                  <span className="ml-2 text-xl font-bold">AppForge Admin</span>
+                </div>
+              </div>
+              <nav className="hidden md:block ml-10">
+                <div className="flex items-baseline space-x-4">
+                  <button 
+                    onClick={() => setLocation("/admin")}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Dashboard
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/admin/clients")}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Clients
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/admin/projects")}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Projects
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/admin/team")}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Team
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/admin/contacts")}
+                    className="px-3 py-2 rounded-md text-sm font-medium bg-gray-800 text-white"
+                  >
+                    Contacts
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/admin/support")}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Support
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/admin/settings")}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Settings
+                  </button>
+                </div>
+              </nav>
+            </div>
+            <div className="flex items-center">
+              <button 
+                onClick={() => setLocation("/dashboard")}
+                className="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+              >
+                Client View
+              </button>
+              <div className="ml-4 relative flex-shrink-0">
+                <div className="flex items-center">
+                  <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-white">
+                    {user?.firstName?.charAt(0) || user?.email?.charAt(0) || "A"}
+                  </div>
+                  <span className="ml-2 text-sm font-medium text-white">
+                    {user?.firstName || "Admin"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Contact Form Submissions</h1>
+            <p className="mt-1 text-gray-600">Review and manage website contact inquiries</p>
+          </div>
+          <button
+            onClick={() => refetch()}
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Refresh
+          </button>
+        </div>
 
       {isContactsLoading ? (
         <div className="bg-white rounded-lg shadow-md p-6 text-center">
@@ -112,7 +202,7 @@ export default function AdminContacts() {
           <p className="mt-4 text-gray-500">Error loading contact submissions</p>
           <p className="text-sm text-red-500">{error instanceof Error ? error.message : "Unknown error"}</p>
         </div>
-      ) : contacts && contacts.length > 0 ? (
+      ) : contacts.length > 0 ? (
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -201,6 +291,7 @@ export default function AdminContacts() {
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 }
