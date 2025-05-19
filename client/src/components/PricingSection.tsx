@@ -106,8 +106,8 @@ export default function PricingSection() {
           className="flex justify-center items-center mb-16"
           variants={fadeIn("up", "tween", 0.2, 1)}
         >
-          <span className={`text-base font-medium ${!isAnnual ? 'text-primary font-bold' : 'text-gray-500'}`}>Monthly</span>
-          <div className="relative mx-4 w-16 h-8">
+          <span className={`text-base font-medium transition-all duration-300 ${!isAnnual ? 'text-primary font-bold scale-105' : 'text-gray-500'}`}>Monthly</span>
+          <div className="relative mx-4 w-16 h-8 group">
             <input 
               type="checkbox" 
               id="billing-toggle" 
@@ -117,12 +117,13 @@ export default function PricingSection() {
             />
             <label 
               htmlFor="billing-toggle" 
-              className="absolute inset-0 cursor-pointer rounded-full bg-gray-300 peer-checked:bg-primary transition-colors"
+              className="absolute inset-0 cursor-pointer rounded-full bg-gray-300 peer-checked:bg-primary transition-all duration-300 hover:shadow-md group-hover:scale-105"
             />
-            <span className={`absolute inset-y-0 left-0 m-1 w-6 h-6 rounded-full bg-white shadow-md transition-transform ${isAnnual ? 'translate-x-8' : 'translate-x-0'}`} />
+            <span className={`absolute inset-y-0 left-0 m-1 w-6 h-6 rounded-full bg-white shadow-md transition-all duration-300 group-hover:shadow-lg ${isAnnual ? 'translate-x-8' : 'translate-x-0'}`} />
+            <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 group-hover:shadow-lg group-hover:shadow-primary/10 transition-all duration-300"></span>
           </div>
-          <span className={`text-base font-medium ${isAnnual ? 'text-primary font-bold' : 'text-gray-500'}`}>
-            Annual <span className="text-xs bg-primary text-white rounded-full px-2 py-0.5 ml-1">Save 20%</span>
+          <span className={`text-base font-medium transition-all duration-300 ${isAnnual ? 'text-primary font-bold scale-105' : 'text-gray-500'}`}>
+            Annual <span className="text-xs bg-primary text-white rounded-full px-2 py-0.5 ml-1 animate-pulse">Save 20%</span>
           </span>
         </motion.div>
         
@@ -130,34 +131,34 @@ export default function PricingSection() {
           {newPricingPlansData.map((plan, index) => (
             <motion.div 
               key={index}
-              className={`relative border-2 ${plan.highlighted ? 'border-primary shadow-2xl shadow-primary/20' : 'border-gray-200 shadow-xl hover:shadow-2xl'} rounded-2xl overflow-hidden bg-white transition-all hover:-translate-y-2 duration-300`}
+              className={`relative border-2 ${plan.highlighted ? 'border-primary shadow-2xl shadow-primary/20' : 'border-gray-200 shadow-xl hover:shadow-2xl hover:border-gray-300'} rounded-2xl overflow-hidden bg-white transition-all hover:-translate-y-2 duration-300 group`}
               variants={fadeIn("up", "spring", index * 0.1 + 0.3, 0.75)}
             >
               {plan.tag && (
-                <div className={`absolute top-0 right-0 ${plan.highlighted ? 'bg-primary' : 'bg-gray-800'} text-white px-6 py-1 rounded-bl-xl font-bold transform translate-x-2 -translate-y-0 rotate-0 shadow-lg`}>
+                <div className={`absolute top-0 right-0 ${plan.highlighted ? 'bg-primary' : 'bg-gray-800'} text-white px-6 py-1 rounded-bl-xl font-bold transform translate-x-2 -translate-y-0 rotate-0 shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl`}>
                   <span className="text-xs tracking-wider">{plan.tag}</span>
                 </div>
               )}
               
-              <div className={`${plan.highlighted ? 'bg-primary text-white' : 'bg-gray-100 text-gray-900'} p-8`}>
+              <div className={`${plan.highlighted ? 'bg-primary text-white' : 'bg-gray-100 text-gray-900'} p-8 transition-all duration-300 group-hover:bg-opacity-95`}>
                 <div className="flex items-center mb-4">
-                  <div className={`w-12 h-12 rounded-full ${plan.highlighted ? 'bg-white text-primary' : 'bg-gray-800 text-white'} flex items-center justify-center mr-4`}>
+                  <div className={`w-12 h-12 rounded-full ${plan.highlighted ? 'bg-white text-primary' : 'bg-gray-800 text-white'} flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 transform-gpu group-hover:shadow-lg`}>
                     {plan.icon}
                   </div>
-                  <h3 className="text-2xl font-extrabold font-heading tracking-tight">{plan.name}</h3>
+                  <h3 className="text-2xl font-extrabold font-heading tracking-tight transition-transform duration-300 group-hover:translate-x-1">{plan.name}</h3>
                 </div>
-                <p className={`${plan.highlighted ? 'text-white/90' : 'text-gray-600'} mb-6 text-sm`}>{plan.description}</p>
+                <p className={`${plan.highlighted ? 'text-white/90' : 'text-gray-600'} mb-6 text-sm transition-all duration-300 group-hover:opacity-95`}>{plan.description}</p>
                 
-                <div className="mb-2">
+                <div className="mb-2 group-hover:translate-y-[-2px] transition-transform duration-300">
                   {plan.price ? (
                     <>
-                      <span className="text-5xl font-extrabold tracking-tight">{isAnnual ? plan.annualPrice : plan.price}</span>
-                      <span className={`text-sm ${plan.highlighted ? 'text-white/80' : 'text-gray-500'} ml-1`}>/project</span>
+                      <span className="text-5xl font-extrabold tracking-tight inline-block transition-all duration-300 group-hover:scale-105 origin-left">{isAnnual ? plan.annualPrice : plan.price}</span>
+                      <span className={`text-sm ${plan.highlighted ? 'text-white/80' : 'text-gray-500'} ml-1 transition-all duration-300 group-hover:opacity-80`}>/project</span>
                     </>
                   ) : (
                     <>
-                      <span className="text-5xl font-extrabold tracking-tight">Custom</span>
-                      <span className={`text-sm ${plan.highlighted ? 'text-white/80' : 'text-gray-500'} ml-1`}>/project</span>
+                      <span className="text-5xl font-extrabold tracking-tight inline-block transition-all duration-300 group-hover:scale-105 origin-left">Custom</span>
+                      <span className={`text-sm ${plan.highlighted ? 'text-white/80' : 'text-gray-500'} ml-1 transition-all duration-300 group-hover:opacity-80`}>/project</span>
                     </>
                   )}
                 </div>
