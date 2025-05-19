@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 211 100% 99%;
+  --primary-50: 210 100% 97%;
+  --primary-100: 210 100% 92%;
+  --primary-300: 211 96% 78%;
+  --primary-400: 213 94% 68%;
+  --secondary: 60 4.8% 95.9%;
+  --secondary-foreground: 24 9.8% 10%;
+  --secondary-500: 142 72% 29%;
+  --secondary-600: 142 76% 36%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --accent-500: 25 95% 53%;
+  --accent-600: 15 92% 45%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --ring: 207 90% 54%;
+  --radius: 0.5rem;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  --dark-500: 218 33% 17%;
+  --dark-600: 222 47% 11%;
+  --light-500: 210 40% 98%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 211 100% 99%;
+  --primary-50: 210 40% 8%;
+  --primary-100: 211 45% 12%;
+  --primary-300: 211 50% 45%;
+  --primary-400: 213 60% 60%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --secondary-500: 142 72% 29%;
+  --secondary-600: 142 76% 36%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --accent-500: 25 95% 53%;
+  --accent-600: 15 92% 45%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
+  --dark-500: 218 33% 17%;
+  --dark-600: 222 47% 11%;
+  --light-500: 210 40% 98%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer utilities {
+  .bg-dark-500 {
+    background-color: hsl(var(--dark-500));
+  }
+  .bg-dark-600 {
+    background-color: hsl(var(--dark-600));
+  }
+  .bg-light-500 {
+    background-color: hsl(var(--light-500));
+  }
+  .bg-primary-50 {
+    background-color: hsl(var(--primary-50));
+  }
+  .bg-primary-100 {
+    background-color: hsl(var(--primary-100));
+  }
+  .text-dark-500 {
+    color: hsl(var(--dark-500));
+  }
+  .text-dark-600 {
+    color: hsl(var(--dark-600));
+  }
+  .text-primary-300 {
+    color: hsl(var(--primary-300));
+  }
+  .text-primary-400 {
+    color: hsl(var(--primary-400));
+  }
+  .text-secondary-500 {
+    color: hsl(var(--secondary-500));
+  }
+  .from-dark-600 {
+    --tw-gradient-from: hsl(var(--dark-600));
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+  .to-dark-600 {
+    --tw-gradient-to: hsl(var(--dark-600));
+  }
+}
