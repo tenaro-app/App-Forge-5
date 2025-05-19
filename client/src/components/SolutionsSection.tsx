@@ -137,24 +137,26 @@ export default function SolutionsSection() {
                 <IconRenderer icon={solution.icon} className="h-8 w-8 text-white" />
               </div>
               
-              <h3 className="text-2xl font-bold font-heading mb-3 text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis">{solution.title}</h3>
-              <div className="w-12 h-1 bg-primary/30 mb-4"></div>
-              <p className="text-gray-600 mb-6 text-lg h-[4.5rem] line-clamp-3">{solution.description}</p>
+              <h3 className="text-2xl font-bold font-heading mb-3 text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis group-hover:text-primary transition-colors duration-300">{solution.title}</h3>
+              <div className="w-12 h-1 bg-primary/30 mb-4 group-hover:w-20 transition-all duration-500 ease-in-out"></div>
+              <p className="text-gray-600 mb-6 text-lg h-[4.5rem] line-clamp-3 group-hover:text-gray-800 transition-colors duration-300">{solution.description}</p>
               
               <ul className="space-y-3 mb-8 flex-grow">
                 {solution.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-start">
-                    <div className="bg-primary/10 rounded-full p-1 mr-3 flex-shrink-0 mt-0.5">
-                      <Check className="h-4 w-4 text-primary" />
+                  <li key={featureIndex} className="flex items-start transform transition-transform duration-300 hover:translate-x-1 cursor-pointer">
+                    <div className="bg-primary/10 rounded-full p-1 mr-3 flex-shrink-0 mt-0.5 transition-all duration-300 group-hover:bg-primary/20 hover:bg-primary/30 hover:scale-110">
+                      <Check className="h-4 w-4 text-primary transition-transform duration-300 hover:scale-110" />
                     </div>
-                    <span className="text-gray-700">{feature}</span>
+                    <span className="text-gray-700 transition-colors duration-300 hover:text-primary">{feature}</span>
                   </li>
                 ))}
               </ul>
               
-              <a href="#contact" className="text-primary font-semibold flex items-center text-lg transition-all mt-auto">
-                Explore Solution 
-                <svg className="w-5 h-5 ml-2 group-hover:ml-3 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <a href="#contact" className="text-primary font-semibold flex items-center text-lg transition-all mt-auto group-hover:font-bold relative overflow-hidden">
+                <span className="relative inline-block after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">
+                  Explore Solution
+                </span>
+                <svg className="w-5 h-5 ml-2 group-hover:ml-3 group-hover:scale-110 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                 </svg>
               </a>

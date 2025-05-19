@@ -104,13 +104,13 @@ export default function HeroSection() {
               </div>
             </div>
             
-            <div className="flex space-x-4 items-start">
-              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Rocket className="w-6 h-6 text-primary" />
+            <div className="flex space-x-4 items-start group cursor-pointer">
+              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center transition-all duration-300 group-hover:bg-primary/30 group-hover:scale-110 group-hover:rotate-3 transform-gpu">
+                <Rocket className="w-6 h-6 text-primary transition-all duration-300 group-hover:scale-110" />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-lg">Free Hosting</h3>
-                <p className="text-gray-300 text-sm mt-1">Lifetime free deployment included</p>
+                <h3 className="text-white font-semibold text-lg transition-colors duration-300 group-hover:text-primary">Free Hosting</h3>
+                <p className="text-gray-300 text-sm mt-1 transition-colors duration-300 group-hover:text-gray-200">Lifetime free deployment included</p>
               </div>
             </div>
           </motion.div>

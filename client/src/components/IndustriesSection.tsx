@@ -41,10 +41,10 @@ export default function IndustriesSection() {
                 <IconRenderer icon={industry.icon} className="h-8 w-8 text-white" />
               </div>
               
-              <div className="bg-white rounded-xl pt-14 pb-6 px-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 h-full border border-gray-100">
-                <h3 className="text-xl font-bold font-heading mb-3 whitespace-nowrap overflow-hidden text-ellipsis text-gray-800">{industry.name}</h3>
-                <div className="w-12 h-1 bg-primary/30 mx-auto mb-4"></div>
-                <p className="text-gray-600 mb-5 h-[3.2rem] line-clamp-2">
+              <div className="bg-white rounded-xl pt-14 pb-6 px-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 h-full border border-gray-100 group-hover:-translate-y-1 group-hover:border-primary/30">
+                <h3 className="text-xl font-bold font-heading mb-3 whitespace-nowrap overflow-hidden text-ellipsis text-gray-800 group-hover:text-primary transition-colors duration-300">{industry.name}</h3>
+                <div className="w-12 h-1 bg-primary/30 mx-auto mb-4 group-hover:w-20 transition-all duration-500 ease-in-out"></div>
+                <p className="text-gray-600 mb-5 h-[3.2rem] line-clamp-2 group-hover:text-gray-800 transition-colors duration-300">
                   {industry.description}
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 mb-4">
@@ -71,12 +71,15 @@ export default function IndustriesSection() {
         >
           <a 
             href="#contact" 
-            className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg font-medium transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30 transform hover:-translate-y-1 relative overflow-hidden group"
           >
-            <span>Discuss Your Industry Needs</span>
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-            </svg>
+            <span className="relative z-10 flex items-center">
+              <span className="group-hover:translate-x-[-2px] transition-transform duration-300">Discuss Your Industry Needs</span>
+              <svg className="w-5 h-5 ml-2 group-hover:ml-3 group-hover:scale-110 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </span>
+            <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 group-hover:scale-105 transition-transform duration-500 ease-out"></span>
           </a>
         </motion.div>
       </motion.div>
