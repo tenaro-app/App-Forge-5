@@ -452,11 +452,12 @@ export default function Dashboard() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900">Recent Documents</h2>
-              <Link href="/dashboard/documents">
-                <a className="text-sm font-medium text-primary hover:underline">
-                  View All Documents
-                </a>
-              </Link>
+              <button 
+                onClick={() => setLocation("/dashboard/documents")}
+                className="text-sm font-medium text-primary hover:underline"
+              >
+                View All Documents
+              </button>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
