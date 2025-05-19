@@ -138,13 +138,13 @@ export default function Navbar() {
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                   </button>
                 ) : (
-                  <a 
-                    href={item.href}
-                    className={`text-sm font-medium py-2 relative inline-block ${scrolled ? 'text-gray-800 hover:text-primary' : 'text-white hover:text-primary-100'} transition-all duration-300 group`}
+                  <div 
+                    onClick={() => { window.location.href = item.href || '#'; }}
+                    className={`text-sm font-medium py-2 relative inline-block ${scrolled ? 'text-gray-800 hover:text-primary' : 'text-white hover:text-primary-100'} transition-all duration-300 group cursor-pointer`}
                   >
                     <span className="group-hover:translate-y-[-1px] transition-transform duration-300 inline-block">{item.label}</span>
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                  </a>
+                  </div>
                 )}
 
                 {/* Mega Menu Dropdown */}

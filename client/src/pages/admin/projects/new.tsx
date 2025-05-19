@@ -371,7 +371,7 @@ export default function NewProject() {
                           >
                             <Calendar className="mr-2 h-4 w-4" />
                             {form.getValues("dueDate") ? (
-                              format(form.getValues("dueDate"), "PPP")
+                              format(form.getValues("dueDate") as Date, "PPP")
                             ) : (
                               <span>Pick a date</span>
                             )}

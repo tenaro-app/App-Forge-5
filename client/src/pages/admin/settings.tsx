@@ -94,11 +94,15 @@ export default function AdminSettings() {
     queryKey: ["/api/admin/settings"],
     enabled: isAuthenticated && isAdmin,
     // For development we're using dummy data
-    initialData: dummySettings,
-    onSuccess: (data) => {
-      setSettingsForm(data);
-    }
+    initialData: dummySettings
   });
+  
+  // Set settings form when data changes
+  useEffect(() => {
+    if (settings) {
+      setSettingsForm(settings);
+    }
+  }, [settings]);
   
   // Update settings mutation
   const updateSettingsMutation = useMutation({

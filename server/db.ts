@@ -12,13 +12,13 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Create a pool connection to the database with improved settings for better stability
+// Create a pool connection to the database with improved settings for better reliability
 export const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
-  max: 10, // Maximum number of clients in the pool
+  max: 20, // Maximum number of clients in the pool (increased for better handling of traffic spikes)
   idleTimeoutMillis: 30000, // How long a client can stay idle before being closed
-  connectionTimeoutMillis: 5000, // How long to try to connect before timing out
-  maxUses: 7500, // Close and replace a pooled connection after this many uses
+  connectionTimeoutMillis: 10000, // Extended connection timeout for network resilience
+  maxUses: 10000, // Close and replace a pooled connection after this many uses
 });
 
 // Add error handling for the pool
