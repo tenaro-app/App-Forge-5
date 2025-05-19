@@ -169,10 +169,12 @@ export default function ProjectDetail({ id }: ProjectDetailProps) {
               <h2 className="text-2xl font-bold text-gray-900">{project.name}</h2>
               <p className="mt-1 text-gray-600">{project.description}</p>
               <div className="flex flex-wrap gap-4 mt-2">
-                <div className="flex items-center text-sm text-gray-500">
-                  <Calendar className="w-4 h-4 mr-1" />
-                  <span>Started: {format(new Date(project.startDate), 'MMM d, yyyy')}</span>
-                </div>
+                {project.startDate && (
+                  <div className="flex items-center text-sm text-gray-500">
+                    <Calendar className="w-4 h-4 mr-1" />
+                    <span>Started: {format(new Date(project.startDate), 'MMM d, yyyy')}</span>
+                  </div>
+                )}
                 {project.dueDate && (
                   <div className="flex items-center text-sm text-gray-500">
                     <Clock className="w-4 h-4 mr-1" />
