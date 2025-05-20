@@ -14,7 +14,6 @@ export function useIsAdmin(): boolean {
   // For demo purposes, we'll consider users with specific emails as admins
   if (!user) return false;
   
-  // For demonstration, we're using a simple check for admin emails
-  // In a real app, this would check for admin role in the user object
-  return user.isAdmin === true;
+  // Check if the user role is "admin"
+  return user.role === "admin";
 }

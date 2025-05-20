@@ -11,6 +11,7 @@ import DashboardChat from "@/pages/dashboard/chat";
 import { Suspense } from "react";
 import ProjectDetail from "@/pages/dashboard/projects/id";
 import NewProject from "@/pages/new";
+import AdminAccess from "@/pages/admin-access"; // Added Admin Access page
 
 // Import additional dashboard pages
 import DashboardAnalytics from "@/pages/dashboard/analytics";
@@ -56,6 +57,9 @@ function Router() {
           </Suspense>
         )}
       </Route>
+      
+      {/* Admin Access Portal */}
+      <Route path="/admin-access" component={AdminAccess} />
       
       {/* Admin dashboard routes */}
       <Route path="/admin" component={AdminDashboard} />
