@@ -21,7 +21,8 @@ import {
   Settings,
   LineChart,
   FileText,
-  Plus
+  Plus,
+  Layers
 } from "lucide-react";
 
 // Helper component for project status badges
@@ -224,6 +225,13 @@ export default function Dashboard() {
                 >
                   <BarChart className="w-4 h-4 mr-3" />
                   Dashboard
+                </div>
+                <div 
+                  onClick={() => setLocation("/dashboard/enhanced")}
+                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  <Layers className="w-4 h-4 mr-3" />
+                  Enhanced Dashboard
                 </div>
                 <div 
                   onClick={() => setLocation("/dashboard/projects")}
