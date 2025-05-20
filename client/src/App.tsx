@@ -28,6 +28,7 @@ import KnowledgeBase from "@/pages/dashboard/knowledge";
 import AdminDashboard from "@/pages/admin";
 import AdminClients from "@/pages/admin/clients";
 import AdminNewClient from "@/pages/admin/clients/new";
+import AdminClientDetail from "@/pages/admin/clients/id";
 import AdminContacts from "@/pages/admin/contacts";
 
 function Router() {
@@ -65,6 +66,13 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/clients" component={AdminClients} />
       <Route path="/admin/clients/new" component={AdminNewClient} />
+      <Route path="/admin/clients/:id">
+        {(params) => (
+          <Suspense fallback={<div className="p-8 text-center">Loading client details...</div>}>
+            <AdminClientDetail id={params.id} />
+          </Suspense>
+        )}
+      </Route>
       <Route path="/admin/contacts" component={AdminContacts} />
       
       {/* Fallback to 404 */}
