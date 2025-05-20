@@ -10,7 +10,8 @@ import {
   FileText,
   ChevronRight,
   ChevronDown,
-  Clock
+  Clock,
+  MessageSquare
 } from "lucide-react";
 
 // Sample knowledge base categories
