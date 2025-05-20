@@ -329,6 +329,9 @@ export default function AdminDashboard() {
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {isOverviewDataLoading ? "..." : overviewData?.activeClients}
                 </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  currently engaged
+                </p>
               </div>
               <div className="rounded-full bg-blue-100 p-3">
                 <Users className="h-6 w-6 text-blue-600" />
@@ -403,6 +406,9 @@ export default function AdminDashboard() {
                 <p className="text-gray-500 font-medium text-sm">Team Members</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {isOverviewDataLoading ? "..." : overviewData?.teamMembers}
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  active professionals
                 </p>
               </div>
               <div className="rounded-full bg-green-100 p-3">
