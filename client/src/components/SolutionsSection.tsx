@@ -98,7 +98,7 @@ export default function SolutionsSection() {
   ];
 
   return (
-    <section id="solutions" className="py-24 bg-gradient-to-b from-gray-50 to-white relative">
+    <section id="solutions" className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white relative">
       <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
       
       <motion.div 
@@ -106,7 +106,7 @@ export default function SolutionsSection() {
         variants={staggerContainer}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, amount: 0.25 }}
+        viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div 
           className="text-center max-w-3xl mx-auto mb-20"
@@ -126,20 +126,20 @@ export default function SolutionsSection() {
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
           {solutionsData.map((solution, index) => (
             <motion.div 
               key={index}
-              className="bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all p-8 border border-gray-100 group hover:-translate-y-2 duration-300 h-full flex flex-col"
-              variants={fadeIn("up", "spring", index * 0.1 + 0.2, 0.75)}
+              className="bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all p-5 md:p-8 border border-gray-100 group hover:-translate-y-2 duration-300 h-full flex flex-col"
+              variants={fadeIn("up", "spring", index * 0.05 + 0.1, 0.5)}
             >
               <div className="w-16 h-16 bg-gradient-to-br from-primary/90 to-primary/70 rounded-xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300">
                 <IconRenderer icon={solution.icon} className="h-8 w-8 text-white" />
               </div>
               
-              <h3 className="text-2xl font-bold font-heading mb-3 text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis group-hover:text-primary transition-colors duration-300">{solution.title}</h3>
+              <h3 className="text-2xl font-bold font-heading mb-3 text-gray-800 group-hover:text-primary transition-colors duration-300">{solution.title}</h3>
               <div className="w-12 h-1 bg-primary/30 mb-4 group-hover:w-20 transition-all duration-500 ease-in-out"></div>
-              <p className="text-gray-600 mb-6 text-lg h-[4.5rem] line-clamp-3 group-hover:text-gray-800 transition-colors duration-300">{solution.description}</p>
+              <p className="text-gray-600 mb-6 text-lg group-hover:text-gray-800 transition-colors duration-300 line-clamp-none md:line-clamp-3">{solution.description}</p>
               
               <ul className="space-y-3 mb-8 flex-grow">
                 {solution.features.map((feature, featureIndex) => (

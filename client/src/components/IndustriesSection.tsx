@@ -5,13 +5,13 @@ import IconRenderer from "./IconRenderer";
 
 export default function IndustriesSection() {
   return (
-    <section id="industries" className="py-24 bg-gradient-to-b from-white to-gray-50">
+    <section id="industries" className="py-16 md:py-24 bg-gradient-to-b from-white to-gray-50">
       <motion.div 
         className="container mx-auto px-4 sm:px-6 lg:px-8"
         variants={staggerContainer}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, amount: 0.25 }}
+        viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div 
           className="text-center max-w-3xl mx-auto mb-20"
