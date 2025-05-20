@@ -1,20 +1,53 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { 
+  Mail, 
+  Phone, 
+  Building, 
+  User, 
+  FileText, 
+  Check, 
+  X, 
+  Clock, 
+  MessageSquare,
+  Filter, 
+  Search,
+  RefreshCw
+} from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { useQuery } from "@tanstack/react-query";
-import { Mail, Phone, Building, User, FileText, Check, X, Clock, MessageSquare } from "lucide-react";
-import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function AdminContacts() {
-  const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const isAdmin = useIsAdmin();
   const [location, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  // Redirect non-admin users
+  // Redirect to login if not authenticated or not admin
   useEffect(() => {
-    if (!isAuthLoading && (!isAuthenticated || !isAdmin)) {
-      setLocation("/login");
+    if (!isAuthLoading) {
+      if (!isAuthenticated) {
+        window.location.href = "/api/login";
+      } else if (!isAdmin) {
+        setLocation("/dashboard");
+      }
     }
   }, [isAuthLoading, isAuthenticated, isAdmin, setLocation]);
 
@@ -80,6 +113,19 @@ export default function AdminContacts() {
         );
     }
   };
+
+  // Filter contacts by search query and status
+  const filteredContacts = contacts?.filter(contact => {
+    const fullName = `${contact.firstName} ${contact.lastName || ''}`.toLowerCase();
+    const matchesSearch = searchQuery === "" || 
+      fullName.includes(searchQuery.toLowerCase()) ||
+      (contact.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+      (contact.message?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+    
+    const matchesStatus = statusFilter === "all" || contact.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   if (isAuthLoading) {
     return (
@@ -152,26 +198,23 @@ export default function AdminContacts() {
                   >
                     Settings
                   </button>
+                  <button 
+                    onClick={() => setLocation("/admin-access")}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Admin Portal
+                  </button>
                 </div>
               </nav>
             </div>
             <div className="flex items-center">
-              <button 
+              <Button
+                variant="ghost"
+                className="text-white"
                 onClick={() => setLocation("/dashboard")}
-                className="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
               >
-                Client View
-              </button>
-              <div className="ml-4 relative flex-shrink-0">
-                <div className="flex items-center">
-                  <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-white">
-                    {user?.firstName?.charAt(0) || user?.email?.charAt(0) || "A"}
-                  </div>
-                  <span className="ml-2 text-sm font-medium text-white">
-                    {user?.firstName || "Admin"}
-                  </span>
-                </div>
-              </div>
+                Exit Admin
+              </Button>
             </div>
           </div>
         </div>
@@ -183,12 +226,73 @@ export default function AdminContacts() {
             <h1 className="text-2xl font-bold text-gray-900">Contact Form Submissions</h1>
             <p className="mt-1 text-gray-600">Review and manage website contact inquiries</p>
           </div>
-          <button
+          <Button
             onClick={() => refetch()}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="px-4 py-2"
           >
+            <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
-          </button>
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Total Contacts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{contacts?.length || 0}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">New Contacts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-blue-600">
+                {contacts?.filter(c => c.status === 'new').length || 0}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">In Progress</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-amber-600">
+                {contacts?.filter(c => c.status === 'in_progress').length || 0}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="bg-white rounded-lg border p-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+              <Input
+                type="search"
+                placeholder="Search contacts..."
+                className="pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full sm:w-40">
+                <div className="flex items-center">
+                  <Filter className="mr-2 h-4 w-4" />
+                  <SelectValue placeholder="Status filter" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="new">New</SelectItem>
+                <SelectItem value="in_progress">In Progress</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {isContactsLoading ? (
@@ -202,7 +306,7 @@ export default function AdminContacts() {
             <p className="mt-4 text-gray-500">Error loading contact submissions</p>
             <p className="text-sm text-red-500">{error instanceof Error ? error.message : "Unknown error"}</p>
           </div>
-        ) : contacts.length > 0 ? (
+        ) : filteredContacts.length > 0 ? (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
@@ -226,7 +330,7 @@ export default function AdminContacts() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {contacts.map((contact: any) => (
+                  {filteredContacts.map((contact: any) => (
                     <tr key={contact.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
@@ -254,11 +358,6 @@ export default function AdminContacts() {
                         {contact.projectType && (
                           <div className="text-sm text-gray-500 mt-1">
                             <span className="font-medium">Project:</span> {contact.projectType.replace(/-/g, ' ')}
-                          </div>
-                        )}
-                        {contact.staffMember && (
-                          <div className="text-sm text-gray-500 mt-1">
-                            <span className="font-medium">Requested:</span> {contact.staffMember.replace(/-/g, ' ')}
                           </div>
                         )}
                       </td>
