@@ -142,14 +142,30 @@ export default function CustomizableWidgets() {
     const newWidgetTemplate = availableWidgets.find(w => w.type === type);
     if (!newWidgetTemplate) return;
     
-    // Find the next available row
-    const lastRow = Math.max(...localWidgets.map(w => w.gridRow), 0);
+    // Determine position for new widget - put it in the first column
+    // or find the column with the least widgets
+    const columnCounts = [0, 0]; // For 2 columns
+    
+    localWidgets.forEach(widget => {
+      if (widget.gridColumn <= 2) {
+        columnCounts[widget.gridColumn - 1]++;
+      }
+    });
+    
+    // Choose the column with fewer widgets
+    const targetColumn = columnCounts[0] <= columnCounts[1] ? 1 : 2;
+    
+    // Find the next available row in that column
+    const widgetsInColumn = localWidgets.filter(w => w.gridColumn === targetColumn);
+    const lastRow = widgetsInColumn.length > 0 
+      ? Math.max(...widgetsInColumn.map(w => w.gridRow), 0)
+      : 0;
     
     const newWidget: Widget = {
       id: `new-${Date.now()}`,
       type,
       title: newWidgetTemplate.title,
-      gridColumn: 1,
+      gridColumn: targetColumn,
       gridRow: lastRow + 1,
       size: "medium",
     };
@@ -211,7 +227,7 @@ export default function CustomizableWidgets() {
   return (
     <div>
       <div className="mb-4 flex justify-between items-center">
-        <h2 className="text-xl font-bold text-gray-900">Dashboard</h2>
+        <h2 className="text-xl font-bold text-gray-900">Customize Your Dashboard</h2>
         
         <div className="flex space-x-2">
           {isEditMode ? (
@@ -242,7 +258,65 @@ export default function CustomizableWidgets() {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="mb-4">
+        <p className="text-sm text-gray-600">
+          {isEditMode 
+            ? "Drag widgets to rearrange, click the 'Add Widget' button to add more widgets, or remove widgets you don't need." 
+            : "Your personalized dashboard with the information that matters most to you."
+          }
+        </p>
+      </div>
+      
+      {/* Widget layout options - only visible in edit mode */}
+      {isEditMode && (
+        <div className="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">Layout Options</h3>
+          <div className="flex flex-wrap gap-4">
+            <div>
+              <label className="text-xs text-gray-500 block mb-1">Number of Columns</label>
+              <div className="flex space-x-2">
+                <button 
+                  className="px-2 py-1 text-xs border border-gray-300 rounded bg-white hover:bg-gray-50 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary"
+                  onClick={() => alert('This would change to a single column layout (Coming soon)')}
+                >
+                  Single
+                </button>
+                <button 
+                  className="px-2 py-1 text-xs border border-primary rounded bg-primary/10 text-primary font-medium focus:outline-none focus:ring-1 focus:ring-primary"
+                >
+                  Double
+                </button>
+              </div>
+            </div>
+            
+            <div>
+              <label className="text-xs text-gray-500 block mb-1">Column Width</label>
+              <div className="flex space-x-2">
+                <button 
+                  className="px-2 py-1 text-xs border border-gray-300 rounded bg-white hover:bg-gray-50 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary"
+                  onClick={() => alert('This would set equal column widths (Coming soon)')}
+                >
+                  Equal
+                </button>
+                <button 
+                  className="px-2 py-1 text-xs border border-gray-300 rounded bg-white hover:bg-gray-50 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary"
+                  onClick={() => alert('This would set left column wider (Coming soon)')}
+                >
+                  Left wider
+                </button>
+                <button 
+                  className="px-2 py-1 text-xs border border-gray-300 rounded bg-white hover:bg-gray-50 text-gray-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary"
+                  onClick={() => alert('This would set right column wider (Coming soon)')}
+                >
+                  Right wider
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {localWidgets.map(widget => (
           <div 
             key={widget.id}
@@ -273,7 +347,7 @@ export default function CustomizableWidgets() {
           </div>
         ))}
         
-        {isEditMode && !isAddingWidget && (
+        {isEditMode && (
           <button
             onClick={() => setIsAddingWidget(true)}
             className="h-48 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary"
@@ -284,30 +358,34 @@ export default function CustomizableWidgets() {
         )}
       </div>
       
-      {/* Widget selector modal */}
+      {/* Widget selector modal - improved version */}
       {isAddingWidget && (
-        <div className="fixed inset-0 z-50 overflow-y-auto" onClick={() => setIsAddingWidget(false)}>
+        <div className="fixed inset-0 z-50 overflow-y-auto" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center">
-            <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
             
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="inline-block p-6 overflow-hidden text-left align-bottom bg-white rounded-lg shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-              onClick={e => e.stopPropagation()}
-            >
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Add Widget</h3>
+            <div className="inline-block p-6 overflow-hidden text-left align-bottom bg-white rounded-lg shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium text-gray-900">Add Widget</h3>
+                <button 
+                  onClick={() => setIsAddingWidget(false)}
+                  className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <p className="text-sm text-gray-500 mb-4">
+                Select a widget to add to your dashboard. You can add multiple widgets of the same type.
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto py-2">
                 {availableWidgets.map(widget => (
                   <button
                     key={widget.type}
-                    className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left flex items-center"
+                    className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 text-left flex items-center"
                     onClick={() => addWidget(widget.type)}
                   >
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 flex-shrink-0">
                       {widget.icon}
                     </div>
                     <span className="text-sm font-medium text-gray-900">{widget.title}</span>
@@ -315,16 +393,28 @@ export default function CustomizableWidgets() {
                 ))}
               </div>
               
-              <div className="mt-6">
+              <div className="mt-6 flex space-x-3">
                 <button
                   type="button"
-                  className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-transparent rounded-md hover:bg-gray-200 focus:outline-none"
+                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  onClick={() => {
+                    // Add a default widget (first in the list)
+                    if (availableWidgets.length > 0) {
+                      addWidget(availableWidgets[0].type);
+                    }
+                  }}
+                >
+                  Add Default Widget
+                </button>
+                <button
+                  type="button"
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                   onClick={() => setIsAddingWidget(false)}
                 >
                   Cancel
                 </button>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       )}
