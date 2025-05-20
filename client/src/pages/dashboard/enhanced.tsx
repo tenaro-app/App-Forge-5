@@ -25,13 +25,7 @@ export default function EnhancedDashboard() {
   const [location, setLocation] = useLocation();
   const [selectedTab, setSelectedTab] = useState("dashboard");
 
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isAuthLoading && !isAuthenticated) {
-      window.location.href = "/api/login";
-    }
-  }, [isAuthLoading, isAuthenticated]);
-
+  // For demo purposes, we're allowing access without authentication
   if (isAuthLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -39,10 +33,12 @@ export default function EnhancedDashboard() {
       </div>
     );
   }
-
-  if (!isAuthenticated) {
-    return null; // Will redirect in useEffect
-  }
+  
+  // Create a mock user if not authenticated
+  const mockUser = {
+    firstName: "Demo User",
+    email: "demo@example.com"
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -124,10 +120,10 @@ export default function EnhancedDashboard() {
                   onClick={() => window.location.href = "/api/logout"}
                 >
                   <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                    {user?.firstName?.charAt(0) || user?.email?.charAt(0) || "U"}
+                    {(user?.firstName || mockUser.firstName)?.charAt(0) || (user?.email || mockUser.email)?.charAt(0) || "U"}
                   </div>
                   <span className="text-sm font-medium text-gray-700 hidden md:block">
-                    {user?.firstName || user?.email || "User"}
+                    {user?.firstName || mockUser.firstName || user?.email || mockUser.email || "User"}
                   </span>
                 </div>
               </div>
@@ -142,7 +138,7 @@ export default function EnhancedDashboard() {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back, {user?.firstName || "Client"}!
+              Welcome back, {user?.firstName || mockUser.firstName || "Client"}!
             </h1>
             <p className="mt-1 text-gray-600">
               Track your projects, achievements, and manage your account from one place.
