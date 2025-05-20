@@ -4,7 +4,9 @@ import {
   projects, type Project, type InsertProject,
   milestones, type Milestone, type InsertMilestone,
   chatMessages, type ChatMessage, type InsertChatMessage,
-  chatSessions, type ChatSession, type InsertChatSession
+  chatSessions, type ChatSession, type InsertChatSession,
+  supportTickets, type SupportTicket, type InsertSupportTicket,
+  ticketResponses, type TicketResponse, type InsertTicketResponse
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, isNull } from "drizzle-orm";
@@ -322,6 +324,115 @@ export class DatabaseStorage implements IStorage {
         eq(chatMessages.isRead, false)
       ));
     return messages.length;
+  }
+
+  // Support ticket operations
+  async createSupportTicket(ticket: InsertSupportTicket): Promise<SupportTicket> {
+    try {
+      const [newTicket] = await db
+        .insert(supportTickets)
+        .values(ticket)
+        .returning();
+      return newTicket;
+    } catch (error) {
+      console.error("Error creating support ticket:", error);
+      throw error;
+    }
+  }
+
+  async getSupportTicketById(id: number): Promise<SupportTicket | undefined> {
+    try {
+      const [ticket] = await db
+        .select()
+        .from(supportTickets)
+        .where(eq(supportTickets.id, id));
+      return ticket;
+    } catch (error) {
+      console.error("Error getting support ticket by ID:", error);
+      throw error;
+    }
+  }
+
+  async getSupportTicketsByClientId(clientId: string): Promise<SupportTicket[]> {
+    try {
+      return await db
+        .select()
+        .from(supportTickets)
+        .where(eq(supportTickets.clientId, clientId))
+        .orderBy(desc(supportTickets.createdAt));
+    } catch (error) {
+      console.error("Error getting support tickets by client ID:", error);
+      throw error;
+    }
+  }
+
+  async getSupportTicketsByProjectId(projectId: number): Promise<SupportTicket[]> {
+    try {
+      return await db
+        .select()
+        .from(supportTickets)
+        .where(eq(supportTickets.projectId, projectId))
+        .orderBy(desc(supportTickets.createdAt));
+    } catch (error) {
+      console.error("Error getting support tickets by project ID:", error);
+      throw error;
+    }
+  }
+
+  async getAllSupportTickets(): Promise<SupportTicket[]> {
+    try {
+      return await db
+        .select()
+        .from(supportTickets)
+        .orderBy(desc(supportTickets.createdAt));
+    } catch (error) {
+      console.error("Error getting all support tickets:", error);
+      throw error;
+    }
+  }
+
+  async updateSupportTicket(id: number, ticketData: Partial<InsertSupportTicket>): Promise<SupportTicket> {
+    try {
+      const [updatedTicket] = await db
+        .update(supportTickets)
+        .set({
+          ...ticketData,
+          updatedAt: new Date()
+        })
+        .where(eq(supportTickets.id, id))
+        .returning();
+      return updatedTicket;
+    } catch (error) {
+      console.error("Error updating support ticket:", error);
+      throw error;
+    }
+  }
+
+  // Ticket response operations
+  async createTicketResponse(response: InsertTicketResponse): Promise<TicketResponse> {
+    try {
+      const [newResponse] = await db
+        .insert(ticketResponses)
+        .values(response)
+        .returning();
+      return newResponse;
+    } catch (error) {
+      console.error("Error creating ticket response:", error);
+      throw error;
+    }
+  }
+
+  async getTicketResponsesByTicketId(ticketId: number): Promise<TicketResponse[]> {
+    try {
+      return await db
+        .select()
+        .from(ticketResponses)
+        .where(eq(ticketResponses.ticketId, ticketId))
+        .orderBy(ticketResponses.createdAt);
+    } catch (error) {
+      console.error("Error getting ticket responses:", error);
+      throw error;
+    }
   }
 }
 
