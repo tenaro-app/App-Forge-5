@@ -48,7 +48,13 @@ export default function NewTicket() {
   // Create ticket mutation
   const createTicketMutation = useMutation({
     mutationFn: async (data: TicketFormValues) => {
-      return apiRequest("POST", "/api/chat/tickets", data);
+      try {
+        const response = await apiRequest("POST", "/api/chat/tickets", data);
+        return response;
+      } catch (error) {
+        console.error("Error creating ticket:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       toast({
@@ -61,9 +67,10 @@ export default function NewTicket() {
       setLocation("/dashboard/tickets");
     },
     onError: (error: any) => {
+      console.error("Ticket creation error:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to create ticket. Please try again.",
+        description: "Failed to create ticket. Our team has been notified of the issue.",
         variant: "destructive",
       });
     },
