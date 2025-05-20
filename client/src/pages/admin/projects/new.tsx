@@ -450,31 +450,59 @@ export default function NewProject() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Team Members</FormLabel>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                            {teamMembers.map(member => (
-                              <div key={member.id} className="flex items-center space-x-2">
-                                <input
-                                  type="checkbox"
-                                  id={`member-${member.id}`}
-                                  value={member.id}
-                                  checked={field.value.includes(member.id)}
-                                  onChange={e => {
-                                    const checked = e.target.checked;
-                                    const updatedValue = checked
-                                      ? [...field.value, member.id]
-                                      : field.value.filter(id => id !== member.id);
-                                    field.onChange(updatedValue);
-                                  }}
-                                  className="rounded border-gray-300 text-primary focus:ring-primary"
-                                />
-                                <label htmlFor={`member-${member.id}`} className="text-sm">
-                                  {member.name}
-                                </label>
-                              </div>
-                            ))}
+                          
+                          <div className="mb-3">
+                            <div className="flex items-center space-x-2 p-3 border border-primary/20 bg-primary/5 rounded-md">
+                              <input
+                                type="checkbox"
+                                id="auto-select-team"
+                                onChange={e => {
+                                  if (e.target.checked) {
+                                    // Special value to indicate auto-selection
+                                    field.onChange(["auto"]);
+                                  } else {
+                                    field.onChange([]);
+                                  }
+                                }}
+                                checked={field.value.includes("auto")}
+                                className="rounded border-gray-300 text-primary focus:ring-primary"
+                              />
+                              <label htmlFor="auto-select-team" className="font-medium">
+                                Let App Forge decide the best team members for this project
+                              </label>
+                            </div>
                           </div>
+                          
+                          {!field.value.includes("auto") && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                              {teamMembers.map(member => (
+                                <div key={member.id} className="flex items-center space-x-2">
+                                  <input
+                                    type="checkbox"
+                                    id={`member-${member.id}`}
+                                    value={member.id}
+                                    checked={field.value.includes(member.id)}
+                                    onChange={e => {
+                                      const checked = e.target.checked;
+                                      const updatedValue = checked
+                                        ? [...field.value, member.id]
+                                        : field.value.filter(id => id !== member.id);
+                                      field.onChange(updatedValue);
+                                    }}
+                                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                                  />
+                                  <label htmlFor={`member-${member.id}`} className="text-sm">
+                                    {member.name}
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          
                           <FormDescription>
-                            Select team members who will work on this project
+                            {field.value.includes("auto") 
+                              ? "Our AI will analyze the project requirements and assign the most qualified team members"
+                              : "Select team members who will work on this project"}
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
