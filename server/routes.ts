@@ -425,6 +425,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // Support Ticket Routes
+  
+  // Create a new support ticket
+  app.post("/api/chat/tickets", isAuthenticated, async (req: any, res: Response) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { subject, description, priority, projectId } = req.body;
+      
+      // Mock data for demonstration
+      const mockTicket = {
+        id: Math.floor(Math.random() * 1000) + 1,
+        clientId: userId,
+        subject,
+        description,
+        priority: priority || "medium",
+        projectId: projectId ? parseInt(projectId) : null,
+        status: "new",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      res.status(201).json(mockTicket);
+    } catch (error) {
+      console.error("Error creating support ticket:", error);
+      res.status(500).json({ 
+        message: "Failed to create ticket", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+  
+  // Get all tickets for the authenticated user
+  app.get("/api/chat/tickets", isAuthenticated, async (req: any, res: Response) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Mock data for demonstration
+      const mockTickets = [
+        {
+          id: 1,
+          clientId: userId,
+          subject: "Error in dashboard analytics module",
+          description: "I'm seeing incorrect data in the analytics dashboard. Numbers don't match our internal reporting.",
+          status: "new",
+          priority: "high",
+          projectId: 1,
+          projectName: "E-commerce Dashboard",
+          createdAt: new Date(2023, 4, 15).toISOString(),
+          updatedAt: new Date(2023, 4, 15).toISOString()
+        },
+        {
+          id: 2,
+          clientId: userId,
+          subject: "Feature request: Export to PDF",
+          description: "We need to be able to export reports as PDF files for our weekly meetings.",
+          status: "in_progress",
+          priority: "medium",
+          projectId: 2,
+          projectName: "Analytics Portal",
+          createdAt: new Date(2023, 4, 10).toISOString(),
+          updatedAt: new Date(2023, 4, 14).toISOString()
+        },
+        {
+          id: 3,
+          clientId: userId,
+          subject: "Login issues from mobile app",
+          description: "Several of our team members are having trouble logging in from the mobile app but desktop works fine.",
+          status: "closed",
+          priority: "high",
+          projectId: 3,
+          projectName: "Mobile Application",
+          createdAt: new Date(2023, 4, 5).toISOString(),
+          updatedAt: new Date(2023, 4, 8).toISOString()
+        }
+      ];
+      
+      res.json(mockTickets);
+    } catch (error) {
+      console.error("Error fetching support tickets:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch tickets", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
 
   return httpServer;
 }
