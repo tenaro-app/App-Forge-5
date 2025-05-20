@@ -22,6 +22,7 @@ import DashboardSettings from "@/pages/dashboard/settings";
 import EnhancedDashboard from "@/pages/dashboard/enhanced";
 import HybridDashboard from "@/pages/dashboard/hybrid";
 import Tickets from "@/pages/dashboard/tickets";
+import NewTicket from "@/pages/dashboard/tickets/new";
 import KnowledgeBase from "@/pages/dashboard/knowledge";
 
 // Import admin dashboard pages
@@ -52,6 +53,7 @@ function Router() {
       <Route path="/dashboard/analytics" component={DashboardAnalytics} />
       <Route path="/dashboard/documents" component={DashboardDocuments} />
       <Route path="/dashboard/tickets" component={Tickets} />
+      <Route path="/dashboard/tickets/new" component={NewTicket} />
       <Route path="/dashboard/knowledge" component={KnowledgeBase} />
       <Route path="/dashboard/team" component={DashboardTeam} />
       <Route path="/dashboard/billing" component={DashboardBilling} />

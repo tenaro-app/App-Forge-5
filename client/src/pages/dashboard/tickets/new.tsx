@@ -29,7 +29,7 @@ export default function NewTicket() {
   const queryClient = useQueryClient();
   
   // Fetch projects for dropdown
-  const { data: projects = [] } = useQuery({
+  const { data: projects = [] } = useQuery<any[]>({
     queryKey: ["/api/projects"],
     enabled: isAuthenticated,
   });

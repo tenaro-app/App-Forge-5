@@ -24,7 +24,7 @@ export default function TicketsOverview() {
   const [sortDir, setSortDir] = useState("desc"); // asc, desc
   
   // Fetch tickets
-  const { data: tickets = [], isLoading: isTicketsLoading } = useQuery({
+  const { data: tickets = [], isLoading: isTicketsLoading } = useQuery<any[]>({
     queryKey: ["/api/chat/tickets"],
     enabled: isAuthenticated,
   });
