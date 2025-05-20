@@ -19,6 +19,7 @@ import DashboardTeam from "@/pages/dashboard/team";
 import DashboardBilling from "@/pages/dashboard/billing";
 import DashboardSettings from "@/pages/dashboard/settings";
 import EnhancedDashboard from "@/pages/dashboard/enhanced";
+import HybridDashboard from "@/pages/dashboard/hybrid";
 
 // Import admin dashboard pages
 import AdminDashboard from "@/pages/admin";
@@ -36,6 +37,7 @@ function Router() {
       {/* Client dashboard routes */}
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/dashboard/enhanced" component={EnhancedDashboard} />
+      <Route path="/dashboard/hybrid" component={HybridDashboard} />
       <Route path="/dashboard/chat" component={DashboardChat} />
       <Route path="/dashboard/analytics" component={DashboardAnalytics} />
       <Route path="/dashboard/documents" component={DashboardDocuments} />
