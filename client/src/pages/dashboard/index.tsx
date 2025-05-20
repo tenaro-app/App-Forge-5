@@ -319,7 +319,7 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className="mt-4 md:mt-0">
-                <Link href="/dashboard/projects/new">
+                <Link href="/new">
                   <a className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md shadow-sm hover:bg-primary/90 transition-colors">
                     <Plus className="w-4 h-4 mr-1.5" />
                     Request New Project
