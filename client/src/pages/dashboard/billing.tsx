@@ -118,38 +118,164 @@ function formatDate(dateString: string) {
   }).format(date);
 }
 
-// Helper function to create a downloadable invoice PDF
+// Helper function to create a professional, downloadable invoice PDF
 function generateInvoicePDF(invoice: any) {
-  // In a real application, this would generate a proper PDF or download from server
-  // For demo purposes, we're creating a simple blob with invoice details
-  
-  const invoiceText = `
-    INVOICE ${invoice.id}
-    Date: ${formatDate(invoice.date)}
+  // Import jsPDF for PDF generation
+  import('jspdf').then((jspdfModule) => {
+    const { default: jsPDF } = jspdfModule;
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
     
-    Billed To:
-    John Smith
-    Example Company Inc.
+    // Set document properties
+    doc.setProperties({
+      title: `Invoice ${invoice.id}`,
+      subject: 'Invoice',
+      author: 'AppForge Inc.',
+      keywords: 'invoice, billing, payment',
+      creator: 'AppForge Billing System'
+    });
     
-    Items:
-    ${invoice.items.map((item: any) => `${item.description}: ${item.amount}`).join('\n    ')}
+    // Document dimensions
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 20;
     
-    Total: ${invoice.amount}
-    Status: ${invoice.status.toUpperCase()}
+    // Colors
+    const primaryColor = '#FF0A36'; // AppForge brand color
+    const textColor = '#333333';
+    const lightGray = '#F8F8F8';
+    const mediumGray = '#E0E0E0';
     
-    Payment processed through AppForge Inc.
-    Thank you for your business!
-  `;
-  
-  const blob = new Blob([invoiceText], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${invoice.id}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+    // Add logo at the top
+    try {
+      // Add the company logo - in real implementation this would be an image
+      // For now we'll create a styled header with the company name
+      doc.setFillColor(primaryColor);
+      doc.rect(margin, margin, 40, 15, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('AppForge', margin + 8, margin + 10);
+      
+      // Company info
+      doc.setTextColor(textColor);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text('AppForge Inc.', margin + 50, margin + 5);
+      doc.text('123 Tech Boulevard', margin + 50, margin + 10);
+      doc.text('San Francisco, CA 94104', margin + 50, margin + 15);
+    } catch (e) {
+      console.error('Error adding logo:', e);
+    }
+    
+    // Invoice title and number
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(primaryColor);
+    doc.text('INVOICE', margin, margin + 30);
+    doc.setFontSize(12);
+    doc.setTextColor(textColor);
+    doc.text(`Invoice Number: ${invoice.id}`, margin, margin + 38);
+    doc.text(`Date: ${formatDate(invoice.date)}`, margin, margin + 45);
+    
+    // Status badge
+    const statusText = invoice.status === 'paid' ? 'PAID' : 'PENDING';
+    doc.setFillColor(invoice.status === 'paid' ? '#10B981' : '#F59E0B');
+    doc.setDrawColor(invoice.status === 'paid' ? '#10B981' : '#F59E0B');
+    doc.roundedRect(pageWidth - margin - 30, margin, 30, 10, 2, 2, 'FD');
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.text(statusText, pageWidth - margin - 15, margin + 6, { align: 'center' });
+    
+    // Billing info
+    doc.setTextColor(textColor);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Billed To:', margin, margin + 60);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('John Smith', margin, margin + 68);
+    doc.text('Example Company Inc.', margin, margin + 74);
+    doc.text('1234 Business Ave, Suite 500', margin, margin + 80);
+    doc.text('San Francisco, CA 94105', margin, margin + 86);
+    
+    // Payment details
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Payment Method:', pageWidth - margin - 80, margin + 60);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Visa •••• 4242', pageWidth - margin - 80, margin + 68);
+    doc.text('Payment Date: ' + formatDate(invoice.date), pageWidth - margin - 80, margin + 74);
+    
+    // Table header
+    const tableTop = margin + 100;
+    const tableColWidths = [(pageWidth - 2 * margin) * 0.6, (pageWidth - 2 * margin) * 0.4];
+    
+    // Draw table header background
+    doc.setFillColor(lightGray);
+    doc.rect(margin, tableTop, pageWidth - 2 * margin, 10, 'F');
+    
+    // Table header text
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(textColor);
+    doc.setFontSize(11);
+    doc.text('Description', margin + 5, tableTop + 7);
+    doc.text('Amount', margin + tableColWidths[0] + 5, tableTop + 7);
+    
+    // Table content
+    let yPosition = tableTop + 10;
+    
+    // Draw table rows
+    invoice.items.forEach((item: any, index: number) => {
+      // Draw row background (alternating colors)
+      if (index % 2 === 0) {
+        doc.setFillColor(255, 255, 255);
+      } else {
+        doc.setFillColor(lightGray);
+      }
+      doc.rect(margin, yPosition, pageWidth - 2 * margin, 10, 'F');
+      
+      // Row content
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(textColor);
+      doc.text(item.description, margin + 5, yPosition + 7);
+      doc.setFont('helvetica', 'bold');
+      doc.text(item.amount, margin + tableColWidths[0] + 5, yPosition + 7);
+      
+      yPosition += 10;
+    });
+    
+    // Total section
+    doc.setFillColor(primaryColor);
+    doc.rect(margin, yPosition, pageWidth - 2 * margin, 12, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('Total', margin + 5, yPosition + 8);
+    doc.text(invoice.amount, margin + tableColWidths[0] + 5, yPosition + 8);
+    
+    // Footer
+    const footerY = pageHeight - margin - 20;
+    doc.setDrawColor(mediumGray);
+    doc.line(margin, footerY, pageWidth - margin, footerY);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(textColor);
+    doc.setFontSize(9);
+    doc.text('Thank you for your business!', margin, footerY + 7);
+    doc.text('For questions about this invoice, please contact support@appforge.com', margin, footerY + 14);
+    
+    // Save the PDF
+    doc.save(`${invoice.id}.pdf`);
+  }).catch(err => {
+    console.error('Error generating PDF:', err);
+    alert('There was an error generating the PDF. Please try again.');
+  });
 }
 
 export default function BillingPage() {
