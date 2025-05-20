@@ -29,6 +29,7 @@ import AdminDashboard from "@/pages/admin";
 import AdminClients from "@/pages/admin/clients";
 import AdminNewClient from "@/pages/admin/clients/new";
 import AdminClientDetail from "@/pages/admin/clients/id";
+import AdminClientEdit from "@/pages/admin/clients/edit";
 import AdminContacts from "@/pages/admin/contacts";
 
 function Router() {
@@ -70,6 +71,13 @@ function Router() {
         {(params) => (
           <Suspense fallback={<div className="p-8 text-center">Loading client details...</div>}>
             <AdminClientDetail id={params.id} />
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/admin/clients/:id/edit">
+        {(params) => (
+          <Suspense fallback={<div className="p-8 text-center">Loading client edit form...</div>}>
+            <AdminClientEdit params={params} />
           </Suspense>
         )}
       </Route>
