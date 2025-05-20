@@ -32,6 +32,7 @@ import AdminClientDetail from "@/pages/admin/clients/id";
 import AdminClientEdit from "@/pages/admin/clients/edit";
 import AdminContacts from "@/pages/admin/contacts";
 import AdminProjects from "@/pages/admin/projects";
+import AdminNewProject from "@/pages/admin/projects/new";
 import AdminTeam from "@/pages/admin/team";
 import AdminSupport from "@/pages/admin/support";
 import AdminSettings from "@/pages/admin/settings";
@@ -87,6 +88,7 @@ function Router() {
       </Route>
       <Route path="/admin/contacts" component={AdminContacts} />
       <Route path="/admin/projects" component={AdminProjects} />
+      <Route path="/admin/projects/new" component={AdminNewProject} />
       <Route path="/admin/team" component={AdminTeam} />
       <Route path="/admin/support" component={AdminSupport} />
       <Route path="/admin/settings" component={AdminSettings} />
