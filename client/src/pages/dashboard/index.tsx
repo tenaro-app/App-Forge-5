@@ -308,13 +308,13 @@ export default function Dashboard() {
                   <Settings className="w-4 h-4 mr-3" />
                   Settings
                 </div>
-                <div 
-                  onClick={() => setLocation("/admin")}
+                <a 
+                  href="/admin" 
                   className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20 cursor-pointer"
                 >
                   <Settings className="w-4 h-4 mr-3" />
                   Admin Dashboard
-                </div>
+                </a>
               </div>
             </div>
           </nav>
