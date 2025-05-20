@@ -31,6 +31,10 @@ import AdminNewClient from "@/pages/admin/clients/new";
 import AdminClientDetail from "@/pages/admin/clients/id";
 import AdminClientEdit from "@/pages/admin/clients/edit";
 import AdminContacts from "@/pages/admin/contacts";
+import AdminProjects from "@/pages/admin/projects";
+import AdminTeam from "@/pages/admin/team";
+import AdminSupport from "@/pages/admin/support";
+import AdminSettings from "@/pages/admin/settings";
 
 function Router() {
   return (
@@ -82,6 +86,10 @@ function Router() {
         )}
       </Route>
       <Route path="/admin/contacts" component={AdminContacts} />
+      <Route path="/admin/projects" component={AdminProjects} />
+      <Route path="/admin/team" component={AdminTeam} />
+      <Route path="/admin/support" component={AdminSupport} />
+      <Route path="/admin/settings" component={AdminSettings} />
       
       {/* Fallback to 404 */}
       <Route component={NotFound} />

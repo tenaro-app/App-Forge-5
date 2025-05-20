@@ -97,7 +97,7 @@ export class DatabaseStorage implements IStorage {
   
   async getContacts(): Promise<Contact[]> {
     // Select only the columns we know exist in the database
-    return await db.select({
+    const results = await db.select({
       id: contacts.id,
       firstName: contacts.firstName,
       lastName: contacts.lastName,
@@ -108,11 +108,38 @@ export class DatabaseStorage implements IStorage {
       status: contacts.status,
       createdAt: contacts.createdAt
     }).from(contacts).orderBy(desc(contacts.createdAt));
+    
+    // Add missing fields that might not exist in the database yet
+    return results.map(contact => ({
+      ...contact,
+      updatedAt: null,
+      staffMember: null,
+      assignedTo: null
+    }));
   }
   
   async getContactById(id: number): Promise<Contact | undefined> {
-    const [contact] = await db.select().from(contacts).where(eq(contacts.id, id));
-    return contact;
+    const [result] = await db.select({
+      id: contacts.id,
+      firstName: contacts.firstName,
+      lastName: contacts.lastName,
+      email: contacts.email,
+      company: contacts.company,
+      projectType: contacts.projectType,
+      message: contacts.message,
+      status: contacts.status,
+      createdAt: contacts.createdAt
+    }).from(contacts).where(eq(contacts.id, id));
+    
+    if (!result) return undefined;
+    
+    // Add properties that might be missing in the database
+    return {
+      ...result,
+      updatedAt: null,
+      staffMember: null,
+      assignedTo: null
+    };
   }
   
   // Project operations
