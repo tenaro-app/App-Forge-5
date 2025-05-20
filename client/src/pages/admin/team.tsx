@@ -1,139 +1,62 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { format } from "date-fns";
 import { 
-  Users,
-  Search,
+  Plus, 
+  Trash2, 
+  Edit, 
+  Mail, 
+  Phone, 
+  Calendar, 
+  MoreHorizontal,
   UserPlus,
-  Mail,
-  Phone,
-  Briefcase,
-  Edit,
-  Trash2,
-  UserCheck,
-  ShieldCheck,
-  Shield,
-  Clock,
+  Search,
   Filter
 } from "lucide-react";
-import { format } from "date-fns";
+import { useAuth } from "@/hooks/useAuth";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 
-// Filter options for team members
-const roleFilterOptions = [
-  { label: "All Roles", value: "all" },
-  { label: "Administrators", value: "admin" },
-  { label: "Project Managers", value: "project_manager" },
-  { label: "Developers", value: "developer" },
-  { label: "Designers", value: "designer" },
-  { label: "Support Staff", value: "support" }
-];
-
-// Dummy team member data (will be replaced with API data in production)
-const dummyTeamMembers = [
-  {
-    id: 1,
-    firstName: "Sarah",
-    lastName: "Johnson",
-    email: "sarah.johnson@appforge.io",
-    phone: "+1 (555) 123-4567",
-    position: "Project Manager",
-    role: "project_manager",
-    isAdmin: false,
-    status: "active",
-    avatar: null,
-    joinDate: new Date(2022, 5, 15), // June 15, 2022
-    assignedProjects: 3,
-    hoursLastMonth: 160
-  },
-  {
-    id: 2,
-    firstName: "Michael",
-    lastName: "Lee",
-    email: "michael.lee@appforge.io",
-    phone: "+1 (555) 234-5678",
-    position: "Lead Developer",
-    role: "developer",
-    isAdmin: false,
-    status: "active",
-    avatar: null,
-    joinDate: new Date(2022, 3, 10), // April 10, 2022
-    assignedProjects: 4,
-    hoursLastMonth: 172
-  },
-  {
-    id: 3,
-    firstName: "Emily",
-    lastName: "Chen",
-    email: "emily.chen@appforge.io",
-    phone: "+1 (555) 345-6789",
-    position: "UI/UX Designer",
-    role: "designer",
-    isAdmin: false,
-    status: "active",
-    avatar: null,
-    joinDate: new Date(2022, 7, 5), // August 5, 2022
-    assignedProjects: 5,
-    hoursLastMonth: 155
-  },
-  {
-    id: 4,
-    firstName: "James",
-    lastName: "Taylor",
-    email: "james.taylor@appforge.io",
-    phone: "+1 (555) 456-7890",
-    position: "DevOps Engineer",
-    role: "developer",
-    isAdmin: false,
-    status: "active",
-    avatar: null,
-    joinDate: new Date(2022, 8, 20), // September 20, 2022
-    assignedProjects: 2,
-    hoursLastMonth: 168
-  },
-  {
-    id: 5,
-    firstName: "Jessica",
-    lastName: "Martinez",
-    email: "jessica.martinez@appforge.io",
-    phone: "+1 (555) 567-8901",
-    position: "Customer Support",
-    role: "support",
-    isAdmin: false,
-    status: "active",
-    avatar: null,
-    joinDate: new Date(2022, 10, 1), // November 1, 2022
-    assignedProjects: 0,
-    hoursLastMonth: 145
-  },
-  {
-    id: 6,
-    firstName: "Alex",
-    lastName: "Smith",
-    email: "alex.smith@appforge.io",
-    phone: "+1 (555) 678-9012",
-    position: "Administrator",
-    role: "admin",
-    isAdmin: true,
-    status: "active",
-    avatar: null,
-    joinDate: new Date(2021, 5, 1), // June 1, 2021
-    assignedProjects: 0,
-    hoursLastMonth: 170
-  }
-];
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AdminTeam() {
-  const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const isAdmin = useIsAdmin();
   const [location, setLocation] = useLocation();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
+  const [newTeamDialogOpen, setNewTeamDialogOpen] = useState(false);
   
   // Redirect to login if not authenticated or not admin
   useEffect(() => {
@@ -145,129 +68,162 @@ export default function AdminTeam() {
       }
     }
   }, [isAuthLoading, isAuthenticated, isAdmin, setLocation]);
-  
-  // Fetch all team members
-  const { 
-    data: teamMembers, 
-    isLoading: isTeamMembersLoading 
-  } = useQuery({
+
+  // Fetch team members
+  const { data: teamMembers, isLoading: isTeamLoading } = useQuery({
     queryKey: ["/api/admin/team"],
     enabled: isAuthenticated && isAdmin,
-    // For development we're using dummy data
-    initialData: dummyTeamMembers
+    // For development, we're using dummy data
+    placeholderData: [
+      {
+        id: "1",
+        firstName: "John",
+        lastName: "Smith",
+        email: "john@appforge.com",
+        phone: "+1 (555) 123-4567",
+        role: "admin",
+        department: "Management",
+        title: "CEO & Lead Developer",
+        joinDate: new Date(2022, 0, 15).toISOString(),
+        profileImageUrl: null,
+        status: "active"
+      },
+      {
+        id: "2",
+        firstName: "Sarah",
+        lastName: "Davis",
+        email: "sarah@appforge.com",
+        phone: "+1 (555) 234-5678",
+        role: "support",
+        department: "Customer Support",
+        title: "Customer Success Manager",
+        joinDate: new Date(2022, 3, 10).toISOString(),
+        profileImageUrl: null,
+        status: "active"
+      },
+      {
+        id: "3",
+        firstName: "Mike",
+        lastName: "Lee",
+        email: "mike@appforge.com",
+        phone: "+1 (555) 345-6789",
+        role: "admin",
+        department: "Development",
+        title: "Lead Developer",
+        joinDate: new Date(2022, 2, 5).toISOString(),
+        profileImageUrl: null,
+        status: "active"
+      },
+      {
+        id: "4",
+        firstName: "Lisa",
+        lastName: "Chen",
+        email: "lisa@appforge.com",
+        phone: "+1 (555) 456-7890",
+        role: "support",
+        department: "Design",
+        title: "UI/UX Designer",
+        joinDate: new Date(2022, 5, 20).toISOString(),
+        profileImageUrl: null,
+        status: "active"
+      },
+      {
+        id: "5",
+        firstName: "David",
+        lastName: "Johnson",
+        email: "david@appforge.com",
+        phone: "+1 (555) 567-8901",
+        role: "developer",
+        department: "Development",
+        title: "Senior Developer",
+        joinDate: new Date(2022, 6, 12).toISOString(),
+        profileImageUrl: null,
+        status: "active"
+      },
+      {
+        id: "6",
+        firstName: "Emily",
+        lastName: "Wilson",
+        email: "emily@appforge.com",
+        phone: "+1 (555) 678-9012",
+        role: "developer",
+        department: "Development",
+        title: "Junior Developer",
+        joinDate: new Date(2023, 1, 8).toISOString(),
+        profileImageUrl: null,
+        status: "active"
+      }
+    ]
   });
-  
-  // Filter team members based on search query and role
-  const filteredTeamMembers = teamMembers?.filter(member => {
+
+  // Delete team member mutation (would connect to backend in production)
+  const deleteTeamMemberMutation = useMutation({
+    mutationFn: async (memberId: string) => {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return { success: true };
+    },
+    onSuccess: () => {
+      toast({
+        title: "Team member deleted",
+        description: "The team member has been successfully removed.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/team"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete team member",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), 'MMM d, yyyy');
+  };
+
+  const handleDeleteTeamMember = (memberId: string) => {
+    if (window.confirm("Are you sure you want to delete this team member? This action cannot be undone.")) {
+      deleteTeamMemberMutation.mutate(memberId);
+    }
+  };
+
+  // Filter team members by search query and role
+  const filteredTeamMembers = teamMembers?.filter((member) => {
+    const fullName = `${member.firstName} ${member.lastName}`.toLowerCase();
     const matchesSearch = searchQuery === "" || 
-      member.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      fullName.includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.position.toLowerCase().includes(searchQuery.toLowerCase());
+      member.title.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesRole = roleFilter === "all" || member.role === roleFilter;
     
     return matchesSearch && matchesRole;
   });
-  
-  // Toggle admin status mutation
-  const toggleAdminStatusMutation = useMutation({
-    mutationFn: async ({ memberId, isAdmin }: { memberId: number, isAdmin: boolean }) => {
-      const response = await apiRequest("PUT", `/api/admin/team/${memberId}/admin-status`, { isAdmin });
-      if (!response.ok) {
-        throw new Error(`Failed to update admin status: ${response.statusText}`);
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/team"] });
-      toast({
-        title: "Admin status updated",
-        description: "The team member's admin status has been successfully updated.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to update admin status",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-  
-  // Toggle active status mutation
-  const toggleActiveStatusMutation = useMutation({
-    mutationFn: async ({ memberId, status }: { memberId: number, status: string }) => {
-      const newStatus = status === "active" ? "inactive" : "active";
-      const response = await apiRequest("PUT", `/api/admin/team/${memberId}/status`, { status: newStatus });
-      if (!response.ok) {
-        throw new Error(`Failed to update member status: ${response.statusText}`);
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/team"] });
-      toast({
-        title: "Status updated",
-        description: "The team member's status has been successfully updated.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to update status",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-  
-  // Delete team member mutation
-  const deleteTeamMemberMutation = useMutation({
-    mutationFn: async (memberId: number) => {
-      const response = await apiRequest("DELETE", `/api/admin/team/${memberId}`);
-      if (!response.ok) {
-        throw new Error(`Failed to delete team member: ${response.statusText}`);
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/team"] });
-      toast({
-        title: "Team member deleted",
-        description: "The team member has been successfully removed.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to delete team member",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-  
-  const handleToggleAdminStatus = (memberId: number, currentStatus: boolean) => {
-    toggleAdminStatusMutation.mutate({ memberId, isAdmin: !currentStatus });
-  };
-  
-  const handleToggleActiveStatus = (memberId: number, currentStatus: string) => {
-    toggleActiveStatusMutation.mutate({ memberId, status: currentStatus });
-  };
-  
-  const handleDeleteTeamMember = (memberId: number) => {
-    if (window.confirm("Are you sure you want to delete this team member? This action cannot be undone.")) {
-      deleteTeamMemberMutation.mutate(memberId);
-    }
-  };
-  
+
   if (isAuthLoading) {
     return <div className="p-8 text-center">Loading...</div>;
   }
-  
+
   if (!isAuthenticated || !isAdmin) {
     return null; // Will redirect in useEffect
   }
-  
+
+  // Function to get role badge with appropriate style
+  const getRoleBadge = (role: string) => {
+    switch (role.toLowerCase()) {
+      case "admin":
+        return <Badge className="bg-primary">Admin</Badge>;
+      case "support":
+        return <Badge className="bg-blue-500">Support</Badge>;
+      case "developer":
+        return <Badge className="bg-green-500">Developer</Badge>;
+      default:
+        return <Badge className="bg-gray-500">{role}</Badge>;
+    }
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Admin Header */}
@@ -321,213 +277,255 @@ export default function AdminTeam() {
                   >
                     Settings
                   </button>
+                  <button 
+                    onClick={() => setLocation("/admin-access")}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Admin Portal
+                  </button>
                 </div>
               </nav>
             </div>
             <div className="flex items-center">
-              <button 
+              <Button
+                variant="ghost"
+                className="text-white"
                 onClick={() => setLocation("/dashboard")}
-                className="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
               >
-                Client View
-              </button>
-              <div className="ml-4 relative flex-shrink-0">
-                <div className="flex items-center">
-                  <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-white">
-                    {user?.firstName?.charAt(0) || user?.email?.charAt(0) || "A"}
-                  </div>
-                  <span className="ml-2 text-sm font-medium text-white">
-                    {user?.firstName || "Admin"}
-                  </span>
-                </div>
-              </div>
+                Exit Admin
+              </Button>
             </div>
           </div>
         </div>
       </header>
-      
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
+
+      {/* Page Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Team Management</h1>
-            <p className="mt-1 text-gray-600">
-              Manage team members and their permissions
+            <h1 className="text-2xl font-bold">Team Management</h1>
+            <p className="text-gray-600 mt-1">
+              Manage your team members and their permissions
             </p>
           </div>
-          <div className="mt-4 md:mt-0">
-            <button 
-              onClick={() => setLocation("/admin/team/new")} 
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90"
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Add Team Member
-            </button>
-          </div>
-        </div>
-        
-        {/* Filters and Search */}
-        <div className="bg-white p-6 shadow rounded-lg mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="relative md:max-w-xs w-full">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+          <Dialog open={newTeamDialogOpen} onOpenChange={setNewTeamDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <UserPlus className="mr-2 h-4 w-4" />
+                Add Team Member
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add New Team Member</DialogTitle>
+                <DialogDescription>
+                  Fill in the details to add a new team member to the system.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="firstName" className="text-right">
+                    First Name
+                  </label>
+                  <Input id="firstName" className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="lastName" className="text-right">
+                    Last Name
+                  </label>
+                  <Input id="lastName" className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="email" className="text-right">
+                    Email
+                  </label>
+                  <Input id="email" type="email" className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="role" className="text-right">
+                    Role
+                  </label>
+                  <Select>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="admin">Admin</SelectItem>
+                      <SelectItem value="support">Support</SelectItem>
+                      <SelectItem value="developer">Developer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="department" className="text-right">
+                    Department
+                  </label>
+                  <Select>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select a department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="management">Management</SelectItem>
+                      <SelectItem value="development">Development</SelectItem>
+                      <SelectItem value="design">Design</SelectItem>
+                      <SelectItem value="support">Customer Support</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <input
-                type="text"
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setNewTeamDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => {
+                  toast({
+                    title: "Team member added",
+                    description: "The new team member has been successfully added.",
+                  });
+                  setNewTeamDialogOpen(false);
+                }}>
+                  Add Member
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <div className="bg-white rounded-lg border p-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+              <Input
+                type="search"
                 placeholder="Search team members..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                className="pl-9"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-              <div>
-                <label htmlFor="role-filter" className="block text-sm font-medium text-gray-700 mb-1 sm:hidden">
-                  Filter by Role
-                </label>
+            <Select value={roleFilter} onValueChange={setRoleFilter}>
+              <SelectTrigger className="w-full sm:w-40">
                 <div className="flex items-center">
-                  <Filter className="mr-2 h-5 w-5 text-gray-400" />
-                  <select
-                    id="role-filter"
-                    className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md"
-                    value={roleFilter}
-                    onChange={(e) => setRoleFilter(e.target.value)}
+                  <Filter className="mr-2 h-4 w-4" />
+                  <SelectValue placeholder="Filter by role" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Roles</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="support">Support</SelectItem>
+                <SelectItem value="developer">Developer</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {isTeamLoading ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+          </div>
+        ) : filteredTeamMembers?.length ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTeamMembers.map((member) => (
+              <Card key={member.id} className="overflow-hidden">
+                <CardHeader className="pb-0">
+                  <div className="flex justify-end">
+                    {getRoleBadge(member.role)}
+                  </div>
+                  <div className="flex flex-col items-center text-center">
+                    <Avatar className="h-24 w-24 mb-2">
+                      <AvatarImage src={member.profileImageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(`${member.firstName} ${member.lastName}`)}&background=dc2626&color=fff`} />
+                      <AvatarFallback className="bg-primary text-white text-xl">
+                        {member.firstName[0]}{member.lastName[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <CardTitle className="mt-2">{member.firstName} {member.lastName}</CardTitle>
+                    <CardDescription className="text-base font-medium text-gray-700">
+                      {member.title}
+                    </CardDescription>
+                    <CardDescription>
+                      {member.department}
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-4 pb-0">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Mail className="h-4 w-4 text-gray-500" />
+                      <span>{member.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Phone className="h-4 w-4 text-gray-500" />
+                      <span>{member.phone}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Calendar className="h-4 w-4 text-gray-500" />
+                      <span>Joined {formatDate(member.joinDate)}</span>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="mt-6 flex justify-between">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setLocation(`/admin/team/${member.id}/edit`)}
                   >
-                    {roleFilterOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Team Members Grid */}
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">
-              Team Members ({filteredTeamMembers?.length || 0})
-            </h3>
-          </div>
-          
-          {isTeamMembersLoading ? (
-            <div className="p-6">
-              <div className="animate-pulse space-y-4">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="h-32 bg-gray-200 rounded"></div>
-                ))}
-              </div>
-            </div>
-          ) : filteredTeamMembers && filteredTeamMembers.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-              {filteredTeamMembers.map((member) => (
-                <div key={member.id} className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                  <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary font-semibold">
-                          {member.firstName.charAt(0) + member.lastName.charAt(0)}
-                        </span>
-                      </div>
-                      <div className="ml-3">
-                        <h4 className="text-lg font-medium text-gray-900 flex items-center">
-                          {member.firstName} {member.lastName}
-                          {member.isAdmin && (
-                            <Shield className="ml-1 h-4 w-4 text-primary" />
-                          )}
-                        </h4>
-                        <p className="text-sm text-gray-500">{member.position}</p>
-                      </div>
-                    </div>
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      member.status === 'active' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {member.status.charAt(0).toUpperCase() + member.status.slice(1)}
-                    </span>
-                  </div>
-                  <div className="p-6">
-                    <div className="mb-4 space-y-2">
-                      <div className="flex items-center text-sm">
-                        <Mail className="w-4 h-4 mr-2 text-gray-500" />
-                        <span className="text-gray-700">{member.email}</span>
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <Phone className="w-4 h-4 mr-2 text-gray-500" />
-                        <span className="text-gray-700">{member.phone}</span>
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <Clock className="w-4 h-4 mr-2 text-gray-500" />
-                        <span className="text-gray-700">
-                          Joined: {format(new Date(member.joinDate), 'MMM d, yyyy')}
-                        </span>
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <Briefcase className="w-4 h-4 mr-2 text-gray-500" />
-                        <span className="text-gray-700">
-                          {member.assignedProjects} Projects | {member.hoursLastMonth} hrs (last month)
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2 mt-4">
-                      <button 
-                        onClick={() => setLocation(`/admin/team/${member.id}/edit`)}
-                        className="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => handleToggleAdminStatus(member.id, member.isAdmin)}
-                        className="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                      >
-                        <ShieldCheck className="w-4 h-4 mr-1" />
-                        {member.isAdmin ? 'Remove Admin' : 'Make Admin'}
-                      </button>
-                    </div>
-                    <div className="flex space-x-2 mt-2">
-                      <button 
-                        onClick={() => handleToggleActiveStatus(member.id, member.status)}
-                        className="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                      >
-                        <UserCheck className="w-4 h-4 mr-1" />
-                        {member.status === 'active' ? 'Deactivate' : 'Activate'}
-                      </button>
-                      <button 
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={() => setLocation(`/admin/team/${member.id}`)}>
+                        View Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => window.location.href = `mailto:${member.email}`}>
+                        Send Email
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setLocation(`/admin/team/${member.id}/assignments`)}>
+                        View Assignments
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        className="text-red-600"
                         onClick={() => handleDeleteTeamMember(member.id)}
-                        className="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:text-red-600"
                       >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 border rounded-lg bg-gray-50">
+            <div className="mx-auto h-12 w-12 text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+              </svg>
             </div>
-          ) : (
-            <div className="p-6 text-center">
-              <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-1">No team members found</h3>
-              <p className="text-gray-500 mb-4">
-                {searchQuery ? `No team members match your search for "${searchQuery}"` : 'No team members in this category yet.'}
-              </p>
-              <button 
-                onClick={() => setLocation("/admin/team/new")}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90"
-              >
-                <UserPlus className="w-4 h-4 mr-2" />
-                Add Team Member
-              </button>
-            </div>
-          )}
-        </div>
-      </main>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">No team members found</h3>
+            <p className="mt-2 text-gray-500">No team members match your current filters.</p>
+            <Button
+              variant="outline"
+              className="mt-4"
+              onClick={() => {
+                setSearchQuery("");
+                setRoleFilter("all");
+              }}
+            >
+              Clear filters
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

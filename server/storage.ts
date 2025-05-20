@@ -96,7 +96,18 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getContacts(): Promise<Contact[]> {
-    return await db.select().from(contacts).orderBy(desc(contacts.createdAt));
+    // Select only the columns we know exist in the database
+    return await db.select({
+      id: contacts.id,
+      firstName: contacts.firstName,
+      lastName: contacts.lastName,
+      email: contacts.email,
+      company: contacts.company,
+      projectType: contacts.projectType,
+      message: contacts.message,
+      status: contacts.status,
+      createdAt: contacts.createdAt
+    }).from(contacts).orderBy(desc(contacts.createdAt));
   }
   
   async getContactById(id: number): Promise<Contact | undefined> {
