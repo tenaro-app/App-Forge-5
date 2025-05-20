@@ -1,80 +1,74 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import {
-  Settings,
-  Bell,
-  Mail,
-  Lock,
-  User,
-  Shield,
-  Save,
-  Loader2,
-  Check,
-  X,
-  Globe,
-  CreditCard,
-  FileText,
-  Clock
-} from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Save, RefreshCw, Mail, Globe, Phone, FileText, BellRing, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 
-// Dummy settings data (will be replaced with API data in production)
-const dummySettings = {
-  general: {
-    companyName: "AppForge Agency",
-    supportEmail: "support@appforge.io",
-    timezone: "America/New_York",
-    dateFormat: "MM/DD/YYYY"
-  },
-  notifications: {
-    emailNotifications: true,
-    newClientAlert: true,
-    supportTicketAlert: true,
-    projectMilestoneAlert: true,
-    dailyDigest: false,
-    weeklyReport: true
-  },
-  security: {
-    twoFactorAuth: false,
-    passwordExpiry: 90, // days
-    sessionTimeout: 60, // minutes
-    ipRestriction: false,
-    allowedIPs: ""
-  },
-  branding: {
-    primaryColor: "#ff0033",
-    accentColor: "#1a1a1a",
-    logo: "appforge-logo.png",
-    favicon: "appforge-favicon.ico"
-  },
-  billing: {
-    defaultBillingType: "monthly",
-    defaultCurrency: "USD",
-    paymentGateway: "stripe",
-    invoicePrefix: "INV-",
-    invoiceTerms: "Payment due within 30 days."
-  }
-};
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { 
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const generalSettingsSchema = z.object({
+  companyName: z.string().min(1, "Company name is required"),
+  companyEmail: z.string().email("Invalid email address"),
+  companyPhone: z.string().min(1, "Phone number is required"),
+  companyAddress: z.string().min(1, "Address is required"),
+  website: z.string().url("Invalid URL format"),
+  timezone: z.string().min(1, "Timezone is required"),
+  dateFormat: z.string().min(1, "Date format is required"),
+});
+
+const emailSettingsSchema = z.object({
+  smtpHost: z.string().min(1, "SMTP host is required"),
+  smtpPort: z.string().min(1, "SMTP port is required"),
+  smtpUser: z.string().min(1, "SMTP username is required"),
+  smtpPassword: z.string().min(1, "SMTP password is required"),
+  fromEmail: z.string().email("Invalid email address"),
+  fromName: z.string().min(1, "From name is required"),
+  defaultEmailTemplate: z.string().min(1, "Default template is required"),
+});
+
+const notificationSettingsSchema = z.object({
+  newProjectCreated: z.boolean(),
+  projectStatusChanged: z.boolean(),
+  newClientRegistered: z.boolean(),
+  newSupportTicket: z.boolean(),
+  invoicePayment: z.boolean(),
+  notificationEmail: z.string().email("Invalid email address"),
+  slackWebhook: z.string().optional(),
+  discordWebhook: z.string().optional(),
+});
 
 export default function AdminSettings() {
-  const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const isAdmin = useIsAdmin();
   const [location, setLocation] = useLocation();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("general");
   const [isSaving, setIsSaving] = useState(false);
-  const [settingsForm, setSettingsForm] = useState(dummySettings);
-  
+
   // Redirect to login if not authenticated or not admin
   useEffect(() => {
     if (!isAuthLoading) {
@@ -85,89 +79,101 @@ export default function AdminSettings() {
       }
     }
   }, [isAuthLoading, isAuthenticated, isAdmin, setLocation]);
-  
-  // Fetch settings
-  const { 
-    data: settings, 
-    isLoading: isSettingsLoading 
-  } = useQuery({
-    queryKey: ["/api/admin/settings"],
-    enabled: isAuthenticated && isAdmin,
-    // For development we're using dummy data
-    initialData: dummySettings
-  });
-  
-  // Set settings form when data changes
-  useEffect(() => {
-    if (settings) {
-      setSettingsForm(settings);
-    }
-  }, [settings]);
-  
-  // Update settings mutation
-  const updateSettingsMutation = useMutation({
-    mutationFn: async (newSettings: any) => {
-      setIsSaving(true);
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In production, this would be a real API call
-      const response = await apiRequest("PUT", "/api/admin/settings", newSettings);
-      if (!response.ok) {
-        throw new Error(`Failed to update settings: ${response.statusText}`);
-      }
-      return response.json();
+
+  // General settings form
+  const generalForm = useForm<z.infer<typeof generalSettingsSchema>>({
+    resolver: zodResolver(generalSettingsSchema),
+    defaultValues: {
+      companyName: "AppForge",
+      companyEmail: "info@appforge.com",
+      companyPhone: "+1 (555) 123-4567",
+      companyAddress: "123 Tech Lane, San Francisco, CA 94107",
+      website: "https://appforge.com",
+      timezone: "America/New_York",
+      dateFormat: "MM/DD/YYYY",
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
+  });
+
+  // Email settings form
+  const emailForm = useForm<z.infer<typeof emailSettingsSchema>>({
+    resolver: zodResolver(emailSettingsSchema),
+    defaultValues: {
+      smtpHost: "smtp.appforge.com",
+      smtpPort: "587",
+      smtpUser: "notifications@appforge.com",
+      smtpPassword: "**********",
+      fromEmail: "notifications@appforge.com",
+      fromName: "AppForge Notifications",
+      defaultEmailTemplate: "default",
+    },
+  });
+
+  // Notification settings form
+  const notificationForm = useForm<z.infer<typeof notificationSettingsSchema>>({
+    resolver: zodResolver(notificationSettingsSchema),
+    defaultValues: {
+      newProjectCreated: true,
+      projectStatusChanged: true,
+      newClientRegistered: true,
+      newSupportTicket: true,
+      invoicePayment: true,
+      notificationEmail: "notifications@appforge.com",
+      slackWebhook: "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
+      discordWebhook: "",
+    },
+  });
+
+  // Submit handlers
+  const onSubmitGeneralSettings = (data: z.infer<typeof generalSettingsSchema>) => {
+    setIsSaving(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      console.log("General settings submitted:", data);
       toast({
         title: "Settings updated",
-        description: "Your settings have been saved successfully.",
-        action: (
-          <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-            <Check className="h-5 w-5 text-green-600" />
-          </div>
-        ),
+        description: "Your general settings have been saved successfully.",
       });
       setIsSaving(false);
-    },
-    onError: (error) => {
+    }, 1000);
+  };
+
+  const onSubmitEmailSettings = (data: z.infer<typeof emailSettingsSchema>) => {
+    setIsSaving(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      console.log("Email settings submitted:", data);
       toast({
-        title: "Failed to update settings",
-        description: error.message,
-        variant: "destructive",
-        action: (
-          <div className="h-8 w-8 bg-red-100 rounded-full flex items-center justify-center">
-            <X className="h-5 w-5 text-red-600" />
-          </div>
-        ),
+        title: "Settings updated",
+        description: "Your email settings have been saved successfully.",
       });
       setIsSaving(false);
-    },
-  });
-  
-  const handleInputChange = (section: string, field: string, value: any) => {
-    setSettingsForm({
-      ...settingsForm,
-      [section]: {
-        ...settingsForm[section as keyof typeof settingsForm],
-        [field]: value
-      }
-    });
+    }, 1000);
   };
-  
-  const handleSaveSettings = () => {
-    updateSettingsMutation.mutate(settingsForm);
+
+  const onSubmitNotificationSettings = (data: z.infer<typeof notificationSettingsSchema>) => {
+    setIsSaving(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      console.log("Notification settings submitted:", data);
+      toast({
+        title: "Settings updated",
+        description: "Your notification settings have been saved successfully.",
+      });
+      setIsSaving(false);
+    }, 1000);
   };
-  
-  if (isAuthLoading || isSettingsLoading) {
+
+  if (isAuthLoading) {
     return <div className="p-8 text-center">Loading...</div>;
   }
-  
+
   if (!isAuthenticated || !isAdmin) {
     return null; // Will redirect in useEffect
   }
-  
+
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Admin Header */}
@@ -221,464 +227,582 @@ export default function AdminSettings() {
                   >
                     Settings
                   </button>
+                  <button 
+                    onClick={() => setLocation("/admin-access")}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Admin Portal
+                  </button>
                 </div>
               </nav>
             </div>
             <div className="flex items-center">
-              <button 
+              <Button
+                variant="ghost"
+                className="text-white"
                 onClick={() => setLocation("/dashboard")}
-                className="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
               >
-                Client View
-              </button>
-              <div className="ml-4 relative flex-shrink-0">
-                <div className="flex items-center">
-                  <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-white">
-                    {user?.firstName?.charAt(0) || user?.email?.charAt(0) || "A"}
-                  </div>
-                  <span className="ml-2 text-sm font-medium text-white">
-                    {user?.firstName || "Admin"}
-                  </span>
-                </div>
-              </div>
+                Exit Admin
+              </Button>
             </div>
           </div>
         </div>
       </header>
-      
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 flex items-center">
-          <Settings className="h-8 w-8 text-gray-500 mr-3" />
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">System Settings</h1>
-            <p className="mt-1 text-gray-600">
-              Configure your application settings and preferences
-            </p>
-          </div>
+
+      {/* Page Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold">Admin Settings</h1>
+          <p className="text-gray-600 mt-2">
+            Configure your system settings and preferences.
+          </p>
         </div>
-        
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="px-6 py-5 border-b border-gray-200">
-              <TabsList className="grid grid-cols-5 gap-4">
-                <TabsTrigger value="general" className="flex items-center">
-                  <Settings className="w-4 h-4 mr-2" />
-                  General
-                </TabsTrigger>
-                <TabsTrigger value="notifications" className="flex items-center">
-                  <Bell className="w-4 h-4 mr-2" />
-                  Notifications
-                </TabsTrigger>
-                <TabsTrigger value="security" className="flex items-center">
-                  <Lock className="w-4 h-4 mr-2" />
-                  Security
-                </TabsTrigger>
-                <TabsTrigger value="branding" className="flex items-center">
-                  <Globe className="w-4 h-4 mr-2" />
-                  Branding
-                </TabsTrigger>
-                <TabsTrigger value="billing" className="flex items-center">
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Billing
-                </TabsTrigger>
-              </TabsList>
-            </div>
-            
-            <div className="p-6">
-              {/* General Settings */}
-              <TabsContent value="general" className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">General Settings</h3>
-                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="companyName">Company Name</Label>
-                      <Input
-                        id="companyName"
-                        value={settingsForm.general.companyName}
-                        onChange={(e) => handleInputChange('general', 'companyName', e.target.value)}
+
+        <Tabs defaultValue="general" className="space-y-6">
+          <TabsList className="bg-white border">
+            <TabsTrigger value="general" className="data-[state=active]:bg-gray-50">
+              <Globe className="h-4 w-4 mr-2" />
+              General
+            </TabsTrigger>
+            <TabsTrigger value="email" className="data-[state=active]:bg-gray-50">
+              <Mail className="h-4 w-4 mr-2" />
+              Email
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="data-[state=active]:bg-gray-50">
+              <BellRing className="h-4 w-4 mr-2" />
+              Notifications
+            </TabsTrigger>
+            <TabsTrigger value="security" className="data-[state=active]:bg-gray-50">
+              <Lock className="h-4 w-4 mr-2" />
+              Security
+            </TabsTrigger>
+          </TabsList>
+
+          {/* General Settings */}
+          <TabsContent value="general" className="bg-transparent p-0 mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>General Settings</CardTitle>
+                <CardDescription>
+                  Configure your company information and system preferences.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...generalForm}>
+                  <form onSubmit={generalForm.handleSubmit(onSubmitGeneralSettings)} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={generalForm.control}
+                        name="companyName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Company Name</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={generalForm.control}
+                        name="companyEmail"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Company Email</FormLabel>
+                            <FormControl>
+                              <Input {...field} type="email" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={generalForm.control}
+                        name="companyPhone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Company Phone</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={generalForm.control}
+                        name="website"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Website</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="supportEmail">Support Email</Label>
-                      <Input
-                        id="supportEmail"
-                        type="email"
-                        value={settingsForm.general.supportEmail}
-                        onChange={(e) => handleInputChange('general', 'supportEmail', e.target.value)}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="timezone">Time Zone</Label>
-                      <select
-                        id="timezone"
-                        className="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary"
-                        value={settingsForm.general.timezone}
-                        onChange={(e) => handleInputChange('general', 'timezone', e.target.value)}
-                      >
-                        <option value="America/New_York">Eastern Time (US & Canada)</option>
-                        <option value="America/Chicago">Central Time (US & Canada)</option>
-                        <option value="America/Denver">Mountain Time (US & Canada)</option>
-                        <option value="America/Los_Angeles">Pacific Time (US & Canada)</option>
-                        <option value="Europe/London">London</option>
-                        <option value="Europe/Paris">Paris</option>
-                        <option value="Asia/Tokyo">Tokyo</option>
-                        <option value="Australia/Sydney">Sydney</option>
-                      </select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="dateFormat">Date Format</Label>
-                      <select
-                        id="dateFormat"
-                        className="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary"
-                        value={settingsForm.general.dateFormat}
-                        onChange={(e) => handleInputChange('general', 'dateFormat', e.target.value)}
-                      >
-                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-              
-              {/* Notification Settings */}
-              <TabsContent value="notifications" className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Notification Preferences</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Mail className="w-5 h-5 text-gray-500" />
-                        <Label htmlFor="emailNotifications" className="text-base">Email Notifications</Label>
-                      </div>
-                      <Switch
-                        id="emailNotifications"
-                        checked={settingsForm.notifications.emailNotifications}
-                        onCheckedChange={(checked) => handleInputChange('notifications', 'emailNotifications', checked)}
-                      />
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="pl-7 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="newClientAlert" className="flex-1">New client registration</Label>
-                        <Switch
-                          id="newClientAlert"
-                          checked={settingsForm.notifications.newClientAlert}
-                          onCheckedChange={(checked) => handleInputChange('notifications', 'newClientAlert', checked)}
-                          disabled={!settingsForm.notifications.emailNotifications}
-                        />
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="supportTicketAlert" className="flex-1">New support ticket</Label>
-                        <Switch
-                          id="supportTicketAlert"
-                          checked={settingsForm.notifications.supportTicketAlert}
-                          onCheckedChange={(checked) => handleInputChange('notifications', 'supportTicketAlert', checked)}
-                          disabled={!settingsForm.notifications.emailNotifications}
-                        />
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="projectMilestoneAlert" className="flex-1">Project milestone updates</Label>
-                        <Switch
-                          id="projectMilestoneAlert"
-                          checked={settingsForm.notifications.projectMilestoneAlert}
-                          onCheckedChange={(checked) => handleInputChange('notifications', 'projectMilestoneAlert', checked)}
-                          disabled={!settingsForm.notifications.emailNotifications}
-                        />
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="dailyDigest" className="flex-1">Daily activity digest</Label>
-                        <Switch
-                          id="dailyDigest"
-                          checked={settingsForm.notifications.dailyDigest}
-                          onCheckedChange={(checked) => handleInputChange('notifications', 'dailyDigest', checked)}
-                          disabled={!settingsForm.notifications.emailNotifications}
-                        />
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="weeklyReport" className="flex-1">Weekly summary report</Label>
-                        <Switch
-                          id="weeklyReport"
-                          checked={settingsForm.notifications.weeklyReport}
-                          onCheckedChange={(checked) => handleInputChange('notifications', 'weeklyReport', checked)}
-                          disabled={!settingsForm.notifications.emailNotifications}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-              
-              {/* Security Settings */}
-              <TabsContent value="security" className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Security Settings</h3>
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="twoFactorAuth" className="text-base">Two-Factor Authentication</Label>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Require two-factor authentication for all admin users
-                        </p>
-                      </div>
-                      <Switch
-                        id="twoFactorAuth"
-                        checked={settingsForm.security.twoFactorAuth}
-                        onCheckedChange={(checked) => handleInputChange('security', 'twoFactorAuth', checked)}
-                      />
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="passwordExpiry">Password Expiry (days)</Label>
-                        <Input
-                          id="passwordExpiry"
-                          type="number"
-                          min="0"
-                          value={settingsForm.security.passwordExpiry}
-                          onChange={(e) => handleInputChange('security', 'passwordExpiry', parseInt(e.target.value) || 0)}
-                        />
-                        <p className="text-xs text-gray-500">
-                          Set to 0 for no expiration
-                        </p>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="sessionTimeout">Session Timeout (minutes)</Label>
-                        <Input
-                          id="sessionTimeout"
-                          type="number"
-                          min="5"
-                          value={settingsForm.security.sessionTimeout}
-                          onChange={(e) => handleInputChange('security', 'sessionTimeout', parseInt(e.target.value) || 60)}
-                        />
-                      </div>
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label htmlFor="ipRestriction" className="text-base">IP Address Restriction</Label>
-                          <p className="text-sm text-gray-500 mt-1">
-                            Restrict admin access to specific IP addresses
-                          </p>
-                        </div>
-                        <Switch
-                          id="ipRestriction"
-                          checked={settingsForm.security.ipRestriction}
-                          onCheckedChange={(checked) => handleInputChange('security', 'ipRestriction', checked)}
-                        />
-                      </div>
-                      
-                      {settingsForm.security.ipRestriction && (
-                        <div className="pl-7 space-y-2">
-                          <Label htmlFor="allowedIPs">Allowed IP Addresses</Label>
-                          <Input
-                            id="allowedIPs"
-                            placeholder="192.168.1.1, 10.0.0.1"
-                            value={settingsForm.security.allowedIPs}
-                            onChange={(e) => handleInputChange('security', 'allowedIPs', e.target.value)}
-                          />
-                          <p className="text-xs text-gray-500">
-                            Enter comma-separated IP addresses
-                          </p>
-                        </div>
+
+                    <FormField
+                      control={generalForm.control}
+                      name="companyAddress"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Address</FormLabel>
+                          <FormControl>
+                            <Textarea {...field} rows={3} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-              
-              {/* Branding Settings */}
-              <TabsContent value="branding" className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Branding Settings</h3>
-                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <div className="space-y-3">
-                      <Label htmlFor="primaryColor">Primary Color</Label>
-                      <div className="flex items-center space-x-2">
-                        <div 
-                          className="h-8 w-8 rounded-md border border-gray-300" 
-                          style={{ backgroundColor: settingsForm.branding.primaryColor }}
-                        />
-                        <Input
-                          id="primaryColor"
-                          value={settingsForm.branding.primaryColor}
-                          onChange={(e) => handleInputChange('branding', 'primaryColor', e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <Label htmlFor="accentColor">Accent Color</Label>
-                      <div className="flex items-center space-x-2">
-                        <div 
-                          className="h-8 w-8 rounded-md border border-gray-300" 
-                          style={{ backgroundColor: settingsForm.branding.accentColor }}
-                        />
-                        <Input
-                          id="accentColor"
-                          value={settingsForm.branding.accentColor}
-                          onChange={(e) => handleInputChange('branding', 'accentColor', e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <Label htmlFor="logo">Logo</Label>
-                      <div className="flex items-center space-x-2">
-                        <div className="h-16 w-16 bg-gray-100 rounded-md flex items-center justify-center border border-gray-300">
-                          <Globe className="h-8 w-8 text-gray-400" />
-                        </div>
-                        <div className="flex-1">
-                          <Input
-                            id="logo"
-                            type="file"
-                            accept="image/*"
-                            className="mb-2"
-                          />
-                          <p className="text-xs text-gray-500">
-                            Current: {settingsForm.branding.logo}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <Label htmlFor="favicon">Favicon</Label>
-                      <div className="flex items-center space-x-2">
-                        <div className="h-8 w-8 bg-gray-100 rounded-md flex items-center justify-center border border-gray-300">
-                          <Globe className="h-4 w-4 text-gray-400" />
-                        </div>
-                        <div className="flex-1">
-                          <Input
-                            id="favicon"
-                            type="file"
-                            accept="image/x-icon,image/png"
-                            className="mb-2"
-                          />
-                          <p className="text-xs text-gray-500">
-                            Current: {settingsForm.branding.favicon}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-              
-              {/* Billing Settings */}
-              <TabsContent value="billing" className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Billing Settings</h3>
-                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="defaultBillingType">Default Billing Type</Label>
-                      <select
-                        id="defaultBillingType"
-                        className="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary"
-                        value={settingsForm.billing.defaultBillingType}
-                        onChange={(e) => handleInputChange('billing', 'defaultBillingType', e.target.value)}
-                      >
-                        <option value="monthly">Monthly</option>
-                        <option value="annual">Annual</option>
-                        <option value="project">Per Project</option>
-                      </select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="defaultCurrency">Default Currency</Label>
-                      <select
-                        id="defaultCurrency"
-                        className="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary"
-                        value={settingsForm.billing.defaultCurrency}
-                        onChange={(e) => handleInputChange('billing', 'defaultCurrency', e.target.value)}
-                      >
-                        <option value="USD">US Dollar (USD)</option>
-                        <option value="EUR">Euro (EUR)</option>
-                        <option value="GBP">British Pound (GBP)</option>
-                        <option value="CAD">Canadian Dollar (CAD)</option>
-                        <option value="AUD">Australian Dollar (AUD)</option>
-                        <option value="JPY">Japanese Yen (JPY)</option>
-                      </select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="paymentGateway">Payment Gateway</Label>
-                      <select
-                        id="paymentGateway"
-                        className="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary"
-                        value={settingsForm.billing.paymentGateway}
-                        onChange={(e) => handleInputChange('billing', 'paymentGateway', e.target.value)}
-                      >
-                        <option value="stripe">Stripe</option>
-                        <option value="paypal">PayPal</option>
-                        <option value="manual">Manual Payment</option>
-                      </select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="invoicePrefix">Invoice Number Prefix</Label>
-                      <Input
-                        id="invoicePrefix"
-                        value={settingsForm.billing.invoicePrefix}
-                        onChange={(e) => handleInputChange('billing', 'invoicePrefix', e.target.value)}
-                        placeholder="INV-"
+                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={generalForm.control}
+                        name="timezone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Default Timezone</FormLabel>
+                            <Select 
+                              onValueChange={field.onChange} 
+                              defaultValue={field.value}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select timezone" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
+                                <SelectItem value="America/Chicago">Central Time (CT)</SelectItem>
+                                <SelectItem value="America/Denver">Mountain Time (MT)</SelectItem>
+                                <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
+                                <SelectItem value="Europe/London">London (GMT)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={generalForm.control}
+                        name="dateFormat"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Date Format</FormLabel>
+                            <Select 
+                              onValueChange={field.onChange} 
+                              defaultValue={field.value}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select date format" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
+                                <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
+                                <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
+                                <SelectItem value="MMM D, YYYY">MMM D, YYYY</SelectItem>
+                                <SelectItem value="D MMMM YYYY">D MMMM YYYY</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
-                    
-                    <div className="sm:col-span-2 space-y-2">
-                      <Label htmlFor="invoiceTerms">Invoice Terms</Label>
-                      <textarea
-                        id="invoiceTerms"
-                        className="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary"
-                        rows={3}
-                        value={settingsForm.billing.invoiceTerms}
-                        onChange={(e) => handleInputChange('billing', 'invoiceTerms', e.target.value)}
+
+                    <div className="flex justify-end">
+                      <Button type="submit" disabled={isSaving}>
+                        {isSaving ? (
+                          <>
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Save Changes
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Email Settings */}
+          <TabsContent value="email" className="bg-transparent p-0 mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Email Settings</CardTitle>
+                <CardDescription>
+                  Configure your email server settings and templates.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...emailForm}>
+                  <form onSubmit={emailForm.handleSubmit(onSubmitEmailSettings)} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={emailForm.control}
+                        name="smtpHost"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>SMTP Host</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={emailForm.control}
+                        name="smtpPort"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>SMTP Port</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={emailForm.control}
+                        name="smtpUser"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>SMTP Username</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={emailForm.control}
+                        name="smtpPassword"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>SMTP Password</FormLabel>
+                            <FormControl>
+                              <Input {...field} type="password" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={emailForm.control}
+                        name="fromEmail"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>From Email</FormLabel>
+                            <FormControl>
+                              <Input {...field} type="email" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={emailForm.control}
+                        name="fromName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>From Name</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
+
+                    <FormField
+                      control={emailForm.control}
+                      name="defaultEmailTemplate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Default Email Template</FormLabel>
+                          <Select 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select template" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="default">Default Template</SelectItem>
+                              <SelectItem value="minimal">Minimal</SelectItem>
+                              <SelectItem value="modern">Modern</SelectItem>
+                              <SelectItem value="corporate">Corporate</SelectItem>
+                              <SelectItem value="branded">Branded</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="flex justify-end">
+                      <Button variant="outline" className="mr-2" disabled={isSaving}>
+                        Test Connection
+                      </Button>
+                      <Button type="submit" disabled={isSaving}>
+                        {isSaving ? (
+                          <>
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Save Changes
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Notification Settings */}
+          <TabsContent value="notifications" className="bg-transparent p-0 mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Notification Settings</CardTitle>
+                <CardDescription>
+                  Configure your notification preferences and integrations.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...notificationForm}>
+                  <form onSubmit={notificationForm.handleSubmit(onSubmitNotificationSettings)} className="space-y-6">
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium">Email Notifications</h3>
+                      <div className="space-y-2">
+                        <FormField
+                          control={notificationForm.control}
+                          name="newProjectCreated"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                              <div className="space-y-0.5">
+                                <FormLabel>New Project Created</FormLabel>
+                                <FormDescription>
+                                  Receive notifications when a new project is created
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={notificationForm.control}
+                          name="projectStatusChanged"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                              <div className="space-y-0.5">
+                                <FormLabel>Project Status Changed</FormLabel>
+                                <FormDescription>
+                                  Receive notifications when a project status is updated
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={notificationForm.control}
+                          name="newClientRegistered"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                              <div className="space-y-0.5">
+                                <FormLabel>New Client Registered</FormLabel>
+                                <FormDescription>
+                                  Receive notifications when a new client signs up
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={notificationForm.control}
+                          name="newSupportTicket"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                              <div className="space-y-0.5">
+                                <FormLabel>New Support Ticket</FormLabel>
+                                <FormDescription>
+                                  Receive notifications when a new support ticket is created
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={notificationForm.control}
+                          name="invoicePayment"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                              <div className="space-y-0.5">
+                                <FormLabel>Invoice Payments</FormLabel>
+                                <FormDescription>
+                                  Receive notifications for invoice payments
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={notificationForm.control}
+                        name="notificationEmail"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Notification Email</FormLabel>
+                            <FormControl>
+                              <Input {...field} type="email" />
+                            </FormControl>
+                            <FormDescription>
+                              Where to send all notifications
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium">Integrations</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                          control={notificationForm.control}
+                          name="slackWebhook"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Slack Webhook URL</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormDescription>
+                                Integration with Slack for instant notifications
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={notificationForm.control}
+                          name="discordWebhook"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Discord Webhook URL</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormDescription>
+                                Integration with Discord for instant notifications
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <Button type="submit" disabled={isSaving}>
+                        {isSaving ? (
+                          <>
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Save Changes
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Security Settings */}
+          <TabsContent value="security" className="bg-transparent p-0 mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Security Settings</CardTitle>
+                <CardDescription>
+                  Configure your security preferences and authentication settings.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-center h-48 text-gray-500">
+                  <div className="text-center">
+                    <Lock className="h-12 w-12 mx-auto text-gray-400" />
+                    <h3 className="mt-4 text-lg font-medium">Security Settings Coming Soon</h3>
+                    <p className="mt-2">This feature is under development and will be available soon.</p>
                   </div>
                 </div>
-              </TabsContent>
-            </div>
-          </Tabs>
-          
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
-            <button
-              type="button"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              onClick={handleSaveSettings}
-              disabled={isSaving}
-            >
-              {isSaving ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Settings
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      </main>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }
