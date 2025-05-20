@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { contactSchema, projectSchema, milestoneSchema, chatMessageSchema, chatSessionSchema } from "@shared/schema";
+import { contactSchema, projectSchema, milestoneSchema, chatMessageSchema, chatSessionSchema, supportTicketSchema, ticketResponseSchema } from "@shared/schema";
 import { type Request, Response, NextFunction } from "express";
 import { setupChatService } from "./chatService";
 import { setupAuth, isAuthenticated, isAdmin, isSupport } from "./replitAuth";

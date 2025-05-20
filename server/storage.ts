@@ -45,6 +45,18 @@ export interface IStorage {
   getChatMessagesBySessionId(sessionId: number): Promise<ChatMessage[]>;
   markMessagesAsRead(sessionId: number, userId: string): Promise<void>;
   getUnreadMessageCount(userId: string): Promise<number>;
+  
+  // Support ticket operations
+  createSupportTicket(ticket: InsertSupportTicket): Promise<SupportTicket>;
+  getSupportTicketById(id: number): Promise<SupportTicket | undefined>;
+  getSupportTicketsByClientId(clientId: string): Promise<SupportTicket[]>;
+  getSupportTicketsByProjectId(projectId: number): Promise<SupportTicket[]>;
+  getAllSupportTickets(): Promise<SupportTicket[]>;
+  updateSupportTicket(id: number, ticket: Partial<InsertSupportTicket>): Promise<SupportTicket>;
+  
+  // Ticket response operations
+  createTicketResponse(response: InsertTicketResponse): Promise<TicketResponse>;
+  getTicketResponsesByTicketId(ticketId: number): Promise<TicketResponse[]>;
 }
 
 export class DatabaseStorage implements IStorage {

@@ -165,3 +165,49 @@ export const contactSchema = createInsertSchema(contacts).pick({
 
 export type InsertContact = z.infer<typeof contactSchema>;
 export type Contact = typeof contacts.$inferSelect;
+
+// Support tickets
+export const supportTickets = pgTable("support_tickets", {
+  id: serial("id").primaryKey(),
+  clientId: varchar("client_id").notNull().references(() => users.id),
+  projectId: integer("project_id").references(() => projects.id),
+  subject: text("subject").notNull(),
+  description: text("description").notNull(),
+  priority: text("priority").default("medium").notNull(), // low, medium, high
+  status: text("status").default("new").notNull(), // new, in_progress, closed
+  assignedTo: varchar("assigned_to").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  closedAt: timestamp("closed_at"),
+});
+
+export const supportTicketSchema = createInsertSchema(supportTickets).pick({
+  clientId: true,
+  projectId: true,
+  subject: true,
+  description: true,
+  priority: true,
+});
+
+export type InsertSupportTicket = z.infer<typeof supportTicketSchema>;
+export type SupportTicket = typeof supportTickets.$inferSelect;
+
+// Support ticket responses
+export const ticketResponses = pgTable("ticket_responses", {
+  id: serial("id").primaryKey(),
+  ticketId: integer("ticket_id").notNull().references(() => supportTickets.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
+  isInternal: boolean("is_internal").default(false).notNull(), // For staff-only notes
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const ticketResponseSchema = createInsertSchema(ticketResponses).pick({
+  ticketId: true,
+  userId: true,
+  content: true,
+  isInternal: true,
+});
+
+export type InsertTicketResponse = z.infer<typeof ticketResponseSchema>;
+export type TicketResponse = typeof ticketResponses.$inferSelect;
