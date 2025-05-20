@@ -73,13 +73,13 @@ export default function CaseStudiesSection() {
   ];
 
   return (
-    <section id="case-studies" className="py-24 bg-light-500">
+    <section id="case-studies" className="py-16 md:py-24 bg-light-500">
       <motion.div 
         className="container mx-auto px-4 sm:px-6 lg:px-8"
         variants={staggerContainer}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, amount: 0.25 }}
+        viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div 
           className="text-center max-w-3xl mx-auto mb-16"
@@ -99,12 +99,12 @@ export default function CaseStudiesSection() {
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
           {caseStudiesData.map((study, index) => (
             <motion.div 
               key={index}
               className="bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all overflow-hidden border border-gray-100 group hover:-translate-y-2 duration-300"
-              variants={fadeIn("up", "spring", index * 0.1 + 0.2, 0.75)}
+              variants={fadeIn("up", "spring", index * 0.05 + 0.1, 0.5)}
             >
               <div className={`h-32 w-full bg-gradient-to-r ${study.bgColor} relative overflow-hidden p-8 flex items-center`}>
                 <div className="absolute inset-0 opacity-20">

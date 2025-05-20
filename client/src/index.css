@@ -155,6 +155,30 @@
     section {
       overflow-x: hidden;
       width: 100%;
+      padding-top: 2rem !important;
+      padding-bottom: 2rem !important;
+    }
+    
+    /* Reduce margins between sections */
+    section + section {
+      margin-top: 0 !important;
+    }
+    
+    /* Fix grid spacing issues */
+    .grid {
+      row-gap: 1.5rem !important;
+    }
+    
+    /* Fix heading bottom margins */
+    .text-center .text-4xl, 
+    .text-center .text-5xl {
+      margin-bottom: 1rem !important;
+    }
+    
+    /* Reduce bottom margin for section headers */
+    section div.mb-16, 
+    section div.mb-20 {
+      margin-bottom: 1.5rem !important;
     }
   }
 }
