@@ -12,7 +12,7 @@ export default function CaseStudiesSection() {
       metricValue: "96%",
       metricLabel: "Reduction in produce waste",
       metricIcon: <TrendingUp className="w-4 h-4 text-primary" />,
-      bgColor: "from-green-900 to-green-700",
+      bgColor: "from-primary/90 to-primary",
       icon: <Package className="w-6 h-6" />
     },
     {
@@ -23,7 +23,7 @@ export default function CaseStudiesSection() {
       metricValue: "68%",
       metricLabel: "Reduction in scheduling errors",
       metricIcon: <CheckCheck className="w-4 h-4 text-primary" />,
-      bgColor: "from-blue-900 to-blue-700",
+      bgColor: "from-primary/90 to-primary",
       icon: <Users className="w-6 h-6" />
     },
     {
@@ -34,7 +34,7 @@ export default function CaseStudiesSection() {
       metricValue: "$47K",
       metricLabel: "Annual savings",
       metricIcon: <DollarSign className="w-4 h-4 text-primary" />,
-      bgColor: "from-orange-800 to-orange-600",
+      bgColor: "from-primary/90 to-primary",
       icon: <CheckCheck className="w-6 h-6" />
     },
     {
@@ -45,7 +45,7 @@ export default function CaseStudiesSection() {
       metricValue: "47%",
       metricLabel: "Increase in production output",
       metricIcon: <BarChart4 className="w-4 h-4 text-primary" />,
-      bgColor: "from-amber-900 to-amber-700",
+      bgColor: "from-primary/90 to-primary",
       icon: <Package className="w-6 h-6" />
     },
     {
@@ -56,7 +56,7 @@ export default function CaseStudiesSection() {
       metricValue: "84%",
       metricLabel: "Reduction in administrative tasks",
       metricIcon: <CheckCheck className="w-4 h-4 text-primary" />,
-      bgColor: "from-indigo-900 to-indigo-700",
+      bgColor: "from-primary/90 to-primary",
       icon: <Users className="w-6 h-6" />
     },
     {
@@ -67,7 +67,7 @@ export default function CaseStudiesSection() {
       metricValue: "215%",
       metricLabel: "Increase in online orders",
       metricIcon: <ShoppingCart className="w-4 h-4 text-primary" />,
-      bgColor: "from-rose-900 to-rose-700",
+      bgColor: "from-primary/90 to-primary",
       icon: <ShoppingCart className="w-6 h-6" />
     }
   ];
