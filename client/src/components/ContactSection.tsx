@@ -254,7 +254,7 @@ export default function ContactSection() {
           </motion.div>
           
           <motion.div variants={fadeIn("left", "tween", 0.3, 1)}>
-            <div className="bg-gradient-to-br from-secondary to-secondary-500 rounded-xl p-8 shadow-xl mb-8 text-white">
+            <div className="bg-black rounded-xl p-8 shadow-xl mb-8 text-white">
               <h3 className="text-xl font-bold mb-6 border-b border-white/20 pb-3">Connect With Us</h3>
               
               <div className="flex items-start mb-6">
@@ -288,23 +288,23 @@ export default function ContactSection() {
               </div>
             </div>
             
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-8 border border-gray-200 shadow-lg">
-              <h3 className="text-xl font-bold font-heading mb-4 text-secondary">Business Hours</h3>
+            <div className="bg-black rounded-xl p-8 border border-gray-700 shadow-lg text-white">
+              <h3 className="text-xl font-bold font-heading mb-4 text-white">Business Hours</h3>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="font-medium">Monday - Friday:</span>
-                  <span>9:00 AM - 6:00 PM</span>
+                  <span className="font-medium text-white">Monday - Friday:</span>
+                  <span className="text-gray-300">9:00 AM - 6:00 PM</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="font-medium">Saturday:</span>
-                  <span>10:00 AM - 2:00 PM</span>
+                  <span className="font-medium text-white">Saturday:</span>
+                  <span className="text-gray-300">10:00 AM - 2:00 PM</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="font-medium">Sunday:</span>
-                  <span>Closed</span>
+                  <span className="font-medium text-white">Sunday:</span>
+                  <span className="text-gray-300">Closed</span>
                 </div>
-                <div className="pt-3 mt-3 border-t border-gray-200">
-                  <p className="text-sm text-gray-600">We typically respond to inquiries within 1 business day.</p>
+                <div className="pt-3 mt-3 border-t border-gray-700">
+                  <p className="text-sm text-gray-300">We typically respond to inquiries within 1 business day.</p>
                 </div>
               </div>
             </div>

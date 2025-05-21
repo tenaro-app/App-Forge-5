@@ -76,7 +76,7 @@ export default function Footer() {
                 <Instagram className="h-5 w-5" />
               </a>
             </div>
-            <div className="bg-gradient-to-r from-primary/20 to-primary/5 p-6 rounded-xl group hover:from-primary/30 hover:to-primary/10 transition-all duration-500 cursor-pointer">
+            <div className="bg-black p-6 rounded-xl shadow-lg border border-gray-800 w-full transition-all duration-500 cursor-pointer lg:w-full md:w-full">
               <h4 className="text-white font-bold mb-2 group-hover:text-primary transition-colors duration-300">Ready to get started?</h4>
               <p className="text-gray-300 mb-4 group-hover:text-gray-200 transition-colors duration-300">Book your free consultation now!</p>
               <a 
