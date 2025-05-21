@@ -145,13 +145,7 @@ export default function TechnologiesSection() {
 
   return (
     <section id="technologies" className="py-24 bg-secondary relative">
-      {/* Overlay pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{ 
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='30' height='30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 0l15 15H0z' fill='%23ffffff' fill-opacity='1'/%3E%3C/svg%3E")`,
-          backgroundSize: '30px 30px'
-        }} />
-      </div>
+
       
       <motion.div 
         className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
@@ -164,9 +158,9 @@ export default function TechnologiesSection() {
           className="text-center max-w-3xl mx-auto mb-20"
           variants={fadeIn("up", "tween", 0.1, 1)}
         >
-          <span className="text-sm font-semibold text-primary-300 uppercase tracking-widest font-heading">Our Technical Prowess</span>
+          <span className="text-sm font-semibold text-primary uppercase tracking-widest font-heading">Our Technical Prowess</span>
           <h2 className="mt-4 text-4xl md:text-5xl font-heading font-extrabold text-white">
-            Cutting-Edge <span className="text-primary-300">Technologies</span> We Master
+            Cutting-Edge <span className="text-primary">Technologies</span> We Master
           </h2>
           <p className="mt-6 text-xl text-gray-300">
             With expertise across the entire development stack, we build robust, 
@@ -178,7 +172,7 @@ export default function TechnologiesSection() {
           {technologiesData.map((category, index) => (
             <motion.div 
               key={index}
-              className="bg-dark-500 rounded-xl shadow-2xl p-8 border border-gray-800 hover:border-primary/30 transition-colors"
+              className="bg-[#333333] rounded-xl shadow-2xl p-8 border border-gray-800 hover:border-gray-700 transition-colors"
               variants={fadeIn("up", "spring", index * 0.1 + 0.2, 0.75)}
             >
               <div className="flex items-center mb-6">

@@ -73,7 +73,7 @@ export default function ProcessSection() {
                 </div>
                 
                 <div className={`md:w-1/2 ${index % 2 === 0 ? 'md:pl-16' : 'md:pr-16 md:order-0'} md:hidden lg:block`}>
-                  <div className="bg-gradient-to-br from-black to-secondary-500 rounded-xl border border-primary/20 shadow-2xl overflow-hidden">
+                  <div className="bg-gradient-to-br from-black to-secondary-500 rounded-xl border border-gray-800 shadow-2xl overflow-hidden">
                     <div className="p-1">
                       <div className="bg-white/5 p-6 rounded-lg backdrop-blur-sm group hover:bg-white/10 transition-all duration-300">
                         <div className="mb-6 flex items-center">

@@ -218,7 +218,7 @@ export default function PricingSection() {
         </div>
         
         <motion.div 
-          className="mt-20 bg-gradient-to-br from-secondary to-primary rounded-3xl p-10 shadow-2xl overflow-hidden relative"
+          className="mt-20 bg-primary rounded-3xl p-10 shadow-2xl overflow-hidden relative"
           variants={fadeIn("up", "tween", 0.6, 1)}
         >
           <div className="absolute inset-0 opacity-10">
