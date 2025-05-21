@@ -236,7 +236,7 @@ export default function PricingSection() {
               </p>
             </div>
             <div className="md:w-1/3 text-center md:text-right">
-              <a href="#contact" className="px-8 py-4 rounded-xl bg-white text-primary font-bold text-lg shadow-xl hover:shadow-2xl hover:bg-gray-50 transition-all transform hover:-translate-y-1 inline-block">
+              <a href="#contact" className="px-8 py-4 rounded-xl bg-black text-white font-bold text-lg shadow-xl hover:shadow-2xl hover:bg-gray-900 transition-all transform hover:-translate-y-1 inline-block border border-gray-700">
                 Schedule Free Consultation
               </a>
             </div>

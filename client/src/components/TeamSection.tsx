@@ -114,39 +114,27 @@ export default function TeamSection() {
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
           {teamMembersData.map((member, index) => (
             <motion.div 
               key={index}
               className="bg-white rounded-xl shadow-xl overflow-hidden group hover:-translate-y-2 transition-all duration-300"
               variants={fadeIn("up", "spring", index * 0.1 + 0.2, 0.75)}
             >
-              <div className="aspect-square overflow-hidden bg-gray-100 relative flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 opacity-80"></div>
-                <div className="z-10 text-center p-6">
-                  <div className="w-24 h-24 rounded-full bg-primary/10 mx-auto flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                    <span className="text-4xl font-bold text-primary">
-                      {member.name.split(' ').map(name => name[0]).join('')}
-                    </span>
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex items-center">
+                  <div className="mr-4 p-3 bg-primary/10 rounded-lg">
+                    {getIconByRole(member.role)}
                   </div>
-                  <h3 className="text-xl font-bold font-heading text-secondary">{member.name}</h3>
-                  <p className="text-primary font-medium mt-1">{member.role}</p>
+                  <div>
+                    <h3 className="text-xl font-bold font-heading text-secondary">{member.name}</h3>
+                    <p className="text-primary font-medium mt-1">{member.role}</p>
+                  </div>
                 </div>
-
-                <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-white to-transparent"></div>
               </div>
               
               <div className="p-6">
-                <div className="mb-4 flex items-center space-x-3">
-                  <div className="p-2 rounded-full bg-primary/10">
-                    {getIconByRole(member.role)}
-                  </div>
-                  <div className="h-1 flex-grow rounded-full bg-gray-200">
-                    <div className="h-1 rounded-full bg-primary w-4/5"></div>
-                  </div>
-                </div>
-                
-                <p className="text-gray-600 text-sm mb-4 min-h-[60px]">{member.bio}</p>
+                <p className="text-gray-600 text-sm mb-4">{member.bio}</p>
                 
                 <div className="flex flex-wrap gap-2 mt-4">
                   {member.specialties.map((specialty, spIndex) => (

@@ -95,8 +95,8 @@ export default function FAQSection() {
               key={index} 
               className={`border-2 rounded-xl px-8 py-6 shadow-lg transition-all duration-300 ${
                 openItems.includes(index) 
-                  ? 'border-primary bg-primary/5' 
-                  : 'border-gray-200 hover:border-primary/30'
+                  ? 'border-gray-300 bg-gray-50' 
+                  : 'border-gray-200 hover:border-gray-300'
               }`}
             >
               <button 
@@ -139,20 +139,20 @@ export default function FAQSection() {
         </motion.div>
         
         <motion.div 
-          className="mt-16 text-center bg-gradient-to-r from-primary/10 to-primary/5 p-10 rounded-2xl shadow-lg"
+          className="mt-16 text-center bg-black p-10 rounded-2xl shadow-lg"
           variants={fadeIn("up", "tween", 0.3, 1)}
         >
           <div className="inline-flex items-center justify-center mb-6">
-            <HelpCircle className="w-8 h-8 text-primary mr-3" />
-            <h3 className="text-2xl font-bold text-secondary">Still Have Questions?</h3>
+            <HelpCircle className="w-8 h-8 text-white mr-3" />
+            <h3 className="text-2xl font-bold text-white">Still Have Questions?</h3>
           </div>
-          <p className="text-gray-700 mb-8 max-w-2xl mx-auto text-lg">
+          <p className="text-gray-300 mb-8 max-w-2xl mx-auto text-lg">
             Our team is ready to provide detailed answers to your specific business needs. 
             Schedule a free consultation and discover how our solutions can transform your operations.
           </p>
           <a 
             href="#contact" 
-            className="px-8 py-4 rounded-xl bg-primary text-white font-bold text-lg hover:bg-primary/90 transition-all shadow-xl hover:shadow-primary/20 transform hover:-translate-y-1 inline-block"
+            className="px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-100 transition-all shadow-xl hover:shadow-white/20 transform hover:-translate-y-1 inline-block"
           >
             Book Free Consultation
           </a>
