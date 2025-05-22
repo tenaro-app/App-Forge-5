@@ -13,6 +13,8 @@ import CTASection from "@/components/CTASection";
 import ContactSection from "@/components/ContactSection";
 import TechnologiesSection from "@/components/TechnologiesSection";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
+import ChatBot from "@/components/ChatBot";
 import { useEffect } from "react";
 
 export default function Home() {
@@ -53,6 +55,8 @@ export default function Home() {
       <CTASection />
       <ContactSection />
       <Footer />
+      <BackToTop />
+      <ChatBot />
     </div>
   );
 }
