@@ -55,6 +55,7 @@ export function setupAuth(app: Express) {
   const sessionStore = new PostgresSessionStore({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: false,
+    tableName: "session",
     ttl: 7 * 24 * 60 * 60, // 7 days
   });
 
