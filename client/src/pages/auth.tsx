@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Redirect } from 'wouter';
 
 export default function AuthPage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, loginMutation, registerMutation } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('email');
   const [showPassword, setShowPassword] = useState(false);
@@ -39,8 +39,32 @@ export default function AuthPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
+    
+    if (isLogin) {
+      // Handle login
+      const loginData = {
+        email: authMethod === 'email' ? formData.email : undefined,
+        phone: authMethod === 'phone' ? formData.phone : undefined,
+        password: formData.password
+      };
+      loginMutation.mutate(loginData);
+    } else {
+      // Handle registration
+      if (formData.password !== formData.confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+      
+      const registerData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: authMethod === 'email' ? formData.email : undefined,
+        phone: authMethod === 'phone' ? formData.phone : undefined,
+        password: formData.password,
+        company: formData.company
+      };
+      registerMutation.mutate(registerData);
+    }
   };
 
   return (
