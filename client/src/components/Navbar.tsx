@@ -395,7 +395,7 @@ export default function Navbar() {
               </div>
             ) : (
               <button 
-                onClick={() => setLocation("/login")}
+                onClick={() => setLocation("/auth")}
                 className="px-5 py-2.5 rounded-lg bg-primary text-white font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 group relative overflow-hidden"
               >
                 <span className="relative z-10 flex items-center justify-center">

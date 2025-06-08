@@ -13,29 +13,62 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// Users table - Enhanced to work with Replit Auth
+// Users table - Enhanced for custom authentication
 export const users = pgTable("users", {
-  id: varchar("id").primaryKey(), // Changed to varchar for Replit Auth ID compatibility
-  username: text("username").unique(),
+  id: varchar("id").primaryKey(), // UUID for user identification
   email: text("email").unique(),
-  firstName: text("first_name"),
-  lastName: text("last_name"),
+  phone: text("phone").unique(),
+  password: text("password"), // Hashed password for email/phone login
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  company: text("company"),
   profileImageUrl: text("profile_image_url"),
   role: text("role").default("client").notNull(), // client, admin, support
+  authProvider: text("auth_provider").default("local"), // local, google, facebook, linkedin
+  providerId: text("provider_id"), // ID from OAuth provider
+  emailVerified: boolean("email_verified").default(false),
+  phoneVerified: boolean("phone_verified").default(false),
+  lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  email: true,
-  firstName: true,
-  lastName: true,
-  profileImageUrl: true,
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  password: true,
+  authProvider: true,
+  providerId: true,
+  emailVerified: true,
+  phoneVerified: true,
+  lastLoginAt: true,
+  createdAt: true,
+  updatedAt: true,
+  role: true,
+});
+
+export const loginSchema = z.object({
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+  password: z.string().min(6),
+}).refine(data => data.email || data.phone, {
+  message: "Either email or phone is required"
+});
+
+export const registerSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  company: z.string().optional(),
+}).refine(data => data.email || data.phone, {
+  message: "Either email or phone is required"
 });
 
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type LoginData = z.infer<typeof loginSchema>;
+export type RegisterData = z.infer<typeof registerSchema>;
 
 // Projects table for client dashboard
 export const projects = pgTable("projects", {
