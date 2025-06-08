@@ -59,7 +59,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get current authenticated user
   app.get('/api/auth/user', isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
@@ -74,7 +74,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all projects (for admin) or client's projects (for client)
   app.get("/api/projects", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       // Admins can see all projects, clients see only their own
@@ -100,7 +100,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if user has access to this project
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       if (user?.role !== 'admin' && project.clientId !== userId) {
@@ -133,7 +133,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/projects/request", isAuthenticated, async (req: any, res: Response) => {
     try {
       // Ensure the client ID matches the authenticated user
-      if (req.body.clientId !== req.user.claims.sub) {
+      if (req.body.clientId !== req.user.id) {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
@@ -192,7 +192,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if user has access to this project
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       if (user?.role !== 'admin' && project.clientId !== userId) {
@@ -255,7 +255,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get chat sessions
   app.get("/api/chat/sessions", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       let sessions;
@@ -283,7 +283,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if user has access to this session
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       const isClient = session.clientId === userId;
@@ -304,7 +304,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new chat session
   app.post("/api/chat/sessions", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       const validatedData = chatSessionSchema.parse({
         ...req.body,
@@ -329,7 +329,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/chat/sessions/:id/assign", isSupport, async (req: any, res: Response) => {
     try {
       const sessionId = parseInt(req.params.id);
-      const supportId = req.user.claims.sub;
+      const supportId = req.user.id;
       
       const success = await chatService.assignSupportToSession(supportId, sessionId);
       
@@ -355,7 +355,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if user has access to this session
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       const isClient = session.clientId === userId;
@@ -389,7 +389,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if user has access to this session
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       const isClient = session.clientId === userId;
@@ -431,7 +431,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new support ticket
   app.post("/api/chat/tickets", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { subject, description, priority, projectId } = req.body;
       
       // Mock data for demonstration
@@ -460,7 +460,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all tickets for the authenticated user
   app.get("/api/chat/tickets", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Mock data for demonstration
       const mockTickets = [
