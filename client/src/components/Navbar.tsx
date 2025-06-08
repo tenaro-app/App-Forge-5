@@ -10,7 +10,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, logoutMutation } = useAuth();
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
@@ -384,12 +384,16 @@ export default function Navbar() {
                       </a>
                     </Link>
                     <div className="my-1 border-t border-gray-200"></div>
-                    <a 
-                      href="/api/logout"
+                    <button 
+                      onClick={() => {
+                        setActiveDropdown(null);
+                        logoutMutation.mutate();
+                      }}
                       className="block w-full text-left px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 transition-colors"
+                      disabled={logoutMutation.isPending}
                     >
-                      Logout
-                    </a>
+                      {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
+                    </button>
                   </div>
                 )}
               </div>
