@@ -59,7 +59,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function AdminProjects() {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
-  const isAdmin = useIsAdmin();
+  const { isAdmin } = useIsAdmin();
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");

@@ -50,7 +50,7 @@ type InvoiceFormValues = z.infer<typeof invoiceSchema>;
 
 export default function AdminInvoices() {
   const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();
-  const isAdmin = useIsAdmin();
+  const { isAdmin } = useIsAdmin();
   const [location, setLocation] = useLocation();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const queryClient = useQueryClient();
