@@ -136,7 +136,7 @@ export default function Navbar() {
               <div key={item.href} className="relative group" ref={el => { dropdownRefs.current[item.dropdownId || ''] = el }}>
                 {item.hasDropdown ? (
                   <button 
-                    className={`flex items-center text-sm font-medium space-x-1 py-2 relative ${scrolled ? 'text-gray-800 hover:text-primary' : 'text-white hover:text-primary-100'} transition-all duration-300 ease-out group`}
+                    className="flex items-center text-sm font-medium space-x-1 py-2 relative text-gray-800 hover:text-primary transition-all duration-300 ease-out group"
                     onClick={() => toggleDropdown(item.dropdownId || '')}
                   >
                     <span className="group-hover:translate-y-[-1px] transition-transform duration-300">{item.label}</span>
@@ -146,7 +146,7 @@ export default function Navbar() {
                 ) : (
                   <div 
                     onClick={() => { window.location.href = item.href || '#'; }}
-                    className={`text-sm font-medium py-2 relative inline-block ${scrolled ? 'text-gray-800 hover:text-primary' : 'text-white hover:text-primary-100'} transition-all duration-300 group cursor-pointer`}
+                    className="text-sm font-medium py-2 relative inline-block text-gray-800 hover:text-primary transition-all duration-300 group cursor-pointer"
                   >
                     <span className="group-hover:translate-y-[-1px] transition-transform duration-300 inline-block">{item.label}</span>
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>

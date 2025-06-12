@@ -104,7 +104,7 @@ export default function HeroSection() {
         </div>
       </motion.div>
       
-      <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-secondary to-transparent z-10"></div>
+
     </section>
   );
 }
