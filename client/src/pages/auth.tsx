@@ -141,7 +141,7 @@ export default function AuthPage() {
               onClick={() => handleSocialLogin('google')}
               className="w-full flex items-center justify-center space-x-3 bg-white border-2 border-gray-200 rounded-lg py-3 px-4 text-gray-700 font-medium hover:border-gray-300 hover:bg-gray-50 transition-all duration-200"
             >
-              <FaGoogle className="w-5 h-5 text-red-500" />
+              <FaGoogle className="w-5 h-5 text-gray-700" />
               <span>Continue with Google</span>
             </button>
             
@@ -149,7 +149,7 @@ export default function AuthPage() {
               onClick={() => handleSocialLogin('facebook')}
               className="w-full flex items-center justify-center space-x-3 bg-white border-2 border-gray-200 rounded-lg py-3 px-4 text-gray-700 font-medium hover:border-gray-300 hover:bg-gray-50 transition-all duration-200"
             >
-              <FaFacebookF className="w-5 h-5 text-blue-600" />
+              <FaFacebookF className="w-5 h-5 text-gray-700" />
               <span>Continue with Facebook</span>
             </button>
           </div>
