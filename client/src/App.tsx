@@ -38,6 +38,7 @@ import AdminNewProject from "@/pages/admin/projects/new";
 import AdminTeam from "@/pages/admin/team";
 import AdminSupport from "@/pages/admin/support";
 import AdminSettings from "@/pages/admin/settings";
+import AdminLeads from "@/pages/admin/leads";
 
 function Router() {
   return (
@@ -45,6 +46,7 @@ function Router() {
       {/* Main app routes */}
       <Route path="/" component={Home} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/book-consultation" component={BookConsultation} />
       
       {/* Client dashboard routes */}
       <Route path="/dashboard" component={Dashboard} />
@@ -94,6 +96,7 @@ function Router() {
       <Route path="/admin/projects/new" component={AdminNewProject} />
       <Route path="/admin/team" component={AdminTeam} />
       <Route path="/admin/support" component={AdminSupport} />
+      <Route path="/admin/leads" component={AdminLeads} />
       <Route path="/admin/settings" component={AdminSettings} />
       
       {/* Fallback to 404 */}
