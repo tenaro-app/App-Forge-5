@@ -76,19 +76,22 @@ export default function Footer() {
                 <Instagram className="h-5 w-5" />
               </a>
             </div>
-            <div className="bg-black p-6 rounded-xl shadow-lg border border-gray-800 w-full transition-all duration-500 cursor-pointer lg:w-full md:w-full">
-              <h4 className="text-white font-bold mb-2 group-hover:text-primary transition-colors duration-300">Ready to get started?</h4>
-              <p className="text-gray-300 mb-4 group-hover:text-gray-200 transition-colors duration-300">Book your free consultation now!</p>
-              <a 
-                href="#contact"
-                className="flex items-center justify-between font-medium text-white bg-primary px-5 py-3 rounded-lg hover:bg-white hover:text-primary transition-all duration-300 relative overflow-hidden group/btn"
-              >
-                <span className="relative z-10 flex items-center justify-between w-full">
-                  <span className="group-hover/btn:translate-x-[-2px] transition-transform duration-300">Contact Us</span>
-                  <ArrowRight className="h-4 w-4 group-hover/btn:scale-110 group-hover/btn:translate-x-1 transition-all duration-300" />
-                </span>
-                <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 group-hover/btn:bg-white transition-all duration-300"></span>
-              </a>
+            <div className="bg-black p-8 rounded-xl shadow-lg border border-gray-800 w-full mt-8 lg:mt-12">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div className="lg:flex-1">
+                  <h4 className="text-white font-bold text-xl mb-2">Ready to get started?</h4>
+                  <p className="text-gray-300 text-lg">Book your free consultation now!</p>
+                </div>
+                <div className="lg:flex-shrink-0">
+                  <a 
+                    href="#contact"
+                    className="inline-flex items-center justify-center font-medium text-white bg-primary px-8 py-4 rounded-lg hover:bg-white hover:text-primary transition-all duration-300 w-full lg:w-auto"
+                  >
+                    <span className="mr-2">Contact Us</span>
+                    <ArrowRight className="h-5 w-5" />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
           
