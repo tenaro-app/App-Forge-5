@@ -56,7 +56,7 @@ export default function BookConsultation() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-white text-gray-900 flex items-center justify-center">
         <motion.div
           className="text-center max-w-2xl mx-auto px-4"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -72,12 +72,12 @@ export default function BookConsultation() {
             <CheckCircle className="h-20 w-20 text-primary mx-auto" />
           </motion.div>
           <h1 className="text-4xl font-bold font-heading mb-6">Thank You!</h1>
-          <p className="text-xl text-gray-300 mb-8">
+          <p className="text-xl text-gray-600 mb-8">
             Your consultation request has been submitted successfully. Our team will review your information and contact you within 24 hours to schedule your free consultation.
           </p>
           <Button
             onClick={() => window.location.href = "/"}
-            className="bg-primary hover:bg-white hover:text-primary text-white font-bold px-8 py-4 rounded-lg transition-all duration-300"
+            className="bg-primary hover:bg-primary/90 text-white font-bold px-8 py-4 rounded-lg transition-all duration-300"
           >
             Return to Home
           </Button>
@@ -87,14 +87,11 @@ export default function BookConsultation() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-white text-gray-900">
       {/* Header Section */}
       <section className="pt-32 pb-16 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{ 
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: '60px 60px'
-          }}></div>
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0 bg-primary/10"></div>
         </div>
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -111,7 +108,7 @@ export default function BookConsultation() {
             <h1 className="text-5xl md:text-6xl font-heading font-extrabold mb-6">
               Book Your <span className="text-primary">Free</span> Consultation
             </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Ready to transform your business with custom automation solutions? Let's discuss your unique needs and explore how we can help you reduce costs and increase efficiency.
             </p>
           </motion.div>
@@ -127,7 +124,7 @@ export default function BookConsultation() {
             initial="hidden"
             animate="show"
           >
-            <div className="bg-gray-900 rounded-2xl shadow-2xl p-8 border border-gray-800">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   {/* Name Field */}
@@ -136,7 +133,7 @@ export default function BookConsultation() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-white font-medium flex items-center">
+                        <FormLabel className="text-gray-700 font-medium flex items-center">
                           <User className="w-4 h-4 mr-2 text-primary" />
                           Full Name
                         </FormLabel>
