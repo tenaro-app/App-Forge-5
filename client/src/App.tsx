@@ -11,7 +11,8 @@ import DashboardChat from "@/pages/dashboard/chat";
 import { Suspense } from "react";
 import ProjectDetail from "@/pages/dashboard/projects/id";
 import NewProject from "@/pages/new";
-import AdminAccess from "@/pages/admin-access"; // Added Admin Access page
+import AdminAccess from "@/pages/admin-access";
+import BookConsultation from "@/pages/book-consultation";
 
 // Import additional dashboard pages
 import DashboardAnalytics from "@/pages/dashboard/analytics";

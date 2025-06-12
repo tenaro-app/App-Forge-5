@@ -604,5 +604,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Consultation leads routes
+  app.post("/api/consultation-leads", async (req: Request, res: Response) => {
+    try {
+      const lead = await storage.createConsultationLead(req.body);
+      res.status(201).json(lead);
+    } catch (error) {
+      console.error("Error creating consultation lead:", error);
+      res.status(500).json({ message: "Failed to create consultation lead" });
+    }
+  });
+
+  app.get("/api/admin/consultation-leads", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const leads = await storage.getConsultationLeads();
+      res.json(leads);
+    } catch (error) {
+      console.error("Error fetching consultation leads:", error);
+      res.status(500).json({ message: "Failed to fetch consultation leads" });
+    }
+  });
+
+  app.put("/api/admin/consultation-leads/:id/status", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const lead = await storage.updateConsultationLeadStatus(parseInt(id), status);
+      res.json(lead);
+    } catch (error) {
+      console.error("Error updating consultation lead status:", error);
+      res.status(500).json({ message: "Failed to update consultation lead status" });
+    }
+  });
+
   return httpServer;
 }
