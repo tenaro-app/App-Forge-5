@@ -67,8 +67,8 @@ export default function Navbar() {
   };
 
   const navbarClasses = cn(
-    "sticky top-0 z-50 transition-shadow duration-300",
-    scrolled ? "shadow-lg bg-white" : "bg-secondary text-white"
+    "sticky top-0 z-50 transition-shadow duration-300 bg-white",
+    scrolled ? "shadow-lg" : "shadow-sm"
   );
   
   const solutionsItems = [
@@ -126,7 +126,7 @@ export default function Navbar() {
               <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
                 <span className="text-white font-bold text-xl">AF</span>
               </div>
-              <span className={`text-2xl font-heading font-bold ${scrolled ? 'text-dark-600' : 'text-white'}`}>AppForge</span>
+              <span className="text-2xl font-heading font-bold text-gray-900">AppForge</span>
             </div>
           </div>
 

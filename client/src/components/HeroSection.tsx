@@ -26,14 +26,14 @@ export default function HeroSection() {
           </motion.div>
           
           <motion.h1 
-            className="font-heading font-extrabold text-5xl md:text-6xl lg:text-7xl text-white leading-tight"
+            className="font-heading font-extrabold text-5xl md:text-6xl lg:text-7xl text-gray-900 leading-tight"
             variants={fadeIn("up", "tween", 0.1, 1)}
           >
             Business-<span className="text-primary">Transforming</span> Apps for the Digital Age
           </motion.h1>
           
           <motion.p 
-            className="mt-8 text-xl text-gray-300 max-w-2xl"
+            className="mt-8 text-xl text-gray-600 max-w-2xl"
             variants={fadeIn("up", "tween", 0.2, 1)}
           >
             We forge custom digital solutions that eliminate repetitive tasks, streamline operations, and save your business up to $250,000 annually.
@@ -53,11 +53,10 @@ export default function HeroSection() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                 </svg>
               </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 group-hover:scale-110 transition-transform duration-500 ease-out"></span>
             </a>
             <a 
               href="#solutions" 
-              className="px-10 py-4 rounded-lg border-2 border-white/30 text-white font-semibold text-lg transition-all duration-300 transform hover:-translate-y-1 text-center group relative overflow-hidden"
+              className="px-10 py-4 rounded-lg border-2 border-primary text-primary font-semibold text-lg transition-all duration-300 transform hover:-translate-y-1 text-center group relative overflow-hidden hover:bg-primary hover:text-white"
             >
               <span className="relative z-10 flex items-center justify-center">
                 <span className="group-hover:translate-x-[-2px] transition-transform duration-300">Our Solutions</span>
@@ -65,12 +64,11 @@ export default function HeroSection() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                 </svg>
               </span>
-              <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300 ease-out"></span>
             </a>
           </motion.div>
           
           <motion.div 
-            className="mt-16 pt-10 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-white/10"
+            className="mt-16 pt-10 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200"
             variants={fadeIn("up", "tween", 0.4, 1)}
           >
             <div className="flex space-x-4 items-start group cursor-pointer">
@@ -78,8 +76,8 @@ export default function HeroSection() {
                 <Zap className="w-6 h-6 text-primary transition-all duration-300 group-hover:scale-110" />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-lg transition-colors duration-300 group-hover:text-primary">Lightning Fast</h3>
-                <p className="text-gray-300 text-sm mt-1 transition-colors duration-300 group-hover:text-gray-200">Apps delivered in weeks, not months</p>
+                <h3 className="text-gray-900 font-semibold text-lg transition-colors duration-300 group-hover:text-primary">Lightning Fast</h3>
+                <p className="text-gray-600 text-sm mt-1 transition-colors duration-300 group-hover:text-gray-700">Apps delivered in weeks, not months</p>
               </div>
             </div>
             
@@ -88,8 +86,8 @@ export default function HeroSection() {
                 <Code className="w-6 h-6 text-primary transition-all duration-300 group-hover:scale-110" />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-lg transition-colors duration-300 group-hover:text-primary">Customized Code</h3>
-                <p className="text-gray-300 text-sm mt-1 transition-colors duration-300 group-hover:text-gray-200">Tailored to your exact business needs</p>
+                <h3 className="text-gray-900 font-semibold text-lg transition-colors duration-300 group-hover:text-primary">Customized Code</h3>
+                <p className="text-gray-600 text-sm mt-1 transition-colors duration-300 group-hover:text-gray-700">Tailored to your exact business needs</p>
               </div>
             </div>
             
@@ -98,8 +96,8 @@ export default function HeroSection() {
                 <Rocket className="w-6 h-6 text-primary transition-all duration-300 group-hover:scale-110" />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-lg transition-colors duration-300 group-hover:text-primary">Free Hosting</h3>
-                <p className="text-gray-300 text-sm mt-1 transition-colors duration-300 group-hover:text-gray-200">Lifetime free deployment included</p>
+                <h3 className="text-gray-900 font-semibold text-lg transition-colors duration-300 group-hover:text-primary">Free Hosting</h3>
+                <p className="text-gray-600 text-sm mt-1 transition-colors duration-300 group-hover:text-gray-700">Lifetime free deployment included</p>
               </div>
             </div>
           </motion.div>
