@@ -73,100 +73,114 @@ const dummyClients = [
     id: "2",
     firstName: "John",
     lastName: "Smith",
-    email: "john.smith@betaindustries.com",
-    phone: "+1 (555) 234-5678",
-    company: "Beta Industries",
-    position: "COO",
+    email: "john.smith@techstart.io",
+    phone: "+1 (555) 987-6543",
+    company: "TechStart",
+    companyAddress: "456 Innovation Drive, San Francisco, CA 94102",
+    companyEmail: "hello@techstart.io",
+    companyWebsite: "https://techstart.io",
+    industry: "SaaS",
+    position: "Founder & CEO",
+    socialFacebook: "",
+    socialInstagram: "https://instagram.com/techstart",
+    socialLinkedin: "https://linkedin.com/company/techstart",
+    socialYoutube: "https://youtube.com/techstart",
+    socialTiktok: "",
+    socialX: "https://x.com/techstart",
+    socialOther: "",
     status: "active",
-    joinDate: new Date(2023, 1, 20), // February 20, 2023
-    projectsCount: 2,
-    lastActivity: new Date(2023, 5, 12), // June 12, 2023
-    billingType: "project",
-    notes: "Mid-sized manufacturing company focusing on inventory automation"
+    joinDate: new Date(2023, 2, 8),
+    projectsCount: 1,
+    lastActivity: new Date(2023, 5, 20),
+    billingType: "project-based",
+    notes: "Startup focused on automation solutions for small businesses"
   },
   {
     id: "3",
-    firstName: "Alice",
-    lastName: "Brown",
-    email: "alice.brown@gammasolutions.com",
-    phone: "+1 (555) 345-6789",
-    company: "Gamma Solutions",
-    position: "CEO",
-    status: "active",
-    joinDate: new Date(2023, 2, 5), // March 5, 2023
-    projectsCount: 1,
-    lastActivity: new Date(2023, 5, 8), // June 8, 2023
-    billingType: "annual",
-    notes: "Small business with growth potential, interested in CRM solutions"
-  },
-  {
-    id: "4",
-    firstName: "Robert",
+    firstName: "Sarah",
     lastName: "Johnson",
-    email: "robert.johnson@deltatech.com",
+    email: "sarah.johnson@retailplus.com",
     phone: "+1 (555) 456-7890",
-    company: "Delta Tech",
-    position: "CIO",
+    company: "RetailPlus",
+    companyAddress: "789 Commerce Street, Chicago, IL 60601",
+    companyEmail: "contact@retailplus.com",
+    companyWebsite: "https://retailplus.com",
+    industry: "Retail",
+    position: "Operations Director",
+    socialFacebook: "https://facebook.com/retailplus",
+    socialInstagram: "https://instagram.com/retailplus",
+    socialLinkedin: "https://linkedin.com/company/retailplus",
+    socialYoutube: "",
+    socialTiktok: "https://tiktok.com/@retailplus",
+    socialX: "",
+    socialOther: "",
     status: "inactive",
-    joinDate: new Date(2022, 10, 10), // November 10, 2022
-    projectsCount: 1,
-    lastActivity: new Date(2023, 3, 15), // April 15, 2023
-    billingType: "project",
-    notes: "On hold due to internal restructuring, expecting to resume in Q3"
-  },
-  {
-    id: "5",
-    firstName: "Emily",
-    lastName: "Taylor",
-    email: "emily.taylor@epsilonsystems.com",
-    phone: "+1 (555) 567-8901",
-    company: "Epsilon Systems",
-    position: "Director of Operations",
-    status: "active",
-    joinDate: new Date(2023, 4, 1), // May 1, 2023
-    projectsCount: 1,
-    lastActivity: new Date(2023, 5, 14), // June 14, 2023
+    joinDate: new Date(2022, 10, 12),
+    projectsCount: 0,
+    lastActivity: new Date(2023, 3, 15),
     billingType: "monthly",
-    notes: "Healthcare industry client, focused on patient management workflows"
+    notes: "Retail chain looking to automate inventory management"
   }
 ];
 
 export default function AdminClients() {
-  const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();
-  const isAdmin = useIsAdmin();
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
+  const { user } = useAuth();
+  const { isAdmin } = useIsAdmin();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // State for filtering and sorting
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [sortField, setSortField] = useState("company");
-  const [sortDirection, setSortDirection] = useState("asc");
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-  
-  // Redirect to login if not authenticated or not admin
+  const [sortField, setSortField] = useState("name");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  // Redirect if not admin
   useEffect(() => {
-    if (!isAuthLoading) {
-      if (!isAuthenticated) {
-        window.location.href = "/api/login";
-      } else if (!isAdmin) {
-        setLocation("/dashboard");
-      }
+    if (!isAdmin) {
+      setLocation("/dashboard");
     }
-  }, [isAuthLoading, isAuthenticated, isAdmin, setLocation]);
-  
-  // Fetch all clients
-  const { 
-    data: clients, 
-    isLoading: isClientsLoading 
+  }, [isAdmin, setLocation]);
+
+  // Query for clients (currently using dummy data)
+  const {
+    data: clients,
+    isLoading: isClientsLoading,
+    error: clientsError
   } = useQuery({
     queryKey: ["/api/admin/clients"],
-    enabled: isAuthenticated && isAdmin,
-    // For development we're using dummy data
-    initialData: dummyClients
+    queryFn: async () => {
+      // For now, return dummy data
+      return dummyClients;
+    }
   });
-  
-  // Filter clients based on search query and status
+
+  // Delete client mutation
+  const deleteClientMutation = useMutation({
+    mutationFn: async (clientId: string) => {
+      const response = await apiRequest("DELETE", `/api/admin/clients/${clientId}`);
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/clients"] });
+      toast({
+        title: "Client deleted",
+        description: "Client has been successfully removed."
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete client. Please try again.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Filter and sort clients
   const filteredClients = clients?.filter(client => {
-    const matchesSearch = searchQuery === "" || 
+    const matchesSearch = 
       client.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       client.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -176,126 +190,57 @@ export default function AdminClients() {
     
     return matchesSearch && matchesStatus;
   });
-  
-  // Sort clients based on selected field and direction
+
   const sortedClients = filteredClients?.sort((a, b) => {
-    let compareA, compareB;
+    let aVal, bVal;
     
-    // Determine which field to sort by
     switch (sortField) {
       case "name":
-        compareA = a.firstName + a.lastName;
-        compareB = b.firstName + b.lastName;
+        aVal = `${a.firstName} ${a.lastName}`;
+        bVal = `${b.firstName} ${b.lastName}`;
         break;
       case "company":
-        compareA = a.company;
-        compareB = b.company;
+        aVal = a.company;
+        bVal = b.company;
         break;
       case "joinDate":
-        compareA = new Date(a.joinDate).getTime();
-        compareB = new Date(b.joinDate).getTime();
-        break;
-      case "lastActivity":
-        compareA = new Date(a.lastActivity).getTime();
-        compareB = new Date(b.lastActivity).getTime();
+        aVal = a.joinDate;
+        bVal = b.joinDate;
         break;
       case "projectsCount":
-        compareA = a.projectsCount;
-        compareB = b.projectsCount;
+        aVal = a.projectsCount;
+        bVal = b.projectsCount;
         break;
       default:
-        compareA = a.company;
-        compareB = b.company;
+        aVal = a.firstName;
+        bVal = b.firstName;
     }
-    
-    // Determine sort direction
-    if (sortDirection === "asc") {
-      return compareA > compareB ? 1 : -1;
-    } else {
-      return compareA < compareB ? 1 : -1;
-    }
+
+    if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+    if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+    return 0;
   });
-  
-  // Delete client mutation
-  const deleteClientMutation = useMutation({
-    mutationFn: async (clientId: string) => {
-      const response = await apiRequest("DELETE", `/api/admin/clients/${clientId}`);
-      if (!response.ok) {
-        throw new Error(`Failed to delete client: ${response.statusText}`);
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/clients"] });
-      toast({
-        title: "Client deleted",
-        description: "The client has been successfully deleted.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to delete client",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-  
-  // Toggle client status mutation
-  const toggleClientStatusMutation = useMutation({
-    mutationFn: async ({ clientId, status }: { clientId: string, status: string }) => {
-      const newStatus = status === "active" ? "inactive" : "active";
-      const response = await apiRequest("PUT", `/api/admin/clients/${clientId}/status`, { status: newStatus });
-      if (!response.ok) {
-        throw new Error(`Failed to update client status: ${response.statusText}`);
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/clients"] });
-      toast({
-        title: "Client status updated",
-        description: "The client's status has been successfully updated.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to update client status",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-  
+
+  // Event handlers
   const handleSortChange = (field: string) => {
     if (sortField === field) {
-      // If already sorting by this field, toggle direction
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      // Otherwise, sort by this field in ascending order
       setSortField(field);
       setSortDirection("asc");
     }
   };
-  
+
   const handleDeleteClient = (clientId: string) => {
-    if (window.confirm("Are you sure you want to delete this client? This action cannot be undone.")) {
+    if (window.confirm("Are you sure you want to delete this client?")) {
       deleteClientMutation.mutate(clientId);
     }
   };
-  
-  const handleToggleClientStatus = (clientId: string, currentStatus: string) => {
-    toggleClientStatusMutation.mutate({ clientId, status: currentStatus });
-  };
-  
-  if (isAuthLoading) {
-    return <div className="p-8 text-center">Loading...</div>;
+
+  if (!isAdmin) {
+    return null;
   }
-  
-  if (!isAuthenticated || !isAdmin) {
-    return null; // Will redirect in useEffect
-  }
-  
+
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Admin Header */}
@@ -332,28 +277,16 @@ export default function AdminClients() {
                     Projects
                   </button>
                   <button 
-                    onClick={() => setLocation("/admin/team")}
+                    onClick={() => setLocation("/admin/invoices")}
                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   >
-                    Team
+                    Invoices
                   </button>
                   <button 
-                    onClick={() => setLocation("/admin/support")}
+                    onClick={() => setLocation("/admin/leads")}
                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   >
-                    Support
-                  </button>
-                  <button 
-                    onClick={() => setLocation("/admin/settings")}
-                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    Settings
-                  </button>
-                  <button 
-                    onClick={() => setLocation("/admin-access")}
-                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    Admin Portal
+                    Leads
                   </button>
                 </div>
               </nav>
@@ -398,56 +331,38 @@ export default function AdminClients() {
             </button>
           </div>
         </div>
-        
+
         {/* Filters and Search */}
-        <div className="bg-white p-6 shadow rounded-lg mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="relative md:max-w-xs w-full">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
+        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search clients..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
-            
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-              <div>
-                <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700 mb-1 sm:hidden">
-                  Filter by Status
-                </label>
-                <div className="flex items-center">
-                  <Filter className="mr-2 h-5 w-5 text-gray-400" />
-                  <select
-                    id="status-filter"
-                    className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                  >
-                    {statusFilterOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
+          </div>
+          <div className="flex gap-2">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              {statusFilterOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
-        
-        {/* Clients Table */}
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">
-              Clients ({sortedClients?.length || 0})
-            </h3>
-          </div>
-          
+
+        {/* Clients List */}
+        <div className="bg-white rounded-lg shadow">
           {isClientsLoading ? (
             <div className="p-6">
               <div className="animate-pulse space-y-4">
@@ -457,7 +372,7 @@ export default function AdminClients() {
               </div>
             </div>
           ) : sortedClients && sortedClients.length > 0 ? (
-            <div className="space-y-6">
+            <div className="p-6 space-y-6">
               {sortedClients.map((client) => (
                 <div key={client.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                   <div className="p-6">
