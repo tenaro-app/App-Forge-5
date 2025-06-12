@@ -6,14 +6,15 @@ import { useAuth } from "./useAuth";
  * 
  * @returns boolean indicating if the current user is an admin
  */
-export function useIsAdmin(): boolean {
+export function useIsAdmin() {
   const { user } = useAuth();
   
   // Check if user exists and has admin role
   // In a real app, this would likely be based on a role field
   // For demo purposes, we'll consider users with specific emails as admins
-  if (!user) return false;
+  if (!user) return { isAdmin: false };
   
   // Check if the user role is "admin"
-  return user.role === "admin";
+  const isAdmin = user.role === "admin";
+  return { isAdmin };
 }
