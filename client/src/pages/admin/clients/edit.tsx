@@ -46,8 +46,24 @@ const clientFormSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
-  phone: z.string().optional(),
-  company: z.string().optional(),
+  phone: z.string().min(10, { message: "Phone number is required" }),
+  company: z.string().min(2, { message: "Company name is required" }),
+  companyAddress: z.string().optional(),
+  companyEmail: z.string().email().optional().or(z.literal("")),
+  companyWebsite: z.string().url().optional().or(z.literal("")),
+  industry: z.string().optional(),
+  position: z.string().min(2, { message: "Position is required" }),
+  socialFacebook: z.string().optional(),
+  socialInstagram: z.string().optional(),
+  socialTiktok: z.string().optional(),
+  socialX: z.string().optional(),
+  socialYoutube: z.string().optional(),
+  socialLinkedin: z.string().optional(),
+  socialOther: z.string().optional(),
+  billingType: z.enum(["monthly", "annual", "project"], { 
+    required_error: "Billing type is required" 
+  }),
+  notes: z.string().optional(),
   role: z.enum(["client", "admin", "support"]),
   status: z.enum(["active", "inactive"]),
 });
@@ -76,6 +92,20 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
       email: "",
       phone: "",
       company: "",
+      companyAddress: "",
+      companyEmail: "",
+      companyWebsite: "",
+      industry: "",
+      position: "",
+      socialFacebook: "",
+      socialInstagram: "",
+      socialTiktok: "",
+      socialX: "",
+      socialYoutube: "",
+      socialLinkedin: "",
+      socialOther: "",
+      billingType: "monthly",
+      notes: "",
       role: "client",
       status: "active",
     },
@@ -91,6 +121,20 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
         email: client.email || "",
         phone: client.phone || "",
         company: client.company || "",
+        companyAddress: client.companyAddress || "",
+        companyEmail: client.companyEmail || "",
+        companyWebsite: client.companyWebsite || "",
+        industry: client.industry || "",
+        position: client.position || "",
+        socialFacebook: client.socialFacebook || "",
+        socialInstagram: client.socialInstagram || "",
+        socialTiktok: client.socialTiktok || "",
+        socialX: client.socialX || "",
+        socialYoutube: client.socialYoutube || "",
+        socialLinkedin: client.socialLinkedin || "",
+        socialOther: client.socialOther || "",
+        billingType: client.billingType || "monthly",
+        notes: client.notes || "",
         role: client.role || "client",
         status: client.status || "active",
       };
@@ -291,14 +335,233 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
                   />
                 </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="company"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Company</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="position"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Position</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="e.g., CEO, Manager" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="companyEmail"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Company Email</FormLabel>
+                        <FormControl>
+                          <Input {...field} type="email" placeholder="contact@company.com" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="companyWebsite"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Company Website</FormLabel>
+                        <FormControl>
+                          <Input {...field} type="url" placeholder="https://company.com" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="industry"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Industry</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="e.g., Technology, Healthcare" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="billingType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Billing Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select billing type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                            <SelectItem value="annual">Annual</SelectItem>
+                            <SelectItem value="project">Per Project</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <FormField
                   control={form.control}
-                  name="company"
+                  name="companyAddress"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Company</FormLabel>
+                      <FormLabel>Company Address</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder="123 Main St, City, State 12345" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Separator />
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Social Media Links</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="socialFacebook"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Facebook</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="https://facebook.com/company" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="socialInstagram"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Instagram</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="https://instagram.com/company" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="socialLinkedin"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>LinkedIn</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="https://linkedin.com/company/company" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="socialYoutube"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>YouTube</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="https://youtube.com/company" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="socialTiktok"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>TikTok</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="https://tiktok.com/@company" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="socialX"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>X (Twitter)</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="https://x.com/company" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="socialOther"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Other Social Media</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="https://other-platform.com/company" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <Separator />
+
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notes</FormLabel>
+                      <FormControl>
+                        <textarea
+                          {...field}
+                          className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          placeholder="Additional notes about this client..."
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
