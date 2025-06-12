@@ -160,10 +160,10 @@ export default function Footer() {
             </div>
             <div className="lg:flex-shrink-0">
               <a 
-                href="#contact"
+                href="/book-consultation"
                 className="inline-flex items-center justify-center font-medium text-white bg-primary px-8 py-4 rounded-lg hover:bg-white hover:text-primary transition-all duration-300 w-full lg:w-auto"
               >
-                <span className="mr-2">Contact Us</span>
+                <span className="mr-2">Book your Free Consultation!</span>
                 <ArrowRight className="h-5 w-5" />
               </a>
             </div>

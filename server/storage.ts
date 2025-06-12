@@ -6,7 +6,8 @@ import {
   chatMessages, type ChatMessage, type InsertChatMessage,
   chatSessions, type ChatSession, type InsertChatSession,
   supportTickets, type SupportTicket, type InsertSupportTicket,
-  ticketResponses, type TicketResponse, type InsertTicketResponse
+  ticketResponses, type TicketResponse, type InsertTicketResponse,
+  consultationLeads, type ConsultationLead, type InsertConsultationLead
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, isNull } from "drizzle-orm";
@@ -65,6 +66,12 @@ export interface IStorage {
   // Ticket response operations
   createTicketResponse(response: InsertTicketResponse): Promise<TicketResponse>;
   getTicketResponsesByTicketId(ticketId: number): Promise<TicketResponse[]>;
+  
+  // Consultation leads operations
+  createConsultationLead(lead: InsertConsultationLead): Promise<ConsultationLead>;
+  getConsultationLeads(): Promise<ConsultationLead[]>;
+  getConsultationLeadById(id: number): Promise<ConsultationLead | undefined>;
+  updateConsultationLeadStatus(id: number, status: string): Promise<ConsultationLead>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -484,6 +491,59 @@ export class DatabaseStorage implements IStorage {
         .orderBy(ticketResponses.createdAt);
     } catch (error) {
       console.error("Error getting ticket responses:", error);
+      throw error;
+    }
+  }
+
+  // Consultation leads operations
+  async createConsultationLead(leadData: InsertConsultationLead): Promise<ConsultationLead> {
+    try {
+      const [lead] = await db
+        .insert(consultationLeads)
+        .values(leadData)
+        .returning();
+      return lead;
+    } catch (error) {
+      console.error("Error creating consultation lead:", error);
+      throw error;
+    }
+  }
+
+  async getConsultationLeads(): Promise<ConsultationLead[]> {
+    try {
+      return await db
+        .select()
+        .from(consultationLeads)
+        .orderBy(desc(consultationLeads.createdAt));
+    } catch (error) {
+      console.error("Error getting consultation leads:", error);
+      throw error;
+    }
+  }
+
+  async getConsultationLeadById(id: number): Promise<ConsultationLead | undefined> {
+    try {
+      const [lead] = await db
+        .select()
+        .from(consultationLeads)
+        .where(eq(consultationLeads.id, id));
+      return lead;
+    } catch (error) {
+      console.error("Error getting consultation lead by ID:", error);
+      throw error;
+    }
+  }
+
+  async updateConsultationLeadStatus(id: number, status: string): Promise<ConsultationLead> {
+    try {
+      const [lead] = await db
+        .update(consultationLeads)
+        .set({ status, updatedAt: new Date() })
+        .where(eq(consultationLeads.id, id))
+        .returning();
+      return lead;
+    } catch (error) {
+      console.error("Error updating consultation lead status:", error);
       throw error;
     }
   }

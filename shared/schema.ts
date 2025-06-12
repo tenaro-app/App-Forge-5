@@ -257,3 +257,29 @@ export const ticketResponseSchema = createInsertSchema(ticketResponses).pick({
 
 export type InsertTicketResponse = z.infer<typeof ticketResponseSchema>;
 export type TicketResponse = typeof ticketResponses.$inferSelect;
+
+// Consultation leads table
+export const consultationLeads = pgTable("consultation_leads", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 50 }).notNull(),
+  company: varchar("company", { length: 255 }).notNull(),
+  website: varchar("website", { length: 255 }),
+  message: text("message"),
+  status: varchar("status", { length: 50 }).default("new").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const consultationLeadSchema = createInsertSchema(consultationLeads).pick({
+  name: true,
+  email: true,
+  phone: true,
+  company: true,
+  website: true,
+  message: true,
+});
+
+export type InsertConsultationLead = z.infer<typeof consultationLeadSchema>;
+export type ConsultationLead = typeof consultationLeads.$inferSelect;
