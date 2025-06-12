@@ -140,7 +140,7 @@ export default function BookConsultation() {
                         <FormControl>
                           <Input
                             placeholder="John Doe"
-                            className="bg-black border-gray-700 text-white placeholder:text-gray-400 focus:border-primary"
+                            className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-primary"
                             {...field}
                           />
                         </FormControl>
@@ -156,7 +156,7 @@ export default function BookConsultation() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white font-medium flex items-center">
+                          <FormLabel className="text-gray-700 font-medium flex items-center">
                             <Mail className="w-4 h-4 mr-2 text-primary" />
                             Email Address
                           </FormLabel>
@@ -164,7 +164,7 @@ export default function BookConsultation() {
                             <Input
                               type="email"
                               placeholder="john@company.com"
-                              className="bg-black border-gray-700 text-white placeholder:text-gray-400 focus:border-primary"
+                              className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-primary"
                               {...field}
                             />
                           </FormControl>
@@ -178,7 +178,7 @@ export default function BookConsultation() {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white font-medium flex items-center">
+                          <FormLabel className="text-gray-700 font-medium flex items-center">
                             <Phone className="w-4 h-4 mr-2 text-primary" />
                             Phone Number
                           </FormLabel>
@@ -186,7 +186,7 @@ export default function BookConsultation() {
                             <Input
                               type="tel"
                               placeholder="+1 (555) 123-4567"
-                              className="bg-black border-gray-700 text-white placeholder:text-gray-400 focus:border-primary"
+                              className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-primary"
                               {...field}
                             />
                           </FormControl>
@@ -203,14 +203,14 @@ export default function BookConsultation() {
                       name="company"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white font-medium flex items-center">
+                          <FormLabel className="text-gray-700 font-medium flex items-center">
                             <Building className="w-4 h-4 mr-2 text-primary" />
                             Company Name
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Your Company Inc."
-                              className="bg-black border-gray-700 text-white placeholder:text-gray-400 focus:border-primary"
+                              className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-primary"
                               {...field}
                             />
                           </FormControl>
@@ -224,7 +224,7 @@ export default function BookConsultation() {
                       name="website"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white font-medium flex items-center">
+                          <FormLabel className="text-gray-700 font-medium flex items-center">
                             <Globe className="w-4 h-4 mr-2 text-primary" />
                             Website (Optional)
                           </FormLabel>
