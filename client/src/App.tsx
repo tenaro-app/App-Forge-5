@@ -39,6 +39,8 @@ import AdminTeam from "@/pages/admin/team";
 import AdminSupport from "@/pages/admin/support";
 import AdminSettings from "@/pages/admin/settings";
 import AdminLeads from "@/pages/admin/leads";
+import AdminInvoices from "@/pages/admin/invoices";
+import ClientInvoices from "@/pages/dashboard/invoices";
 
 function Router() {
   return (
@@ -58,6 +60,7 @@ function Router() {
       <Route path="/dashboard/tickets" component={Tickets} />
       <Route path="/dashboard/tickets/new" component={NewTicket} />
       <Route path="/dashboard/knowledge" component={KnowledgeBase} />
+      <Route path="/dashboard/invoices" component={ClientInvoices} />
       <Route path="/dashboard/team" component={DashboardTeam} />
       <Route path="/dashboard/billing" component={DashboardBilling} />
       <Route path="/dashboard/settings" component={DashboardSettings} />
@@ -97,6 +100,7 @@ function Router() {
       <Route path="/admin/team" component={AdminTeam} />
       <Route path="/admin/support" component={AdminSupport} />
       <Route path="/admin/leads" component={AdminLeads} />
+      <Route path="/admin/invoices" component={AdminInvoices} />
       <Route path="/admin/settings" component={AdminSettings} />
       
       {/* Fallback to 404 */}

@@ -371,6 +371,43 @@ export default function NewClient() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Login Credentials */}
+                  <div className="bg-blue-50 p-4 rounded-md border border-blue-200">
+                    <h4 className="text-md font-medium text-gray-900 mb-4">Login Credentials</h4>
+                    <div className="grid grid-cols-1 gap-6">
+                      {/* Password */}
+                      <div>
+                        <Label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                          Password *
+                        </Label>
+                        <div className="flex gap-2">
+                          <div className="flex-1">
+                            <Input
+                              id="password"
+                              type="text"
+                              {...form.register("password")}
+                              className={`${form.formState.errors.password ? 'border-red-500' : ''}`}
+                              placeholder="Generated password will appear here"
+                            />
+                          </div>
+                          <Button
+                            type="button"
+                            onClick={generatePassword}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+                          >
+                            Generate
+                          </Button>
+                        </div>
+                        {form.formState.errors.password && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.password.message}</p>
+                        )}
+                        <p className="mt-1 text-sm text-gray-500">
+                          A secure password will be generated for the client's dashboard access.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                   
                   {/* Company Information */}
                   <div className="bg-gray-50 p-4 rounded-md">

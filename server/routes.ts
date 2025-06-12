@@ -735,6 +735,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/invoices/:id/confirm-payment", isAuthenticated, async (req: any, res: Response) => {
     try {
+      if (!stripe) {
+        return res.status(500).json({ message: "Payment processing not configured" });
+      }
+
       const { id } = req.params;
       const { paymentIntentId } = req.body;
       
