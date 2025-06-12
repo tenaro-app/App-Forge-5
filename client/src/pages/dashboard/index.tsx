@@ -1,526 +1,318 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
-import { Project } from "@shared/schema";
-import { format } from "date-fns";
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
+import { Redirect } from 'wouter';
 import { 
-  PlusCircle, 
+  FolderOpen, 
   Clock, 
-  CheckCircle, 
-  AlertCircle, 
-  PauseCircle,
+  MessageSquare, 
+  FileText, 
   Calendar,
-  BarChart,
-  MessageSquare,
-  Package,
-  FileCheck,
-  BookOpen,
-  Users,
-  CreditCard,
-  Settings,
-  LineChart,
-  FileText,
-  Plus,
-  Layers
-} from "lucide-react";
+  CheckCircle,
+  AlertCircle,
+  TrendingUp,
+  User,
+  Phone,
+  Mail
+} from 'lucide-react';
 
-// Helper component for project status badges
-function StatusBadge({ status }: { status: string }) {
-  let color = "";
-  let Icon = Clock;
-  let label = "Unknown";
+interface Project {
+  id: number;
+  name: string;
+  status: string;
+  progress: number;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
 
-  switch (status) {
-    case "in_progress":
-      color = "bg-blue-100 text-blue-800";
-      Icon = Clock;
-      label = "In Progress";
-      break;
-    case "completed":
-      color = "bg-green-100 text-green-800";
-      Icon = CheckCircle;
-      label = "Completed";
-      break;
-    case "on_hold":
-      color = "bg-yellow-100 text-yellow-800";
-      Icon = PauseCircle;
-      label = "On Hold";
-      break;
-    case "cancelled":
-      color = "bg-red-100 text-red-800";
-      Icon = AlertCircle;
-      label = "Cancelled";
-      break;
-    default:
-      color = "bg-gray-100 text-gray-800";
+export default function ClientDashboard() {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  // Redirect if not authenticated
+  if (!isLoading && !isAuthenticated) {
+    return <Redirect to="/auth" />;
   }
 
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${color}`}>
-      <Icon className="w-3 h-3 mr-1" />
-      {label}
-    </span>
-  );
-}
+  // Redirect admins to admin dashboard
+  if (!isLoading && user?.role === 'admin') {
+    return <Redirect to="/admin" />;
+  }
 
-// Loading state component
-function DashboardLoading() {
-  return (
-    <div className="bg-gray-50 min-h-screen">
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex">
-              <div className="w-10 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
-              <div className="ml-3 h-6 w-32 bg-gray-200 rounded animate-pulse"></div>
-            </div>
-            <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8 animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-        </div>
-
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-8 bg-gray-200 rounded w-1/6"></div>
-          </div>
-
-          <div className="space-y-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 animate-pulse">
-                <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                <div className="flex justify-between mt-6">
-                  <div className="h-8 bg-gray-200 rounded w-1/6"></div>
-                  <div className="h-8 bg-gray-200 rounded w-1/6"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-}
-
-export default function Dashboard() {
-  const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();
-  const [location, setLocation] = useLocation();
-  
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isAuthLoading && !isAuthenticated) {
-      window.location.href = "/api/login";
-    }
-  }, [isAuthLoading, isAuthenticated]);
-
-  // Fetch projects from API
-  const { data: projects, isLoading: isProjectsLoading } = useQuery<Project[]>({
-    queryKey: ["/api/projects"],
-    enabled: isAuthenticated,
+  const { data: projects = [], isLoading: projectsLoading } = useQuery<Project[]>({
+    queryKey: ['/api/projects'],
+    enabled: !!user,
   });
 
-  // Sample metrics data for the analytics dashboard
-  const analyticsData = [
-    { name: 'API Calls', value: '12,458', change: '+12.3%', trend: 'up' },
-    { name: 'User Activity', value: '948', change: '+24.5%', trend: 'up' },
-    { name: 'Database Size', value: '238 MB', change: '+5.2%', trend: 'up' },
-    { name: 'Response Time', value: '45ms', change: '-8.4%', trend: 'down' },
-  ];
+  const { data: tickets = [], isLoading: ticketsLoading } = useQuery<any[]>({
+    queryKey: ['/api/chat/tickets'],
+    enabled: !!user,
+  });
 
-  // Active documents data
-  const recentDocuments = [
-    { name: 'Project Requirements.pdf', updated: '2 days ago', size: '2.4 MB' },
-    { name: 'API Documentation.md', updated: '5 days ago', size: '1.1 MB' },
-    { name: 'User Guide.pdf', updated: '1 week ago', size: '4.2 MB' },
-  ];
-
-  if (isAuthLoading) {
-    return <DashboardLoading />;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
-  if (!isAuthenticated) {
-    return null; // Will redirect in useEffect
-  }
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'active':
+      case 'in_progress':
+        return 'text-blue-600 bg-blue-100';
+      case 'completed':
+        return 'text-green-600 bg-green-100';
+      case 'pending':
+        return 'text-yellow-600 bg-yellow-100';
+      case 'on_hold':
+        return 'text-red-600 bg-red-100';
+      default:
+        return 'text-gray-600 bg-gray-100';
+    }
+  };
 
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex">
-              <div onClick={() => setLocation("/")} className="flex items-center cursor-pointer">
-                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-sm">
-                  <span className="text-white font-bold text-lg">AF</span>
-                </div>
-                <span className="ml-3 text-xl font-bold text-gray-900">AppForge</span>
-              </div>
-              <h1 className="ml-8 text-2xl font-semibold text-gray-900 hidden sm:block">Client Dashboard</h1>
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Welcome back, {user?.firstName}!
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Track your automation projects and get support
+              </p>
             </div>
             <div className="flex items-center space-x-4">
-              {/* Notifications */}
-              <div className="relative">
-                <button className="p-2 rounded-full hover:bg-gray-100 transition-colors relative">
-                  <MessageSquare className="w-6 h-6 text-gray-600" />
-                  <span className="absolute top-0 right-0 block w-2 h-2 bg-primary rounded-full"></span>
-                </button>
+              <div className="text-right">
+                <p className="text-sm font-medium text-gray-900">{user?.firstName} {user?.lastName}</p>
+                <p className="text-sm text-gray-500">{user?.company}</p>
               </div>
-              
-              {/* User menu */}
-              <div className="relative group">
-                <button className="flex items-center space-x-2 group">
-                  {user?.profileImageUrl ? (
-                    <img 
-                      src={user.profileImageUrl} 
-                      alt={user.firstName || "User"} 
-                      className="w-8 h-8 rounded-full object-cover border border-gray-200 group-hover:ring-2 group-hover:ring-primary/30 transition-all"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center group-hover:ring-2 group-hover:ring-primary/30 transition-all">
-                      <span className="text-primary font-medium text-sm">
-                        {user?.firstName?.charAt(0) || user?.email?.charAt(0) || "U"}
-                      </span>
-                    </div>
-                  )}
-                  <span className="ml-2 font-medium text-sm text-gray-700 hidden sm:block">
-                    {user?.firstName || user?.email?.split('@')[0] || "User"}
-                  </span>
-                </button>
-                
-                {/* User dropdown menu */}
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-10 hidden group-hover:block">
-                  <div className="py-1">
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
-                    <div className="border-t border-gray-200"></div>
-                    <a href="/api/logout" className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Sign out</a>
-                  </div>
+              {user?.profileImageUrl ? (
+                <img 
+                  src={user.profileImageUrl} 
+                  alt={user.firstName || 'User'} 
+                  className="w-10 h-10 rounded-full"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <User className="w-5 h-5 text-primary" />
                 </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-blue-100">
+                <FolderOpen className="w-6 h-6 text-blue-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Active Projects</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {projects.filter(p => p.status === 'active' || p.status === 'in_progress').length}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-green-100">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Completed Projects</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {projects.filter(p => p.status === 'completed').length}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-yellow-100">
+                <MessageSquare className="w-6 h-6 text-yellow-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Open Tickets</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {tickets.filter((t: any) => t.status === 'open').length}
+                </p>
               </div>
             </div>
           </div>
         </div>
-      </header>
 
-      {/* Dashboard Layout with Sidebar */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 hidden md:block">
-          <nav className="flex flex-col h-full py-4">
-            <div className="px-4 pb-4 border-b border-gray-200">
-              <h2 className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Main</h2>
-              <div className="mt-2 space-y-1">
-                <div 
-                  onClick={() => setLocation("/dashboard")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-primary/10 text-primary cursor-pointer"
-                >
-                  <BarChart className="w-4 h-4 mr-3" />
-                  Dashboard
-                </div>
-                <div 
-                  onClick={() => setLocation("/dashboard/enhanced")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <Layers className="w-4 h-4 mr-3" />
-                  Enhanced Dashboard
-                </div>
-                <div 
-                  onClick={() => setLocation("/dashboard/projects")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <Package className="w-4 h-4 mr-3" />
-                  Projects
-                </div>
-                <div 
-                  onClick={() => setLocation("/dashboard/analytics")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <LineChart className="w-4 h-4 mr-3" />
-                  Analytics
-                </div>
-                <div 
-                  onClick={() => setLocation("/dashboard/documents")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <FileText className="w-4 h-4 mr-3" />
-                  Documents
-                </div>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* My Projects */}
+          <div className="bg-white rounded-lg shadow-sm">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">My Projects</h2>
+              <p className="text-gray-600 mt-1">Track your automation project progress</p>
             </div>
-            
-            <div className="px-4 py-4 border-b border-gray-200">
-              <h2 className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Support</h2>
-              <div className="mt-2 space-y-1">
-                <div 
-                  onClick={() => setLocation("/dashboard/chat")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <MessageSquare className="w-4 h-4 mr-3" />
-                  Live Chat
-                </div>
-                <div 
-                  onClick={() => setLocation("/dashboard/tickets")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <MessageSquare className="w-4 h-4 mr-3" />
-                  Tickets
-                </div>
-                <div 
-                  onClick={() => setLocation("/dashboard/knowledge")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <BookOpen className="w-4 h-4 mr-3" />
-                  Knowledge Base
-                </div>
-              </div>
-            </div>
-            
-            <div className="px-4 py-4 border-b border-gray-200">
-              <h2 className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Account</h2>
-              <div className="mt-2 space-y-1">
-                <div 
-                  onClick={() => setLocation("/dashboard/team")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <Users className="w-4 h-4 mr-3" />
-                  Team Members
-                </div>
-                <div 
-                  onClick={() => setLocation("/dashboard/billing")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <CreditCard className="w-4 h-4 mr-3" />
-                  Billing & Invoices
-                </div>
-                <div 
-                  onClick={() => setLocation("/dashboard/settings")}
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  <Settings className="w-4 h-4 mr-3" />
-                  Settings
-                </div>
-                <a 
-                  href="/admin" 
-                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20 cursor-pointer"
-                >
-                  <Settings className="w-4 h-4 mr-3" />
-                  Admin Dashboard
-                </a>
-              </div>
-            </div>
-          </nav>
-        </aside>
-
-        {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          {/* Dashboard welcome section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Welcome back, {user?.firstName || "Client"}!
-                </h2>
-                <p className="mt-1 text-gray-600">
-                  Here's what's happening with your projects.
-                </p>
-              </div>
-              <div className="mt-4 md:mt-0">
-                <Link href="/new">
-                  <a className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md shadow-sm hover:bg-primary/90 transition-colors">
-                    <Plus className="w-4 h-4 mr-1.5" />
-                    Request New Project
-                  </a>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Analytics Section */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Project Analytics</h2>
-              <button 
-                onClick={() => setLocation("/dashboard/analytics")}
-                className="text-sm font-medium text-primary hover:underline"
-              >
-                View Detailed Analytics
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {analyticsData.map((item, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-gray-500">{item.name}</h3>
-                    <span className={`text-xs font-medium ${
-                      item.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {item.change}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-2xl font-bold text-gray-900">{item.value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Projects section */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Your Projects</h2>
-              <Link href="/dashboard/projects">
-                <a className="text-sm font-medium text-primary hover:underline">
-                  View All Projects
-                </a>
-              </Link>
-            </div>
-
-            {isProjectsLoading ? (
-              <div className="space-y-4">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 animate-pulse">
-                    <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                    <div className="flex justify-between mt-6">
-                      <div className="h-8 bg-gray-200 rounded w-1/6"></div>
-                      <div className="h-8 bg-gray-200 rounded w-1/6"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : projects && projects.length > 0 ? (
-              <div className="space-y-4">
-                {projects.map(project => (
-                  <div key={project.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
-                        <p className="mt-1 text-gray-600">{project.description}</p>
-                        <div className="mt-2 flex items-center">
-                          <StatusBadge status={project.status} />
-                          <span className="ml-4 text-sm text-gray-500 flex items-center">
-                            <Calendar className="w-4 h-4 mr-1" />
-                            {format(new Date(project.startDate), 'MMM d, yyyy')}
-                          </span>
-                        </div>
-                        {/* Progress bar for project completion */}
-                        <div className="mt-3">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-medium text-gray-500">Progress</span>
-                            <span className="text-xs font-medium text-gray-700">65%</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div className="bg-primary h-2 rounded-full" style={{ width: '65%' }}></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mt-4 md:mt-0 flex space-x-3">
-                        <button 
-                          onClick={() => setLocation(`/dashboard/projects/${project.id}`)}
-                          className="inline-flex items-center px-4 py-2 text-sm font-medium text-primary border border-primary rounded-md bg-white hover:bg-primary/5 transition-colors"
-                        >
-                          <BarChart className="w-4 h-4 mr-1" />
-                          View Details
-                        </button>
-                        {project.replitUrl && (
-                          <a 
-                            href={project.replitUrl} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md shadow-sm hover:bg-primary/90 transition-colors"
-                          >
-                            View App
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
-                <h3 className="text-lg font-medium text-gray-900">No projects yet</h3>
-                <p className="mt-1 text-gray-500">
-                  Your projects will appear here once they're created by our team.
-                </p>
-                <div className="mt-6">
-                  <button
-                    onClick={() => setLocation("/dashboard/chat")}
-                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md shadow-sm hover:bg-primary/90 transition-colors"
-                  >
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Contact Support
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Documents section */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Recent Documents</h2>
-              <button 
-                onClick={() => setLocation("/dashboard/documents")}
-                className="text-sm font-medium text-primary hover:underline"
-              >
-                View All Documents
-              </button>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Document Name
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Last Updated
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Size
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {recentDocuments.map((doc, index) => (
-                    <tr key={index}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <FileText className="w-4 h-4 text-gray-400 mr-2" />
-                          <div className="text-sm font-medium text-gray-900">{doc.name}</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{doc.updated}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{doc.size}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="#" className="text-primary hover:text-primary/80">Download</a>
-                      </td>
-                    </tr>
+            <div className="p-6">
+              {projectsLoading ? (
+                <div className="animate-pulse space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              ) : projects.length === 0 ? (
+                <div className="text-center py-8">
+                  <FolderOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">No projects assigned yet</p>
+                  <p className="text-sm text-gray-400 mt-1">Contact support to get started</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {projects.slice(0, 3).map((project) => (
+                    <div key={project.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="font-medium text-gray-900">{project.name}</h3>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status)}`}>
+                          {project.status.replace('_', ' ')}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">{project.description}</p>
+                      <div className="flex justify-between items-center">
+                        <div className="w-full bg-gray-200 rounded-full h-2 mr-4">
+                          <div 
+                            className="bg-primary h-2 rounded-full" 
+                            style={{ width: `${project.progress || 0}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm text-gray-600 whitespace-nowrap">
+                          {project.progress || 0}%
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  {projects.length > 3 && (
+                    <div className="text-center pt-4">
+                      <a href="/dashboard/projects" className="text-primary hover:underline text-sm">
+                        View all projects ({projects.length})
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-        </main>
+
+          {/* Support & Communication */}
+          <div className="bg-white rounded-lg shadow-sm">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">Support & Communication</h2>
+              <p className="text-gray-600 mt-1">Get help and track support requests</p>
+            </div>
+            <div className="p-6 space-y-4">
+              {/* Quick Actions */}
+              <div className="grid grid-cols-2 gap-4">
+                <a 
+                  href="/dashboard/chat"
+                  className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <MessageSquare className="w-5 h-5 text-primary mr-3" />
+                  <div>
+                    <p className="font-medium text-gray-900">Live Chat</p>
+                    <p className="text-xs text-gray-600">Get instant help</p>
+                  </div>
+                </a>
+                <a 
+                  href="/dashboard/tickets/new"
+                  className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <FileText className="w-5 h-5 text-primary mr-3" />
+                  <div>
+                    <p className="font-medium text-gray-900">New Ticket</p>
+                    <p className="text-xs text-gray-600">Submit request</p>
+                  </div>
+                </a>
+              </div>
+
+              {/* Recent Tickets */}
+              <div>
+                <h3 className="font-medium text-gray-900 mb-3">Recent Support Tickets</h3>
+                {ticketsLoading ? (
+                  <div className="animate-pulse space-y-2">
+                    {[1, 2].map((i) => (
+                      <div key={i} className="h-12 bg-gray-200 rounded"></div>
+                    ))}
+                  </div>
+                ) : tickets.length === 0 ? (
+                  <p className="text-gray-500 text-sm">No support tickets yet</p>
+                ) : (
+                  <div className="space-y-2">
+                    {tickets.slice(0, 2).map((ticket: any) => (
+                      <div key={ticket.id} className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                        <div>
+                          <p className="font-medium text-sm text-gray-900">{ticket.subject}</p>
+                          <p className="text-xs text-gray-600">{ticket.category}</p>
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(ticket.status)}`}>
+                          {ticket.status}
+                        </span>
+                      </div>
+                    ))}
+                    {tickets.length > 2 && (
+                      <div className="text-center pt-2">
+                        <a href="/dashboard/tickets" className="text-primary hover:underline text-sm">
+                          View all tickets
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Navigation */}
+        <div className="mt-8 bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Access</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a 
+              href="/dashboard/projects"
+              className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <FolderOpen className="w-8 h-8 text-primary mb-2" />
+              <span className="text-sm font-medium text-gray-900">All Projects</span>
+            </a>
+            <a 
+              href="/dashboard/tickets"
+              className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <FileText className="w-8 h-8 text-primary mb-2" />
+              <span className="text-sm font-medium text-gray-900">Support Tickets</span>
+            </a>
+            <a 
+              href="/dashboard/billing"
+              className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <TrendingUp className="w-8 h-8 text-primary mb-2" />
+              <span className="text-sm font-medium text-gray-900">Billing</span>
+            </a>
+            <a 
+              href="/dashboard/settings"
+              className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <User className="w-8 h-8 text-primary mb-2" />
+              <span className="text-sm font-medium text-gray-900">Settings</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
