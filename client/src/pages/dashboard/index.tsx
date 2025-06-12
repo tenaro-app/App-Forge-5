@@ -29,16 +29,6 @@ interface Project {
 export default function ClientDashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
 
-  // Redirect if not authenticated
-  if (!isLoading && !isAuthenticated) {
-    return <Redirect to="/auth" />;
-  }
-
-  // Redirect admins to admin dashboard
-  if (!isLoading && user?.role === 'admin') {
-    return <Redirect to="/admin" />;
-  }
-
   const { data: projects = [], isLoading: projectsLoading } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
     enabled: !!user,
@@ -48,6 +38,16 @@ export default function ClientDashboard() {
     queryKey: ['/api/chat/tickets'],
     enabled: !!user,
   });
+
+  // Redirect if not authenticated
+  if (!isLoading && !isAuthenticated) {
+    return <Redirect to="/auth" />;
+  }
+
+  // Redirect admins to admin dashboard
+  if (!isLoading && user?.role === 'admin') {
+    return <Redirect to="/admin" />;
+  }
 
   if (isLoading) {
     return (
