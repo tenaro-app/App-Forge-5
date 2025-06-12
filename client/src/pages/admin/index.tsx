@@ -44,6 +44,11 @@ export default function AdminDashboard() {
     enabled: !!user && user.role === 'admin',
   });
 
+  const { data: allLeads = [], isLoading: leadsLoading } = useQuery<any[]>({
+    queryKey: ['/api/admin/consultation-leads'],
+    enabled: !!user && user.role === 'admin',
+  });
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -99,9 +104,9 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">New Leads</p>
-                <p className="text-3xl font-bold text-gray-900">{allContacts.length}</p>
-                <p className="text-sm text-blue-600 mt-1">This month</p>
+                <p className="text-sm font-medium text-gray-600">Consultation Leads</p>
+                <p className="text-3xl font-bold text-gray-900">{allLeads.length}</p>
+                <p className="text-sm text-blue-600 mt-1">{allLeads.filter((l: any) => l.status === 'new').length} new</p>
               </div>
               <div className="p-3 rounded-full bg-green-100">
                 <Users className="w-6 h-6 text-green-600" />
@@ -211,6 +216,17 @@ export default function AdminDashboard() {
                 <a href="/admin/clients/new" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                   <Users className="w-5 h-5 text-primary mr-3" />
                   <span className="font-medium text-gray-900">Add Client</span>
+                </a>
+                <a href="/admin/leads" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  <Users className="w-5 h-5 text-primary mr-3" />
+                  <div className="flex-1">
+                    <span className="font-medium text-gray-900">Consultation Leads</span>
+                    {allLeads.filter((l: any) => l.status === 'new').length > 0 && (
+                      <span className="ml-2 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">
+                        {allLeads.filter((l: any) => l.status === 'new').length} new
+                      </span>
+                    )}
+                  </div>
                 </a>
                 <a href="/admin/support" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                   <MessageSquare className="w-5 h-5 text-primary mr-3" />
