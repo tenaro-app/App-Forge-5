@@ -172,7 +172,7 @@ export default function TechnologiesSection() {
           {technologiesData.map((category, index) => (
             <motion.div 
               key={index}
-              className="bg-[#333333] rounded-xl shadow-2xl p-8 border border-gray-800 hover:border-gray-700 transition-colors"
+              className="bg-[#f3f4f6] rounded-xl shadow-2xl p-8 border border-gray-300 hover:border-gray-400 transition-colors"
               variants={fadeIn("up", "spring", index * 0.1 + 0.2, 0.75)}
             >
               <div className="flex items-center mb-6">
