@@ -30,7 +30,7 @@ export default function AdminDashboard() {
   }
 
   const { data: allProjects = [], isLoading: projectsLoading } = useQuery<any[]>({
-    queryKey: ['/api/projects'],
+    queryKey: ['/api/admin/projects'],
     enabled: !!user && user.role === 'admin',
   });
 
@@ -209,6 +209,10 @@ export default function AdminDashboard() {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
+                <a href="/admin/clients" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  <Users className="w-5 h-5 text-primary mr-3" />
+                  <span className="font-medium text-gray-900">Manage Clients</span>
+                </a>
                 <a href="/admin/projects/new" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                   <Plus className="w-5 h-5 text-primary mr-3" />
                   <span className="font-medium text-gray-900">New Project</span>

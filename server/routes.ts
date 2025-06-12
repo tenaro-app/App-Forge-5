@@ -165,6 +165,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin Projects API routes
+  // ----------------------------------------------------------------
+  
+  // Get all projects (admin only)
+  app.get("/api/admin/projects", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const projects = await storage.getAllProjects();
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching admin projects:", error);
+      res.status(500).json({ message: "Failed to fetch projects" });
+    }
+  });
+
   // Client Dashboard API routes
   // ----------------------------------------------------------------
   
