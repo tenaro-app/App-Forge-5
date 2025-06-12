@@ -1,4 +1,5 @@
-import { Facebook, Instagram, Linkedin, Twitter, Mail, MapPin, Phone, ArrowRight, ChevronRight } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, ArrowRight, ChevronRight } from "lucide-react";
+import { FaXTwitter, FaTiktok } from "react-icons/fa6";
 import { Link } from "wouter";
 import { solutionsData, industriesData } from "@/lib/data";
 
@@ -64,16 +65,19 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4 mb-8">
               <a href="#" className="bg-white/10 hover:bg-primary text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-white/10 hover:bg-primary text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-white/10 hover:bg-primary text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
                 <Facebook className="h-5 w-5" />
               </a>
               <a href="#" className="bg-white/10 hover:bg-primary text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
                 <Instagram className="h-5 w-5" />
+              </a>
+              <a href="#" className="bg-white/10 hover:bg-primary text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+                <FaXTwitter className="h-5 w-5" />
+              </a>
+              <a href="#" className="bg-white/10 hover:bg-primary text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a href="#" className="bg-white/10 hover:bg-primary text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+                <FaTiktok className="h-5 w-5" />
               </a>
             </div>
 
