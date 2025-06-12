@@ -22,6 +22,19 @@ export const users = pgTable("users", {
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   company: text("company"),
+  companyAddress: text("company_address"),
+  companyEmail: text("company_email"),
+  companyWebsite: text("company_website"),
+  industry: text("industry"),
+  position: text("position"),
+  // Social media fields
+  socialFacebook: text("social_facebook"),
+  socialInstagram: text("social_instagram"),
+  socialTiktok: text("social_tiktok"),
+  socialX: text("social_x"),
+  socialYoutube: text("social_youtube"),
+  socialLinkedin: text("social_linkedin"),
+  socialOther: text("social_other"),
   profileImageUrl: text("profile_image_url"),
   role: text("role").default("client").notNull(), // client, admin, support
   authProvider: text("auth_provider").default("local"), // local, google, facebook, linkedin

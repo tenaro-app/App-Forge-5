@@ -12,6 +12,14 @@ import {
   Briefcase,
   Save,
   Loader2,
+  MapPin,
+  Globe,
+  Factory,
+  Facebook,
+  Instagram,
+  Youtube,
+  Linkedin,
+  Share2,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +39,18 @@ const clientSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   phone: z.string().min(10, { message: "Phone number is required" }),
   company: z.string().min(2, { message: "Company name is required" }),
+  companyAddress: z.string().optional(),
+  companyEmail: z.string().email().optional().or(z.literal("")),
+  companyWebsite: z.string().url().optional().or(z.literal("")),
+  industry: z.string().optional(),
   position: z.string().min(2, { message: "Position is required" }),
+  socialFacebook: z.string().optional(),
+  socialInstagram: z.string().optional(),
+  socialTiktok: z.string().optional(),
+  socialX: z.string().optional(),
+  socialYoutube: z.string().optional(),
+  socialLinkedin: z.string().optional(),
+  socialOther: z.string().optional(),
   billingType: z.enum(["monthly", "annual", "project"], { 
     required_error: "Billing type is required" 
   }),
@@ -68,7 +87,18 @@ export default function NewClient() {
       email: "",
       phone: "",
       company: "",
+      companyAddress: "",
+      companyEmail: "",
+      companyWebsite: "",
+      industry: "",
       position: "",
+      socialFacebook: "",
+      socialInstagram: "",
+      socialTiktok: "",
+      socialX: "",
+      socialYoutube: "",
+      socialLinkedin: "",
+      socialOther: "",
       billingType: "monthly",
       notes: "",
     },
@@ -374,6 +404,223 @@ export default function NewClient() {
                         {form.formState.errors.position && (
                           <p className="mt-1 text-sm text-red-600">{form.formState.errors.position.message}</p>
                         )}
+                      </div>
+
+                      {/* Company Email */}
+                      <div>
+                        <Label htmlFor="companyEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                          Company Email
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Mail className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="companyEmail"
+                            type="email"
+                            {...form.register("companyEmail")}
+                            className={`pl-10 ${form.formState.errors.companyEmail ? 'border-red-500' : ''}`}
+                            placeholder="info@company.com"
+                          />
+                        </div>
+                        {form.formState.errors.companyEmail && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.companyEmail.message}</p>
+                        )}
+                      </div>
+
+                      {/* Company Website */}
+                      <div>
+                        <Label htmlFor="companyWebsite" className="block text-sm font-medium text-gray-700 mb-1">
+                          Company Website
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Globe className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="companyWebsite"
+                            {...form.register("companyWebsite")}
+                            className={`pl-10 ${form.formState.errors.companyWebsite ? 'border-red-500' : ''}`}
+                            placeholder="https://www.company.com"
+                          />
+                        </div>
+                        {form.formState.errors.companyWebsite && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.companyWebsite.message}</p>
+                        )}
+                      </div>
+
+                      {/* Industry */}
+                      <div>
+                        <Label htmlFor="industry" className="block text-sm font-medium text-gray-700 mb-1">
+                          Industry
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Factory className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="industry"
+                            {...form.register("industry")}
+                            className={`pl-10 ${form.formState.errors.industry ? 'border-red-500' : ''}`}
+                            placeholder="e.g. Technology, Healthcare, Finance"
+                          />
+                        </div>
+                        {form.formState.errors.industry && (
+                          <p className="mt-1 text-sm text-red-600">{form.formState.errors.industry.message}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Company Address - Full Width */}
+                    <div className="mt-6">
+                      <Label htmlFor="companyAddress" className="block text-sm font-medium text-gray-700 mb-1">
+                        Company Address
+                      </Label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <MapPin className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <Textarea
+                          id="companyAddress"
+                          {...form.register("companyAddress")}
+                          className={`pl-10 min-h-[80px] ${form.formState.errors.companyAddress ? 'border-red-500' : ''}`}
+                          placeholder="Enter complete company address"
+                        />
+                      </div>
+                      {form.formState.errors.companyAddress && (
+                        <p className="mt-1 text-sm text-red-600">{form.formState.errors.companyAddress.message}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Social Media Information */}
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h4 className="text-md font-medium text-gray-900 mb-4">Social Media Profiles</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Facebook */}
+                      <div>
+                        <Label htmlFor="socialFacebook" className="block text-sm font-medium text-gray-700 mb-1">
+                          Facebook
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Facebook className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="socialFacebook"
+                            {...form.register("socialFacebook")}
+                            className="pl-10"
+                            placeholder="https://facebook.com/company"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Instagram */}
+                      <div>
+                        <Label htmlFor="socialInstagram" className="block text-sm font-medium text-gray-700 mb-1">
+                          Instagram
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Instagram className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="socialInstagram"
+                            {...form.register("socialInstagram")}
+                            className="pl-10"
+                            placeholder="https://instagram.com/company"
+                          />
+                        </div>
+                      </div>
+
+                      {/* TikTok */}
+                      <div>
+                        <Label htmlFor="socialTiktok" className="block text-sm font-medium text-gray-700 mb-1">
+                          TikTok
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Share2 className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="socialTiktok"
+                            {...form.register("socialTiktok")}
+                            className="pl-10"
+                            placeholder="https://tiktok.com/@company"
+                          />
+                        </div>
+                      </div>
+
+                      {/* X (Twitter) */}
+                      <div>
+                        <Label htmlFor="socialX" className="block text-sm font-medium text-gray-700 mb-1">
+                          X (Twitter)
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Share2 className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="socialX"
+                            {...form.register("socialX")}
+                            className="pl-10"
+                            placeholder="https://x.com/company"
+                          />
+                        </div>
+                      </div>
+
+                      {/* YouTube */}
+                      <div>
+                        <Label htmlFor="socialYoutube" className="block text-sm font-medium text-gray-700 mb-1">
+                          YouTube
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Youtube className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="socialYoutube"
+                            {...form.register("socialYoutube")}
+                            className="pl-10"
+                            placeholder="https://youtube.com/company"
+                          />
+                        </div>
+                      </div>
+
+                      {/* LinkedIn */}
+                      <div>
+                        <Label htmlFor="socialLinkedin" className="block text-sm font-medium text-gray-700 mb-1">
+                          LinkedIn
+                        </Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Linkedin className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            id="socialLinkedin"
+                            {...form.register("socialLinkedin")}
+                            className="pl-10"
+                            placeholder="https://linkedin.com/company/company"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Other Social Media - Full Width */}
+                    <div className="mt-6">
+                      <Label htmlFor="socialOther" className="block text-sm font-medium text-gray-700 mb-1">
+                        Other Social Media
+                      </Label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Share2 className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <Textarea
+                          id="socialOther"
+                          {...form.register("socialOther")}
+                          className="pl-10 min-h-[60px]"
+                          placeholder="Other social media profiles (one per line)"
+                        />
                       </div>
                     </div>
                   </div>
