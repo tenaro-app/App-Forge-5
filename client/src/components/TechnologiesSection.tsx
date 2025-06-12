@@ -179,17 +179,17 @@ export default function TechnologiesSection() {
                 <div className="bg-primary/10 p-3 rounded-lg mr-4">
                   {category.icon}
                 </div>
-                <h3 className="text-xl font-bold text-white">{category.category}</h3>
+                <h3 className="text-xl font-bold text-gray-900">{category.category}</h3>
               </div>
               
               <div className="space-y-4">
                 {category.items.slice(0, 5).map((item, i) => (
                   <div key={i} className="space-y-1">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-300">{item.name}</span>
-                      <span className="text-primary-300 font-medium">{item.level}%</span>
+                      <span className="text-gray-700">{item.name}</span>
+                      <span className="text-primary font-medium">{item.level}%</span>
                     </div>
-                    <div className="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-gray-300 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-gradient-to-r from-primary/70 to-primary rounded-full"
                         style={{ width: `${item.level}%` }}
