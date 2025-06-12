@@ -4,21 +4,10 @@ import { Zap, Code, Rocket } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-secondary py-24 md:py-36">
-      <div className="absolute inset-0 z-0 opacity-15">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/70 to-secondary"></div>
-        <div 
-          className="h-full w-full"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1581090700227-1e37b190418e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            mixBlendMode: "overlay"
-          }}
-        ></div>
+    <section className="relative overflow-hidden bg-white py-24 md:py-36">
+      <div className="absolute inset-0 z-0 opacity-5">
+        <div className="absolute inset-0 bg-primary/10"></div>
       </div>
-      
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-secondary to-transparent z-10"></div>
       
       <motion.div 
         className="container relative z-20 mx-auto px-4 sm:px-6 lg:px-8"

@@ -42,7 +42,7 @@ const performanceMetricsData = [
   { month: 'May', onTimeDelivery: 97, clientSatisfaction: 98, budgetAdherence: 96 },
 ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['#275ddf', '#60a5fa', '#93c5fd', '#dbeafe'];
 
 export default function Analytics() {
   const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();

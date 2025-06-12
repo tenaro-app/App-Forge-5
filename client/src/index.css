@@ -6,32 +6,32 @@
 
 :root {
   --background: 0 0% 100%;
-  --foreground: 0 0% 0%;
+  --foreground: 0 0% 3.9%;
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 0%;
+  --card-foreground: 0 0% 3.9%;
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 0%;
-  --primary: 350 100% 50%;
+  --popover-foreground: 0 0% 3.9%;
+  --primary: 217 91% 60%;
   --primary-foreground: 0 0% 100%;
-  --primary-50: 350 100% 97%;
-  --primary-100: 350 100% 92%;
-  --primary-300: 350 100% 78%;
-  --primary-400: 350 100% 68%;
-  --secondary: 0 0% 0%;
-  --secondary-foreground: 0 0% 100%;
-  --secondary-500: 0 0% 20%;
-  --secondary-600: 0 0% 30%;
-  --muted: 0 0% 96%;
-  --muted-foreground: 0 0% 45%;
-  --accent: 350 100% 50%;
+  --primary-50: 217 91% 97%;
+  --primary-100: 217 91% 95%;
+  --primary-300: 217 91% 70%;
+  --primary-400: 217 91% 65%;
+  --secondary: 0 0% 96.1%;
+  --secondary-foreground: 0 0% 9%;
+  --secondary-500: 0 0% 45%;
+  --secondary-600: 0 0% 35%;
+  --muted: 0 0% 96.1%;
+  --muted-foreground: 0 0% 45.1%;
+  --accent: 217 91% 60%;
   --accent-foreground: 0 0% 100%;
-  --accent-500: 350 100% 62%;
-  --accent-600: 350 100% 72%;
+  --accent-500: 217 91% 65%;
+  --accent-600: 217 91% 55%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 90%;
-  --input: 0 0% 90%;
-  --ring: 350 100% 50%;
+  --border: 0 0% 89.8%;
+  --input: 0 0% 89.8%;
+  --ring: 217 91% 60%;
   --radius: 0.5rem;
   --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
   --font-heading: 'Poppins', ui-sans-serif, system-ui, sans-serif;
@@ -40,38 +40,7 @@
   --light-500: 0 0% 98%;
 }
 
-.dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 207 90% 54%;
-  --primary-foreground: 211 100% 99%;
-  --primary-50: 210 40% 8%;
-  --primary-100: 211 45% 12%;
-  --primary-300: 211 50% 45%;
-  --primary-400: 213 60% 60%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --secondary-500: 142 72% 29%;
-  --secondary-600: 142 76% 36%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --accent-500: 25 95% 53%;
-  --accent-600: 15 92% 45%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 240 4.9% 83.9%;
-  --dark-500: 218 33% 17%;
-  --dark-600: 222 47% 11%;
-  --light-500: 210 40% 98%;
-}
+/* Dark theme removed - keeping white theme only */
 
 @layer base {
   * {
@@ -128,13 +97,7 @@
   .text-secondary-500 {
     color: hsl(var(--secondary-500));
   }
-  .from-dark-600 {
-    --tw-gradient-from: hsl(var(--dark-600));
-    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-  }
-  .to-dark-600 {
-    --tw-gradient-to: hsl(var(--dark-600));
-  }
+  /* Gradient utilities removed - clean design only */
   
   /* Mobile fixes */
   @media (max-width: 640px) {

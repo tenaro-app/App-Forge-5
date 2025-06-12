@@ -136,7 +136,7 @@ const dummyAnalyticsData = {
 };
 
 // Colors for charts
-const COLORS = ['#ff0033', '#1a1a1a', '#3F88C5', '#764C7B', '#4da3a3', '#D5573B'];
+const COLORS = ['#275ddf', '#60a5fa', '#93c5fd', '#dbeafe', '#bfdbfe', '#3b82f6'];
 
 export default function AdminAnalytics() {
   const { user, isLoading: isAuthLoading, isAuthenticated } = useAuth();
