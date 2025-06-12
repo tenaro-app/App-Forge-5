@@ -21,6 +21,7 @@ export interface IStorage {
   createOAuthUser(user: UpsertUser): Promise<User>;
   updateLastLogin(userId: string): Promise<void>;
   upsertUser(user: UpsertUser): Promise<User>;
+  getAllClients(): Promise<User[]>;
   
   // Contact form operations
   createContact(contact: InsertContact): Promise<Contact>;
@@ -133,6 +134,15 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return user;
+  }
+
+  async getAllClients(): Promise<User[]> {
+    const clientUsers = await db
+      .select()
+      .from(users)
+      .where(eq(users.role, 'client'))
+      .orderBy(desc(users.createdAt));
+    return clientUsers;
   }
   
   // Contact form operations

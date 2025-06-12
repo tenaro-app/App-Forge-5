@@ -53,6 +53,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin Client Management API routes
+  // ----------------------------------------------------------------
+
+  // Create new client (admin only)
+  app.post("/api/admin/clients", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        company,
+        companyAddress,
+        companyEmail,
+        companyWebsite,
+        industry,
+        position,
+        socialFacebook,
+        socialInstagram,
+        socialTiktok,
+        socialX,
+        socialYoutube,
+        socialLinkedin,
+        socialOther,
+        notes
+      } = req.body;
+
+      // Generate unique client ID
+      const clientId = `client_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+
+      // Create user with client role and all additional fields
+      const newClient = await storage.createUser({
+        id: clientId,
+        firstName,
+        lastName,
+        email,
+        phone,
+        company,
+        companyAddress,
+        companyEmail,
+        companyWebsite,
+        industry,
+        position,
+        socialFacebook,
+        socialInstagram,
+        socialTiktok,
+        socialX,
+        socialYoutube,
+        socialLinkedin,
+        socialOther,
+        role: "client",
+        authProvider: "admin_created",
+        emailVerified: false,
+        phoneVerified: false
+      });
+
+      res.status(201).json(newClient);
+    } catch (error) {
+      console.error("Error creating client:", error);
+      res.status(500).json({ 
+        message: "Failed to create client",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get all clients (admin only)
+  app.get("/api/admin/clients", isAdmin, async (req: Request, res: Response) => {
+    try {
+      // Get all users with client role
+      const clients = await storage.getAllClients();
+      res.json(clients);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+      res.status(500).json({ message: "Failed to fetch clients" });
+    }
+  });
+
+  // Get specific client (admin only)
+  app.get("/api/admin/clients/:id", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const client = await storage.getUser(req.params.id);
+      if (!client || client.role !== 'client') {
+        return res.status(404).json({ message: "Client not found" });
+      }
+      res.json(client);
+    } catch (error) {
+      console.error("Error fetching client:", error);
+      res.status(500).json({ message: "Failed to fetch client" });
+    }
+  });
+
   // Authenticated API routes
   // ----------------------------------------------------------------
   
