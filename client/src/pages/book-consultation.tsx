@@ -232,7 +232,7 @@ export default function BookConsultation() {
                             <Input
                               type="url"
                               placeholder="https://yourcompany.com"
-                              className="bg-black border-gray-700 text-white placeholder:text-gray-400 focus:border-primary"
+                              className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-primary"
                               {...field}
                             />
                           </FormControl>
@@ -248,14 +248,14 @@ export default function BookConsultation() {
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-white font-medium flex items-center">
+                        <FormLabel className="text-gray-700 font-medium flex items-center">
                           <MessageSquare className="w-4 h-4 mr-2 text-primary" />
                           Tell us about your project (Optional)
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Describe your business needs, current challenges, or what you'd like to automate..."
-                            className="bg-black border-gray-700 text-white placeholder:text-gray-400 focus:border-primary min-h-[120px]"
+                            className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-primary min-h-[120px]"
                             {...field}
                           />
                         </FormControl>
@@ -268,7 +268,7 @@ export default function BookConsultation() {
                   <Button
                     type="submit"
                     disabled={submitMutation.isPending}
-                    className="w-full bg-primary hover:bg-white hover:text-primary text-white font-bold py-4 rounded-lg transition-all duration-300 flex items-center justify-center"
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-lg transition-all duration-300 flex items-center justify-center"
                   >
                     {submitMutation.isPending ? (
                       <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
