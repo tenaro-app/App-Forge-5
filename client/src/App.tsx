@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
+import HomeProfessional from "@/pages/HomeProfessional";
 import AuthPage from "@/pages/auth";
 import Dashboard from "@/pages/dashboard";
 import DashboardChat from "@/pages/dashboard/chat";
@@ -46,7 +47,8 @@ function Router() {
   return (
     <Switch>
       {/* Main app routes */}
-      <Route path="/" component={Home} />
+      <Route path="/" component={HomeProfessional} />
+      <Route path="/home-old" component={Home} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/book-consultation" component={BookConsultation} />
       
