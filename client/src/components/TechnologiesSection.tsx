@@ -158,7 +158,7 @@ export default function TechnologiesSection() {
           className="text-center max-w-3xl mx-auto mb-20"
           variants={fadeIn("up", "tween", 0.1, 1)}
         >
-          <span className="text-sm font-semibold text-black uppercase tracking-widest font-heading">Our Technical Prowess</span>
+          <span className="text-sm font-semibold text-white uppercase tracking-widest font-heading">Our Technical Prowess</span>
           <h2 className="mt-4 text-4xl md:text-5xl font-heading font-extrabold text-white">
             Cutting-Edge <span className="text-primary">Technologies</span> We Master
           </h2>
