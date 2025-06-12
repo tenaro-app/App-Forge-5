@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, Eye, EyeOff, ArrowRight, CheckCircle } from 'lucide-react';
-import { FaGoogle, FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
+import { FaGoogle, FaFacebookF } from 'react-icons/fa';
 import { useAuth } from '@/hooks/useAuth';
 import { Redirect } from 'wouter';
 
@@ -145,23 +145,13 @@ export default function AuthPage() {
               <span>Continue with Google</span>
             </button>
             
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => handleSocialLogin('facebook')}
-                className="flex items-center justify-center space-x-2 bg-white border-2 border-gray-200 rounded-lg py-3 px-4 text-gray-700 font-medium hover:border-gray-300 hover:bg-gray-50 transition-all duration-200"
-              >
-                <FaFacebookF className="w-4 h-4 text-blue-600" />
-                <span>Facebook</span>
-              </button>
-              
-              <button
-                onClick={() => handleSocialLogin('linkedin')}
-                className="flex items-center justify-center space-x-2 bg-white border-2 border-gray-200 rounded-lg py-3 px-4 text-gray-700 font-medium hover:border-gray-300 hover:bg-gray-50 transition-all duration-200"
-              >
-                <FaLinkedinIn className="w-4 h-4 text-blue-700" />
-                <span>LinkedIn</span>
-              </button>
-            </div>
+            <button
+              onClick={() => handleSocialLogin('facebook')}
+              className="w-full flex items-center justify-center space-x-3 bg-white border-2 border-gray-200 rounded-lg py-3 px-4 text-gray-700 font-medium hover:border-gray-300 hover:bg-gray-50 transition-all duration-200"
+            >
+              <FaFacebookF className="w-5 h-5 text-blue-600" />
+              <span>Continue with Facebook</span>
+            </button>
           </div>
 
           {/* Divider */}
