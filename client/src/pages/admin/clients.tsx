@@ -138,10 +138,13 @@ export default function AdminClients() {
 
   // Redirect if not admin
   useEffect(() => {
-    if (!isAdmin) {
+    console.log("User:", user);
+    console.log("Is Admin:", isAdmin);
+    if (user && !isAdmin) {
+      console.log("Redirecting non-admin user to dashboard");
       setLocation("/dashboard");
     }
-  }, [isAdmin, setLocation]);
+  }, [isAdmin, setLocation, user]);
 
   // Query for clients (currently using dummy data)
   const {

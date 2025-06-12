@@ -211,7 +211,10 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 <button 
-                  onClick={() => setLocation("/admin/clients")} 
+                  onClick={() => {
+                    console.log("Navigate to /admin/clients clicked");
+                    setLocation("/admin/clients");
+                  }} 
                   className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
                 >
                   <Users className="w-5 h-5 text-primary mr-3" />
