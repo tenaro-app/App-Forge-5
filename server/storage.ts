@@ -7,7 +7,8 @@ import {
   chatSessions, type ChatSession, type InsertChatSession,
   supportTickets, type SupportTicket, type InsertSupportTicket,
   ticketResponses, type TicketResponse, type InsertTicketResponse,
-  consultationLeads, type ConsultationLead, type InsertConsultationLead
+  consultationLeads, type ConsultationLead, type InsertConsultationLead,
+  invoices, type Invoice, type InsertInvoice
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, isNull } from "drizzle-orm";
@@ -72,6 +73,15 @@ export interface IStorage {
   getConsultationLeads(): Promise<ConsultationLead[]>;
   getConsultationLeadById(id: number): Promise<ConsultationLead | undefined>;
   updateConsultationLeadStatus(id: number, status: string): Promise<ConsultationLead>;
+  
+  // Invoice operations
+  createInvoice(invoice: InsertInvoice): Promise<Invoice>;
+  getInvoiceById(id: number): Promise<Invoice | undefined>;
+  getInvoicesByClientId(clientId: string): Promise<Invoice[]>;
+  getAllInvoices(): Promise<Invoice[]>;
+  updateInvoice(id: number, invoice: Partial<InsertInvoice>): Promise<Invoice>;
+  updateInvoiceStatus(id: number, status: string, paidAt?: Date): Promise<Invoice>;
+  updateInvoicePdf(id: number, pdfUrl: string): Promise<Invoice>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -544,6 +554,116 @@ export class DatabaseStorage implements IStorage {
       return lead;
     } catch (error) {
       console.error("Error updating consultation lead status:", error);
+      throw error;
+    }
+  }
+
+  // Invoice operations
+  async createInvoice(invoiceData: InsertInvoice): Promise<Invoice> {
+    try {
+      // Generate unique invoice number
+      const invoiceNumber = `INV-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+      
+      const [invoice] = await db
+        .insert(invoices)
+        .values({
+          ...invoiceData,
+          invoiceNumber
+        })
+        .returning();
+      return invoice;
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      throw error;
+    }
+  }
+
+  async getInvoiceById(id: number): Promise<Invoice | undefined> {
+    try {
+      const [invoice] = await db
+        .select()
+        .from(invoices)
+        .where(eq(invoices.id, id));
+      return invoice;
+    } catch (error) {
+      console.error("Error getting invoice by ID:", error);
+      throw error;
+    }
+  }
+
+  async getInvoicesByClientId(clientId: string): Promise<Invoice[]> {
+    try {
+      return await db
+        .select()
+        .from(invoices)
+        .where(eq(invoices.clientId, clientId))
+        .orderBy(desc(invoices.createdAt));
+    } catch (error) {
+      console.error("Error getting invoices by client ID:", error);
+      throw error;
+    }
+  }
+
+  async getAllInvoices(): Promise<Invoice[]> {
+    try {
+      return await db
+        .select()
+        .from(invoices)
+        .orderBy(desc(invoices.createdAt));
+    } catch (error) {
+      console.error("Error getting all invoices:", error);
+      throw error;
+    }
+  }
+
+  async updateInvoice(id: number, invoiceData: Partial<InsertInvoice>): Promise<Invoice> {
+    try {
+      const [invoice] = await db
+        .update(invoices)
+        .set({
+          ...invoiceData,
+          updatedAt: new Date()
+        })
+        .where(eq(invoices.id, id))
+        .returning();
+      return invoice;
+    } catch (error) {
+      console.error("Error updating invoice:", error);
+      throw error;
+    }
+  }
+
+  async updateInvoiceStatus(id: number, status: string, paidAt?: Date): Promise<Invoice> {
+    try {
+      const [invoice] = await db
+        .update(invoices)
+        .set({
+          status,
+          paidAt,
+          updatedAt: new Date()
+        })
+        .where(eq(invoices.id, id))
+        .returning();
+      return invoice;
+    } catch (error) {
+      console.error("Error updating invoice status:", error);
+      throw error;
+    }
+  }
+
+  async updateInvoicePdf(id: number, pdfUrl: string): Promise<Invoice> {
+    try {
+      const [invoice] = await db
+        .update(invoices)
+        .set({
+          pdfUrl,
+          updatedAt: new Date()
+        })
+        .where(eq(invoices.id, id))
+        .returning();
+      return invoice;
+    } catch (error) {
+      console.error("Error updating invoice PDF:", error);
       throw error;
     }
   }

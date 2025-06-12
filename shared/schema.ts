@@ -283,3 +283,35 @@ export const consultationLeadSchema = createInsertSchema(consultationLeads).pick
 
 export type InsertConsultationLead = z.infer<typeof consultationLeadSchema>;
 export type ConsultationLead = typeof consultationLeads.$inferSelect;
+
+// Invoices table
+export const invoices = pgTable("invoices", {
+  id: serial("id").primaryKey(),
+  clientId: varchar("client_id").notNull().references(() => users.id),
+  projectId: integer("project_id").references(() => projects.id),
+  invoiceNumber: varchar("invoice_number", { length: 50 }).notNull().unique(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  amount: integer("amount").notNull(), // Amount in cents
+  currency: varchar("currency", { length: 3 }).default("USD").notNull(),
+  dueDate: timestamp("due_date").notNull(),
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, paid, overdue, cancelled
+  pdfUrl: text("pdf_url"), // URL to uploaded PDF invoice
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  paidAt: timestamp("paid_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const invoiceSchema = createInsertSchema(invoices).pick({
+  clientId: true,
+  projectId: true,
+  title: true,
+  description: true,
+  amount: true,
+  currency: true,
+  dueDate: true,
+});
+
+export type InsertInvoice = z.infer<typeof invoiceSchema>;
+export type Invoice = typeof invoices.$inferSelect;
