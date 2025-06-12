@@ -47,8 +47,7 @@ function Router() {
   return (
     <Switch>
       {/* Main app routes */}
-      <Route path="/" component={HomeProfessional} />
-      <Route path="/home-old" component={Home} />
+      <Route path="/" component={Home} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/book-consultation" component={BookConsultation} />
       
