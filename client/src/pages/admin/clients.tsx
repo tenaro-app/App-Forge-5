@@ -18,7 +18,17 @@ import {
   Trash2,
   ArrowUpDown,
   Filter,
-  Eye
+  Eye,
+  Globe,
+  MapPin,
+  Briefcase,
+  DollarSign,
+  Facebook,
+  Instagram,
+  Youtube,
+  Linkedin,
+  Share2,
+  ExternalLink
 } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
@@ -40,11 +50,22 @@ const dummyClients = [
     email: "jane.doe@acmecorp.com",
     phone: "+1 (555) 123-4567",
     company: "Acme Corp",
+    companyAddress: "123 Business Ave, Suite 100, New York, NY 10001",
+    companyEmail: "info@acmecorp.com",
+    companyWebsite: "https://acmecorp.com",
+    industry: "Technology",
     position: "CTO",
+    socialFacebook: "https://facebook.com/acmecorp",
+    socialInstagram: "https://instagram.com/acmecorp",
+    socialLinkedin: "https://linkedin.com/company/acmecorp",
+    socialYoutube: "",
+    socialTiktok: "",
+    socialX: "",
+    socialOther: "",
     status: "active",
-    joinDate: new Date(2023, 0, 15), // January 15, 2023
+    joinDate: new Date(2023, 0, 15),
     projectsCount: 3,
-    lastActivity: new Date(2023, 5, 10), // June 10, 2023
+    lastActivity: new Date(2023, 5, 10),
     billingType: "monthly",
     notes: "Enterprise client with multiple automation projects"
   },
@@ -436,127 +457,44 @@ export default function AdminClients() {
               </div>
             </div>
           ) : sortedClients && sortedClients.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th 
-                      scope="col" 
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                      onClick={() => handleSortChange("name")}
-                    >
+            <div className="space-y-6">
+              {sortedClients.map((client) => (
+                <div key={client.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <div className="p-6">
+                    {/* Header Row */}
+                    <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center">
-                        Client Name
-                        <ArrowUpDown className="w-4 h-4 ml-1" />
-                      </div>
-                    </th>
-                    <th 
-                      scope="col" 
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                      onClick={() => handleSortChange("company")}
-                    >
-                      <div className="flex items-center">
-                        Company
-                        <ArrowUpDown className="w-4 h-4 ml-1" />
-                      </div>
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Contact Info
-                    </th>
-                    <th 
-                      scope="col" 
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                      onClick={() => handleSortChange("joinDate")}
-                    >
-                      <div className="flex items-center">
-                        Joined
-                        <ArrowUpDown className="w-4 h-4 ml-1" />
-                      </div>
-                    </th>
-                    <th 
-                      scope="col" 
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                      onClick={() => handleSortChange("projectsCount")}
-                    >
-                      <div className="flex items-center">
-                        Projects
-                        <ArrowUpDown className="w-4 h-4 ml-1" />
-                      </div>
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {sortedClients.map((client) => (
-                    <tr key={client.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="font-medium text-primary">
-                              {client.firstName.charAt(0) + client.lastName.charAt(0)}
-                            </span>
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {client.firstName} {client.lastName}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {client.position}
-                            </div>
+                        <div className="flex-shrink-0 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="font-medium text-primary text-lg">
+                            {client.firstName.charAt(0) + client.lastName.charAt(0)}
+                          </span>
+                        </div>
+                        <div className="ml-4">
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {client.firstName} {client.lastName}
+                          </h3>
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Briefcase className="h-4 w-4 mr-1" />
+                            {client.position} at {client.company}
                           </div>
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <Building className="h-4 w-4 text-gray-500 mr-2" />
-                          <span className="text-sm text-gray-900">{client.company}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 flex items-center">
-                          <Mail className="h-4 w-4 text-gray-500 mr-2" />
-                          {client.email}
-                        </div>
-                        <div className="text-sm text-gray-500 flex items-center mt-1">
-                          <Phone className="h-4 w-4 text-gray-500 mr-2" />
-                          {client.phone}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 text-gray-500 mr-2" />
-                          {format(new Date(client.joinDate), 'MMM d, yyyy')}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <Package className="h-4 w-4 text-gray-500 mr-2" />
-                          <span className="text-sm text-gray-900">{client.projectsCount}</span>
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          Last active: {format(new Date(client.lastActivity), 'MMM d, yyyy')}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      </div>
+                      
+                      {/* Status and Actions */}
+                      <div className="flex items-center space-x-3">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           client.status === 'active' 
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-gray-100 text-gray-800'
                         }`}>
-                          {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
+                          {client.status}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex justify-end space-x-2">
+                        
+                        <div className="flex items-center space-x-2">
                           <button 
                             onClick={() => setLocation(`/admin/clients/${client.id}`)}
                             className="text-gray-500 hover:text-primary"
-                            title="View Details"
+                            title="View Client"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -568,13 +506,6 @@ export default function AdminClients() {
                             <Edit className="w-4 h-4" />
                           </button>
                           <button 
-                            onClick={() => handleToggleClientStatus(client.id, client.status)}
-                            className="text-gray-500 hover:text-primary"
-                            title={client.status === 'active' ? 'Deactivate Client' : 'Activate Client'}
-                          >
-                            <FileText className="w-4 h-4" />
-                          </button>
-                          <button 
                             onClick={() => handleDeleteClient(client.id)}
                             className="text-gray-500 hover:text-red-500"
                             title="Delete Client"
@@ -582,11 +513,143 @@ export default function AdminClients() {
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                    </div>
+
+                    {/* Main Content Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {/* Personal & Contact Information */}
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-medium text-gray-900 border-b border-gray-200 pb-1">
+                          Contact Information
+                        </h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center">
+                            <Mail className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-900">{client.email}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Phone className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-900">{client.phone}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-600">
+                              Joined {format(client.joinDate, "MMM d, yyyy")}
+                            </span>
+                          </div>
+                          <div className="flex items-center">
+                            <Package className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-600">
+                              {client.projectsCount} active projects
+                            </span>
+                          </div>
+                          <div className="flex items-center">
+                            <DollarSign className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-600 capitalize">
+                              {client.billingType} billing
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Company Information */}
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-medium text-gray-900 border-b border-gray-200 pb-1">
+                          Company Details
+                        </h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center">
+                            <Building className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                            <span className="text-gray-900">{client.company}</span>
+                          </div>
+                          {client.industry && (
+                            <div className="flex items-center">
+                              <span className="text-gray-600">Industry: {client.industry}</span>
+                            </div>
+                          )}
+                          {client.companyAddress && (
+                            <div className="flex items-start">
+                              <MapPin className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0 mt-0.5" />
+                              <span className="text-gray-600">{client.companyAddress}</span>
+                            </div>
+                          )}
+                          {client.companyEmail && (
+                            <div className="flex items-center">
+                              <Mail className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                              <span className="text-gray-600">{client.companyEmail}</span>
+                            </div>
+                          )}
+                          {client.companyWebsite && (
+                            <div className="flex items-center">
+                              <Globe className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                              <a 
+                                href={client.companyWebsite} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary hover:text-primary/80 flex items-center"
+                              >
+                                Visit Website
+                                <ExternalLink className="h-3 w-3 ml-1" />
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Social Media & Additional */}
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-medium text-gray-900 border-b border-gray-200 pb-1">
+                          Social Media & Notes
+                        </h4>
+                        <div className="space-y-2">
+                          {/* Social Media Links */}
+                          <div className="flex items-center space-x-2">
+                            {client.socialFacebook && (
+                              <a href={client.socialFacebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
+                                <Facebook className="h-4 w-4" />
+                              </a>
+                            )}
+                            {client.socialInstagram && (
+                              <a href={client.socialInstagram} target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:text-pink-700">
+                                <Instagram className="h-4 w-4" />
+                              </a>
+                            )}
+                            {client.socialLinkedin && (
+                              <a href={client.socialLinkedin} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:text-blue-800">
+                                <Linkedin className="h-4 w-4" />
+                              </a>
+                            )}
+                            {client.socialYoutube && (
+                              <a href={client.socialYoutube} target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-700">
+                                <Youtube className="h-4 w-4" />
+                              </a>
+                            )}
+                            {client.socialOther && (
+                              <a href={client.socialOther} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-700">
+                                <Share2 className="h-4 w-4" />
+                              </a>
+                            )}
+                          </div>
+                          
+                          {/* Notes */}
+                          {client.notes && (
+                            <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
+                              <span className="font-medium text-gray-700">Notes: </span>
+                              {client.notes}
+                            </div>
+                          )}
+                          
+                          {/* Last Activity */}
+                          <div className="text-xs text-gray-500">
+                            Last activity: {format(client.lastActivity, "MMM d, yyyy")}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <div className="p-6 text-center">
