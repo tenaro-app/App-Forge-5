@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
-import { Redirect } from 'wouter';
+import { Redirect, useLocation } from 'wouter';
 import { 
   Users, 
   FolderOpen, 
@@ -22,6 +22,7 @@ import {
 
 export default function AdminDashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
 
   // Redirect if not authenticated or not admin
@@ -209,19 +210,31 @@ export default function AdminDashboard() {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <a href="/admin/clients" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <button 
+                  onClick={() => setLocation("/admin/clients")} 
+                  className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
+                >
                   <Users className="w-5 h-5 text-primary mr-3" />
                   <span className="font-medium text-gray-900">Manage Clients</span>
-                </a>
-                <a href="/admin/projects/new" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                </button>
+                <button 
+                  onClick={() => setLocation("/admin/projects/new")} 
+                  className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
+                >
                   <Plus className="w-5 h-5 text-primary mr-3" />
                   <span className="font-medium text-gray-900">New Project</span>
-                </a>
-                <a href="/admin/clients/new" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                </button>
+                <button 
+                  onClick={() => setLocation("/admin/clients/new")} 
+                  className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
+                >
                   <Users className="w-5 h-5 text-primary mr-3" />
                   <span className="font-medium text-gray-900">Add Client</span>
-                </a>
-                <a href="/admin/leads" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                </button>
+                <button 
+                  onClick={() => setLocation("/admin/leads")} 
+                  className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
+                >
                   <Users className="w-5 h-5 text-primary mr-3" />
                   <div className="flex-1">
                     <span className="font-medium text-gray-900">Consultation Leads</span>
@@ -231,15 +244,21 @@ export default function AdminDashboard() {
                       </span>
                     )}
                   </div>
-                </a>
-                <a href="/admin/support" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                </button>
+                <button 
+                  onClick={() => setLocation("/admin/support")} 
+                  className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
+                >
                   <MessageSquare className="w-5 h-5 text-primary mr-3" />
                   <span className="font-medium text-gray-900">Support Center</span>
-                </a>
-                <a href="/admin/settings" className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                </button>
+                <button 
+                  onClick={() => setLocation("/admin/settings")} 
+                  className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
+                >
                   <Settings className="w-5 h-5 text-primary mr-3" />
                   <span className="font-medium text-gray-900">System Settings</span>
-                </a>
+                </button>
               </div>
             </div>
 
