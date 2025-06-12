@@ -38,6 +38,7 @@ const clientSchema = z.object({
   lastName: z.string().min(2, { message: "Last name must be at least 2 characters" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
   phone: z.string().min(10, { message: "Phone number is required" }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
   company: z.string().min(2, { message: "Company name is required" }),
   companyAddress: z.string().optional(),
   companyEmail: z.string().email().optional().or(z.literal("")),
@@ -67,6 +68,16 @@ export default function NewClient() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
+  // Generate random password
+  const generatePassword = () => {
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    let password = "";
+    for (let i = 0; i < 12; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    form.setValue("password", password);
+  };
+  
   // Redirect to login if not authenticated or not admin
   useEffect(() => {
     if (!isAuthLoading) {
@@ -86,6 +97,7 @@ export default function NewClient() {
       lastName: "",
       email: "",
       phone: "",
+      password: "",
       company: "",
       companyAddress: "",
       companyEmail: "",

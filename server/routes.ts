@@ -1,10 +1,15 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { contactSchema, projectSchema, milestoneSchema, chatMessageSchema, chatSessionSchema, supportTicketSchema, ticketResponseSchema } from "@shared/schema";
+import { contactSchema, projectSchema, milestoneSchema, chatMessageSchema, chatSessionSchema, supportTicketSchema, ticketResponseSchema, invoiceSchema } from "@shared/schema";
 import { type Request, Response, NextFunction } from "express";
 import { setupChatService } from "./chatService";
 import { setupAuth, isAuthenticated, isAdmin, isSupport } from "./simpleAuth";
+import Stripe from "stripe";
+
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-10-16",
+}) : null;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create the HTTP server
@@ -634,6 +639,131 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating consultation lead status:", error);
       res.status(500).json({ message: "Failed to update consultation lead status" });
+    }
+  });
+
+  // Invoice management routes
+  app.post("/api/admin/invoices", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const validatedData = invoiceSchema.parse(req.body);
+      const invoice = await storage.createInvoice(validatedData);
+      res.status(201).json(invoice);
+    } catch (error: any) {
+      console.error("Error creating invoice:", error);
+      res.status(500).json({ message: "Failed to create invoice" });
+    }
+  });
+
+  app.get("/api/admin/invoices", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const invoices = await storage.getAllInvoices();
+      res.json(invoices);
+    } catch (error: any) {
+      console.error("Error getting invoices:", error);
+      res.status(500).json({ message: "Failed to get invoices" });
+    }
+  });
+
+  app.get("/api/invoices", isAuthenticated, async (req: any, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      const invoices = await storage.getInvoicesByClientId(userId);
+      res.json(invoices);
+    } catch (error: any) {
+      console.error("Error getting client invoices:", error);
+      res.status(500).json({ message: "Failed to get invoices" });
+    }
+  });
+
+  app.get("/api/invoices/:id", isAuthenticated, async (req: any, res: Response) => {
+    try {
+      const { id } = req.params;
+      const invoice = await storage.getInvoiceById(parseInt(id));
+      
+      if (!invoice) {
+        return res.status(404).json({ message: "Invoice not found" });
+      }
+      
+      // Check if user owns this invoice or is admin
+      if (invoice.clientId !== req.user?.id && req.user?.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      res.json(invoice);
+    } catch (error: any) {
+      console.error("Error getting invoice:", error);
+      res.status(500).json({ message: "Failed to get invoice" });
+    }
+  });
+
+  app.post("/api/invoices/:id/create-payment-intent", isAuthenticated, async (req: any, res: Response) => {
+    try {
+      if (!stripe) {
+        return res.status(500).json({ message: "Payment processing not configured" });
+      }
+
+      const { id } = req.params;
+      const invoice = await storage.getInvoiceById(parseInt(id));
+      
+      if (!invoice) {
+        return res.status(404).json({ message: "Invoice not found" });
+      }
+      
+      if (invoice.clientId !== req.user?.id) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      if (invoice.status === 'paid') {
+        return res.status(400).json({ message: "Invoice already paid" });
+      }
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: invoice.amount,
+        currency: invoice.currency.toLowerCase(),
+        metadata: {
+          invoiceId: invoice.id.toString(),
+          clientId: invoice.clientId,
+        },
+      });
+
+      res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error: any) {
+      console.error("Error creating payment intent:", error);
+      res.status(500).json({ message: "Failed to create payment intent" });
+    }
+  });
+
+  app.post("/api/invoices/:id/confirm-payment", isAuthenticated, async (req: any, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { paymentIntentId } = req.body;
+      
+      const invoice = await storage.getInvoiceById(parseInt(id));
+      
+      if (!invoice) {
+        return res.status(404).json({ message: "Invoice not found" });
+      }
+      
+      if (invoice.clientId !== req.user?.id) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      // Verify payment with Stripe
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      
+      if (paymentIntent.status === 'succeeded') {
+        const updatedInvoice = await storage.updateInvoiceStatus(
+          invoice.id, 
+          'paid', 
+          new Date()
+        );
+        res.json(updatedInvoice);
+      } else {
+        res.status(400).json({ message: "Payment not completed" });
+      }
+    } catch (error: any) {
+      console.error("Error confirming payment:", error);
+      res.status(500).json({ message: "Failed to confirm payment" });
     }
   });
 
